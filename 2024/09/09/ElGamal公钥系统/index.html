@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>ElGamal公钥系统 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        ElGamal公钥系统
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        ElGamal公钥系统
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2024-09-10</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>5 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.4k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>上一章我们讲了$D-H$密钥一种公开共享随机密钥的方法，但总的来说并没有实现作为公钥密码体系的全部目的，因为密码系统允许交换特定信息，而不仅仅是一串随机的bit。第一个公钥密码体系是$RSA$，<em>Shamir</em>和<em>Adleman</em>在1978提出。但我们这节讲的系统是在D-H写的论文之后发展比较自然的的系统。ElGamal公钥加密算法基于离散对数问题，接下来我们要谈的是基于$F^*_p$的离散对数问题的ElGamal Key版本。</p>
+<p>爱丽丝选择一个数字$a$作为其私钥，并着手计算</p>
+<center>
+
+<p>$\begin{aligned}<br>    A \equiv g^a \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>和D-H密钥交换相似之处为，爱丽丝将会公布她的公钥$A$，而保留私钥。</p>
+<p>现在我们假设鲍勃想用爱丽丝的公钥$A$加密信息，首先我们假设鲍勃想用公钥$A$加密信息，设鲍勃的信息$m$是介于$0$到$p$之间的整数（可以用ASCII编码转换），为了加密$m$，首先我们选择一个$\mod p$的数字$k$，用它加密信息，然后将其丢弃，数字$k$称为临时密钥，因为其仅仅是用来加密单个信息</p>
+<p>鲍勃取一段明文$m$，用随机临时密钥$k$和爱丽丝的公钥$A$计算两个等式</p>
+<center>
+
+<p>$\begin{aligned}<br>    c_1 \equiv g^k \mod p 和 c_2 \equiv m A^k \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>则鲍勃的加密得到一对参数$(c_1,c_2)$。他将其发给爱丽丝。</p>
+<p>那么爱丽丝如何解密$(c_1,c_2)$呢，由于爱丽丝知道$a$，则他可以计算值</p>
+<center>
+
+<p>$\begin{aligned}<br>    x \equiv c_1^a \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>同样的也可以计算$x^{-1}$，接着将$c_2$乘$x^{-1}$，那我们就得到了明文$m$，我们来仔细看看$c_2 x^{-1}$</p>
+<center>
+
+<p>$\begin{aligned}x^{-1}\cdot c_{2}&amp;\equiv(c_1^a)^{-1}\cdot c_2\pmod{p}\&amp;\equiv(g^{ak})^{-1}\cdot(mA^k)\pmod{p}\&amp;\equiv(g^{ak})^{-1}\cdot(m(g^a)^k)\pmod{p}\&amp;\equiv m\pmod{p}\end{aligned}$</p>
+</center>
+
+<p>现在，若我们想破解密码，伊娃的任务是什么呢？首先，伊娃知道公共参数$p,g$，并且她知道$A &#x3D; g^a\mod p$的值。由于$A$是公钥，若伊娃能解决这个离散对数问题，则就能找到$a$并解密。</p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>爱丽丝选择素数$p &#x3D; 467$和原根$g&#x3D;2$，接着选择数$153$，接着计算公钥</p>
+<center>
+
+<p>$\begin{aligned}<br>A \equiv g^a \equiv 2^{153} \equiv 224 \mod 467<br>\end{aligned}$</p>
+</center>
+
+
+<p>接着，鲍勃的明文为$m &#x3D; 331$，它选择一个临时密钥$k &#x3D; 197$，则它需要计算两个值</p>
+<center>
+
+<p>$\begin{aligned}<br>    c_1 \equiv 2^{197}\equiv 87 \mod 467 和 c_2 \equiv 331\cdot 224^{197}\equiv 57\mod 467<br>\end{aligned}$</p>
+</center>
+
+<p>接着鲍勃发送$(87,57)$给爱丽丝。</p>
+<p>爱丽丝用$a &#x3D;153$计算</p>
+<center>
+
+<p>$\begin{aligned}<br>    x\equiv c_1^a \equiv 87^{153} \equiv 367 \mod 467 \to x^{-1} \equiv 14\mod 467<br>\end{aligned}$</p>
+</center>
+
+<p>最后，我们就计算$c_2x^{-1} &#x3D; 57\cdot 14 \equiv 331 \mod 467$</p>
+<p>就得到明文了。</p>
+<p><strong>注意：</strong> 消息对$(c_1,c_2)$是2个字段组成，所以写下密文需要的位数一般是明文的两倍。</p>
+<p>接着我们有一个问题，对于伊娃来说，ElGamal系统是否像D-H问题一样难以攻击？或者，我们可以引入一些巧妙的信息，使得它发挥了后门的作用。这样我们即使解决不了D-H问题也能够有效的获得信息。那么我们的任务是诸如识别像D-H这样的底层难题，并证明像ElGamal这样给定的加密构造至少和这些问题一样难以攻击。</p>
+<p>那么我们实际的思考的问题就是：</p>
+<h4 id="命题1"><a href="#命题1" class="headerlink" title="命题1"></a>命题1</h4><p>选定素数$p$和基$g$以用于$ElGamal$加密。设伊娃可以访问一个oracle(黑盒子)，oracle可以解密任意ElGamal公钥加密的密文，则伊娃可以使用它解决$D-H$问题。</p>
+<p><strong>证明：</strong> 在$D-H$问题中，我们将得到两个密文 $A,B$，其中</p>
+<center>
+
+<p>$\begin{aligned}<br>    A\equiv g^a\pmod{p}\quad\text{and}\quad B\equiv g^b\pmod{p}<br>\end{aligned}$</p>
+</center>
+
+<p>则伊娃需要计算$g^{ab}\mod p$的值。但伊娃知道$A,B$而不知道$a,b$</p>
+<p>现在，伊娃向oracle发送素数$p$，基$g$，一个假定的公钥$A$和一个假定的密文$(c_1,c_2)$。则oracle返回</p>
+<center>
+
+<p>$\begin{aligned}<br>    (c_1^a)^{-1}\cdot c_2\pmod{p}.<br>\end{aligned}$</p>
+</center>
+
+<p>最后一步，我们需要思考什么样的值是好的，使得问题能够解决，一种选择是$c_1 &#x3D; B &#x3D; g^b$和$c_2 &#x3D;1$。由这个输入，则返回$(g^{ab})^{-1}\mod p$，我们只需要对$\mod p$取逆就得到$g^{ab} \mod p$。于是我们就解决了$D-H$问题。</p>
+<p>另一种方法，我们不试图解决DLP而是直接解决D-H问题。</p>
+<p>伊娃选择任意的$c_2$，并告诉oracle公钥是$A$，密文是$(B,c_2)$。则返回</p>
+<center>
+
+<p>$\begin{aligned}<br>    m\equiv(c_1^a)^{-1}\cdot c_2\equiv(B^a)^{-1}\cdot c_2\equiv(g^{ab})^{-1}\cdot c_2\pmod{p}.<br>\end{aligned}$</p>
+</center>
+
+<p>在得道oracle返回的值$m$之后，我们只需要计算</p>
+<center>
+
+<p>$\begin{aligned}<br>    m^{-1}\cdot c_2 \equiv g^{ab} \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>就求出了$g^{ab}\mod p$的值。但这次解决问题之后我们依然不知道$a,b$，所以我们只是解决了D-H问题而不是DLP。</p>
+<p><strong>注意：</strong> 这种攻击称为选择密文攻击，我们刚才的证明告诉了我们ElGamal系统是可以抵御选择密文攻击的。更进一步，若假设$D-H$问题很难，则密文是安全的。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2024/09/12/%E7%BE%A4%E8%AE%BA%E6%A6%82%E8%BF%B0/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          群论概述
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/09/08/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0%E9%97%AE%E9%A2%98/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          离散对数问题
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

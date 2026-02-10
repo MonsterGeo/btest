@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>线积分的性质 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        线积分的性质
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        线积分的性质
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2024-07-03</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>8 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.8k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h4 id="定义1"><a href="#定义1" class="headerlink" title="定义1"></a>定义1</h4><p>令$f(t) &#x3D; u(t)+iv(t)$是任意连续的关于实变量$t$的复变量函数，其中$a \leq t\leq b$</p>
+<center>
+
+<p>$\int^b_a f(t)dt &#x3D; \int^b_a u(t)dt+ i\int^b_a v(t)dt $</p>
+</center>
+
+<h4 id="定义2"><a href="#定义2" class="headerlink" title="定义2"></a>定义2</h4><ul>
+<li>令$z(t) &#x3D; x(t)+iy(t)$，$a\leq t\leq b$，一个由$z(t)$确定的曲线称为分段可微的并设</li>
+</ul>
+<center>
+
+<p>$dz(t) &#x3D; x’(t) + iy’(t)$</p>
+</center>
+
+<p>若其$x,y$都在$[a,b]$上连续且在某个$[a,b]$的分割上的子区间$[a,x_1],\cdots,[x_{n-1},b]$上也是连续可微的</p>
+<ul>
+<li>一曲线我们说是光滑的若，除非在有限的点上，否则$d z(t)$是不为零的（$x’(t)$和$y’(t)$不同时为零）。</li>
+</ul>
+<p>最后我们定义一下线积分的定义。</p>
+<h4 id="定义3"><a href="#定义3" class="headerlink" title="定义3"></a>定义3</h4><p>令$C$是$z(t)$给出的光滑曲线，其中$a \leq t\leq b$，并设$f$是在所有$z(t)$上连续的函数，则$f$沿着$C$的积分就是</p>
+<center>
+
+<p>$\int_C f(z)dz &#x3D; \int^b_a f(z(t))dz(t) dt$ </p>
+</center>
+
+<p>注意的是，该曲线积分不仅仅取决只有沿着$C$的点，它还取决于曲线的方向。我们将证明它不需要进行特定的参数变换。直觉上看，若$z(t) , a\leq t\leq b$和$w(t),c\leq t \leq d$在相同的方向中沿着同一条曲线，则$\lambda &#x3D; z^{-1}\circ w $将会是$[c,d]$在$[a,b]$上的一个一一映射</p>
+<center>
+
+<p>$w(t) &#x3D; z(\lambda(t))$</p>
+</center>
+
+<p>无论如何，若$z$不是一一对应的，则很难定义$z^{-1}$。确实是这样，但我们可以把满足上述等式的一些$\lambda$组成一条等价曲线。</p>
+<h4 id="定义4"><a href="#定义4" class="headerlink" title="定义4"></a>定义4</h4><p>两条曲线</p>
+<center>
+
+<p>$C_1:z(t) , a\leq t\leq b$</p>
+</center>
+
+<p>和</p>
+<center>
+
+<p>$C_2:w(t), c\leq t\leq d$</p>
+</center>
+
+<p>是平滑等价的，若这里存在关于$C$的一一映射：$[c,d]\to [a,b]$使得$\lambda(c) &#x3D; a$，$\lambda (d) &#x3D; b$，且对所有$t$有$\lambda’(t) &gt; 0$和</p>
+<center>
+
+<p>$w(t) &#x3D; z(\lambda(t))$</p>
+</center>
+
+<h4 id="引理：平滑等价"><a href="#引理：平滑等价" class="headerlink" title="引理：平滑等价"></a>引理：平滑等价</h4><p>若$C_1,C_2$是平滑等价的，则</p>
+<center>
+
+<p>$\int_{C_1} f&#x3D; \int_{C_2} f$</p>
+</center>
+
+<p><strong>证明：</strong> 设$f(z) &#x3D; u(z)+iv(z)$在$C_1$和$C_2$上有定义。则，由线积分定义</p>
+<center>
+
+<p>$ \begin{aligned}<br> \int_{C_{1}}f&#x3D;&amp;\int_{a}^{b}u(z(t))x^{\prime}(t)dt-\int_{a}^{b}v(z(t))y^{\prime}(t)dt\<br>&amp;+i\int_{a}^{b}u(z(t))y^{\prime}(t)dt+i\int_{a}^{b}v(z(t))x^{\prime}(t)dt<br>\end{aligned} $</p>
+</center>
+
+<p>且</p>
+<center>
+
+<p>$\int_{C_2}f&#x3D;\int_c^d[u(z(\lambda(t)))+iv(z(\lambda(t)))][x’(\lambda(t))+iy’(\lambda(t))]\lambda’(t)dt$</p>
+</center>
+
+<p>在这里我们把某个满足等价定义的$\lambda$作为等价曲线的定义，并做简单的换元就有</p>
+<center>
+
+<p>$\int_c^du(z(\lambda(t)))x’(\lambda(t))\lambda’(t)dt&#x3D;\int_a^bu(z(t))x’(t)dt,$</p>
+</center>
+
+<p>那么我们证明完毕。</p>
+<h4 id="定义5"><a href="#定义5" class="headerlink" title="定义5"></a>定义5</h4><p>设$C$是$z(t)$给定，其中$a\leq t\leq b$。则$-C$被定义为$z(b+a-t)$</p>
+<h4 id="引理6"><a href="#引理6" class="headerlink" title="引理6"></a>引理6</h4><center>
+
+<p>$\int_{-C}f&#x3D;\int_{C}f.$</p>
+</center>
+
+<p><strong>证明：</strong></p>
+<p>那么$-C$的积分区域在$[b,a]$上。利用简单的定积分就有</p>
+<center>
+
+<p>$\int_{-C}f&#x3D;-\int_{a}^{b}f(z(b+a-t))\dot{z}(b+a-t)dt.$</p>
+</center>
+
+<p>我们只需要换元就有</p>
+<center>
+
+<p>$\int_{-C}f&#x3D;\int_{b}^{a}f(z(t))\dot{z}(t)dt&#x3D;\int_{C}f.$</p>
+</center>
+
+<h5 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h5><p>令</p>
+<center>
+
+<p>$f(z)&#x3D;\frac{1}{z}&#x3D;\frac{x}{x^2+y^2}-i\frac{y}{x^2+y^2},$</p>
+</center>
+
+<p>并设$C:z(t) &#x3D; R\cos t+iR\sin t$，$0\leq t\leq 2\pi, R\neq 0$</p>
+<p>做简单的极坐标换元就有</p>
+<center>
+
+<p>$\begin{gathered}<br>\int_{C}f(z)dz &#x3D;\int_{0}^{2\pi}\left(\frac{\cos t}{R}-i\frac{\sin t}{R}\right)(-R\sin t+iR\cos t)dt \<br>&#x3D;\int_{0}^{2\pi}idt&#x3D;2\pi i<br>\end{gathered}$</p>
+</center>
+
+<h4 id="引理7"><a href="#引理7" class="headerlink" title="引理7"></a>引理7</h4><p>令$C$是光滑曲线，再令$f,g$是$C$上的连续函数，再令$\alpha$是任意复数，则</p>
+<ul>
+<li><p>$\int_C [f(z)+g(z)]dz &#x3D; \int_C f(z)dz+\int_Cg(z) dz$</p>
+</li>
+<li><p>$\int_C \alpha f(z)dz &#x3D; a\int_C f(z)dz$</p>
+</li>
+</ul>
+<h4 id="引理8"><a href="#引理8" class="headerlink" title="引理8"></a>引理8</h4><p>设$G(t)$是一个关于$t$的连续复函数，则</p>
+<center>
+
+<p>$\int^b_a G(t)dt \ll \int^b_a \mid G(t)\mid dt$</p>
+</center>
+
+<p><strong>证明：</strong> 我们设</p>
+<center>
+
+<p>$\int^b_a G(t)dt &#x3D; Re^{i\theta}$</p>
+</center>
+
+<p>由引理7我们有</p>
+<center>
+
+<p>$\int^b_a e^{-i\theta}G(t)dt &#x3D;R$</p>
+</center>
+
+<p>$G(t)$是复函数，那么我们可以假设$e^{-i\theta}G(t) &#x3D; A(t)+iB(t)$，其中$A,B$是实的，那么</p>
+<center>
+
+<p>$R &#x3D; \int^b_a A(t)dt &#x3D; \int^b_a \text{Re}(e^{-i\theta}G(t))dt$</p>
+</center>
+
+<p>由于$\text{Re(z)} \leq \mid \text{Re}(z)\mid \leq \mid z\mid $，因此</p>
+<center>
+
+<p>$R\leq \int^b_a \mid G(t)\mid dt$</p>
+</center>
+
+<h4 id="M-L方程"><a href="#M-L方程" class="headerlink" title="M-L方程"></a>M-L方程</h4><p>设$C$是长度为$L$的光滑曲线，那么$f$在$C$上是光滑的，并且在$C$上有$f \ll M$，那么</p>
+<center>
+
+<p>$\int_C fdz \ll ML$</p>
+</center>
+
+<p><strong>证明：</strong> 我们设$C$是有$z(t) &#x3D; x(t)+iy(t)$给出的，其中$a\leq t \leq b$，利用引理8，那么</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_C f(z) dz &#x3D; \int^b_a f(z(t))dz(t) dt \ll \int^b_a \mid f(z(t))dz(t)\mid dt<br>\end{aligned}$</p>
+</center>
+
+<p>利用积分中值定理在$\mid f(z(t))\mid $和$d\mid z(t)\mid $上。然后放缩，令$f’(\epsilon) &lt; \max_{z\in C} \mid f(z)\mid$带入即可得到</p>
+<center>
+
+<p>$\begin{aligned}<br>  \int_C f(z)d(z) \ll \max_{z\in C}\mid f(z)\mid \int^b_a \mid dz(t)\mid dt<br>\end{aligned}$</p>
+</center>
+
+<p>其次，我们注意到弧长实际上也是一段线积分，它是这样的。</p>
+<center>
+
+<p>$\begin{aligned}<br>    L &#x3D; \int^b_a \sqrt{(x’(t))^2 +(y’(t))^2}dt &#x3D; \int^b_a \mid dz(t)\mid dt<br>\end{aligned}$</p>
+</center>
+
+<p>那么令$M$是最大的函数值，就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_C f(z)dz \ll ML<br>\end{aligned}$</p>
+</center>
+
+<h4 id="引理9"><a href="#引理9" class="headerlink" title="引理9"></a>引理9</h4><p>设${f_n}$是复连续函数列且在光滑曲线$C$上关于$f_n\to f$一致收敛，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_C f(z)dz &#x3D; \lim\limits_{n\to\infty}\int_C f_n(z)dz<br>\end{aligned}$</p>
+</center>
+
+<p><strong>证明：</strong>令</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}\int_Cf(z)dz-\int_Cf_n(z)dz&#x3D;\int_C[f(z)-f_n(z)]dz\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>由于序列关于$f$一致收敛，那么我们对每个$n,z\in C$都有$\mid f(z)-f_n(z)\mid &lt; \epsilon$</p>
+<p>所以我们利用M-L方程可以轻易的得到</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}\int_Cf(z)-\int_Cf_n(z)dz\ll\epsilon\cdot (C的长度)\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>则对任意的$\epsilon&gt; 0$我们就有</p>
+<center>
+
+<p>$\begin{aligned}<br>        \int_C f(z)dz &#x3D; \lim\limits_{n\to\infty}\int_C f_n(z)dz<br>\end{aligned}$</p>
+</center>
+
+<h4 id="引理10"><a href="#引理10" class="headerlink" title="引理10"></a>引理10</h4><p>设$f$是解析函数的导数$F$，那么$f(z) &#x3D; F’(z)$，其中$F$在光滑曲线$C$上的可解析的。则</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_Cf(z)dz&#x3D;F(z(b))-F(z(a)).<br>\end{aligned}$</p>
+</center>
+
+<p>这算是复数上的牛-莱定理。我们来证明一下</p>
+<p><strong>证明：</strong> 这个证明依赖于类似链式法则的方法，令</p>
+<center>
+
+<p>$\begin{aligned}<br>    \gamma(t) &#x3D; F(z(t)),~ a\leq t\leq b<br>\end{aligned}$</p>
+</center>
+
+<p>我们希望证明</p>
+<center>
+
+<p>$\begin{aligned}<br>    \gamma(t) &#x3D; f(z(t))dz(t)<br>\end{aligned}$</p>
+</center>
+
+<p>除在有限个点外是存在且非零的。</p>
+<p>对任意的光滑曲线$\lambda(t)$，我们分别从他的实部和虚部考虑，我们可以看到有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \dot{\lambda}(t)&#x3D;\lim\limits_{h\to0\atop h\text{是实数}}\frac{\lambda(t+h)-\lambda(t)}{h}.<br>\end{aligned}$</p>
+</center>
+
+<p>因此，</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}<br>\dot{\gamma}\left(t\right)&amp; &#x3D;\lim_{h\to0}\frac{F(z(t+h))-F(z(t))}{h} \<br>&amp;&#x3D;\lim_{h\to0}\frac{F(z(t+h))-F(z(t))}{z(t+h)-z(t)}\cdot\frac{z(t+h)-z(t)}{h}.<br>\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>那么我们就得到了</p>
+<center>
+
+<p>$\begin{aligned}<br>   d\gamma\left(t\right)&#x3D;f(z(t))\dot{z}(t).<br>\end{aligned}$</p>
+</center>
+
+
+<p>最后就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}<br>\int_{C}f(z)dz&amp; &#x3D;\int_{a}^{b}f(z(t))\dot{z}(t)dt&#x3D;\int_{a}^{b}\dot{\gamma}(t)dt \<br>&amp;&#x3D;\gamma\left(b\right)-\gamma\left(a\right)&#x3D;F(z(b))-F(z(a)).<br>\end{aligned}<br>\end{aligned}$</p>
+</center>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/complex-analysis/">complex_analysis</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2024/07/05/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E9%97%AD%E6%9B%B2%E7%BA%BF%E5%AE%9A%E7%90%86/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          整函数的闭曲线定理
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/06/25/%E6%9F%AF%E8%A5%BF-%E9%BB%8E%E6%9B%BC%E6%96%B9%E7%A8%8B/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          拓扑空间
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

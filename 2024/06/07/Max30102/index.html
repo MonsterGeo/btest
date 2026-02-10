@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>Max30102 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        Max30102
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        Max30102
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2024-06-10</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>19 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>4.5k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>#原理</p>
+<p>##介绍</p>
+<p>我们从阅读Max30102的用户手册开始。该用户手册是从Max30101和Max30102对比开始的。我们来看一下有什么不同的</p>
+<p>手册的链接：<a target="_blank" rel="noopener" href="https://github.com/MonsterGeo/Math/blob/main/max3010x-ev-kits-recommended-configurations-and-operating-profiles.pdf">Max30102</a></p>
+<table>
+<thead>
+<tr>
+<th align="center">设备</th>
+<th align="center">现有的LED</th>
+<th align="center">可用模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">MAX30101</td>
+<td align="center">绿色、红色、红外线（IR）</td>
+<td align="center">心率、血氧</td>
+</tr>
+<tr>
+<td align="center">MAX30102</td>
+<td align="center">红色、红外线</td>
+<td align="center">心率、血氧</td>
+</tr>
+</tbody></table>
+<p>接下来是讲解一些类似模块的原理</p>
+<p>###透射测量原理<br>模块使用LED发射特定波长的光到待检测部位上，然后由另一端的光电探测器吸收，每种波长的吸光度变化决定了氧饱和度水平，所以我们一般选择有足够血液灌注的待测试部位，例如手指，耳垂等。以最大限度的提高光的传输。</p>
+<p>###反射式测量原理<br>在这种情况下，模块的设置类似于透射式脉搏血氧仪的设置，只不过我们将光电二极管和LED放置在同一个位置。当LED照亮皮肤时，同时监测反射信号以了解光吸收的变化。我们把这种方法叫做光电容积描记法（PPG），我们的Max3010x系列就是使用反射式脉搏血氧仪技术来做测量心率和SP02。</p>
+<p><strong>注记</strong>测量脉搏血氧都差不多是这种理念，从组织反射或透射足够的光信号，然后被光电二极管捕获。因此，我们实际关注的只有LED的信号强度、脉冲宽度（采样率）来对模块做优化。</p>
+<p>####算法</p>
+<p>我们来重点的介绍模块的运作方式，我们的血液中存在一些血红蛋白化合物，若我们只计算SP02，就只需要含氧血红蛋白和脱氧血红蛋白来做检测。在max30102中，光电二极管检测的反射信号主要是由动脉和毛细血管的体积变化得到的光。我们所用的PPG方法，将会得到两种不同的信号，分别是直流部分和交流部分。如图所示：</p>
+<center>
+    <img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C644)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20644%0A%0A%25Shape%3A%20Axis%202D%20%5Bid%3Adp12369809041498225%5D%20%0A%5Cdraw%20%20(139%2C480.1)%20--%20(449%2C480.1)(170%2C247)%20--%20(170%2C506)%20(442%2C475.1)%20--%20(449%2C480.1)%20--%20(442%2C485.1)%20(165%2C254)%20--%20(170%2C247)%20--%20(175%2C254)%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada5830594082257181%5D%20%0A%5Cdraw%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%20189%3B%20green%2C%2016%3B%20blue%2C%20224%20%7D%20%20%2Cdraw%20opacity%3D1%20%5D%20%5Bdash%20pattern%3D%7Bon%204.5pt%20off%204.5pt%7D%5D%20%20(143%2C247)%20--%20(452%2C247)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada48466661194819216%5D%20%0A%5Cdraw%20%20%5Bdash%20pattern%3D%7Bon%204.5pt%20off%204.5pt%7D%5D%20%20(219%2C490)%20--%20(219%2C209)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(219%2C206)%7D%2C%20rotate%20%3D%2090%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada07982774040854901%5D%20%0A%5Cdraw%20%20%20%20(169%2C200)%20--%20(169%2C244)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(169%2C247)%7D%2C%20rotate%20%3D%20270%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(169%2C197)%7D%2C%20rotate%20%3D%2090%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada07191440956922301%5D%20%0A%5Cdraw%20%20%20%20(138%2C196)%20--%20(217%2C196)%20%3B%0A%25Shape%3A%20Wave%20%5Bid%3Adp0717314148687549%5D%20%0A%5Cdraw%20%20%20(205%2C226)%20..%20controls%20(209.08%2C215.75)%20and%20(212.98%2C206)%20..%20(217.5%2C206)%20..%20controls%20(222.02%2C206)%20and%20(225.92%2C215.75)%20..%20(230%2C226)%20..%20controls%20(234.08%2C236.25)%20and%20(237.98%2C246)%20..%20(242.5%2C246)%20..%20controls%20(247.02%2C246)%20and%20(250.92%2C236.25)%20..%20(255%2C226)%20..%20controls%20(259.08%2C215.75)%20and%20(262.98%2C206)%20..%20(267.5%2C206)%20..%20controls%20(272.02%2C206)%20and%20(275.92%2C215.75)%20..%20(280%2C226)%20..%20controls%20(284.08%2C236.25)%20and%20(287.98%2C246)%20..%20(292.5%2C246)%20..%20controls%20(297.02%2C246)%20and%20(300.92%2C236.25)%20..%20(305%2C226)%20..%20controls%20(309.08%2C215.75)%20and%20(312.98%2C206)%20..%20(317.5%2C206)%20..%20controls%20(322.02%2C206)%20and%20(325.92%2C215.75)%20..%20(330%2C226)%20..%20controls%20(334.08%2C236.25)%20and%20(337.98%2C246)%20..%20(342.5%2C246)%20..%20controls%20(347.02%2C246)%20and%20(350.92%2C236.25)%20..%20(355%2C226)%20..%20controls%20(359.08%2C215.75)%20and%20(362.98%2C206)%20..%20(367.5%2C206)%20..%20controls%20(372.02%2C206)%20and%20(375.92%2C215.75)%20..%20(380%2C226)%20..%20controls%20(384.08%2C236.25)%20and%20(387.98%2C246)%20..%20(392.5%2C246)%20..%20controls%20(397.02%2C246)%20and%20(400.92%2C236.25)%20..%20(405%2C226)%20..%20controls%20(409.08%2C215.75)%20and%20(412.98%2C206)%20..%20(417.5%2C206)%20..%20controls%20(419.79%2C206)%20and%20(421.92%2C208.5)%20..%20(424%2C212.31)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada7774070246580311%5D%20%0A%5Cdraw%20%20%20%20(217%2C147)%20--%20(217%2C182)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(217%2C185)%7D%2C%20rotate%20%3D%20270%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada04623003368990619%5D%20%0A%5Cdraw%20%20%20%20(242%2C191)%20--%20(242%2C236)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(242%2C239)%7D%2C%20rotate%20%3D%20270%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4301075072580789%5D%20%0A%5Cdraw%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cdraw%20opacity%3D1%20%5D%20%20%20(220%2C302)%20--%20(451%2C302)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada3480251417376814%5D%20%0A%5Cdraw%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cdraw%20opacity%3D1%20%5D%20%20%20(219%2C370)%20--%20(450%2C370)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6629011466934074%5D%20%0A%5Cdraw%20%20%5Bdash%20pattern%3D%7Bon%204.5pt%20off%204.5pt%7D%5D%20%20(268%2C489)%20--%20(268%2C208)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(268%2C205)%7D%2C%20rotate%20%3D%2090%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada22454481914056235%5D%20%0A%5Cdraw%20%20%20%20(223%2C322)%20--%20(266%2C322)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(269%2C322)%7D%2C%20rotate%20%3D%20180%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(220%2C322)%7D%2C%20rotate%20%3D%200%5D%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.08%5D%20%20%5Bdraw%20opacity%3D0%5D%20(8.93%2C-4.29)%20--%20(0%2C0)%20--%20(8.93%2C4.29)%20--%20cycle%20%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(73%2C361)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BDC%20signal%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(82%2C216)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BAC%20signal%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(194%2C129)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BSystole%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(219%2C169)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BDiastole%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(354%2C219)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BPulsatile%20arterial%20blood%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(282%2C267)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BNon%20Pulsatile%20arterial%20blood%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(312%2C329)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bvenous%20blood%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(336%2C419)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BTissue%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(214%2C329)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BCardiac%5C%5C%20%5C%20%5C%20cycle%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(463%2C474)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BTime%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D" width="50%">
+    PPG信号的AC，DC部分
+</center>
+
+<p>由于技术原因无法使用中文，我们来做名词的解释。Systole(收缩压)，Diastole(舒张压)，Pulsatile arterial blood（有脉动动脉血），Venous blood（静脉血），Cardiac cycle（心跳周期）</p>
+<p>直流部分是来自非脉动组织的光吸收，包括静脉毛细血管和动脉血。而AC部分来自动脉血的脉动性。由于动脉和心脏直接连接，动脉血就会随着心脏的脉动而脉动，我们通过测量收缩压之间的峰值来计算瞬时心率。</p>
+<p>##算法</p>
+<p>Max3010x系列通过采用两种不同的波长的LED来识别含氧血红蛋白和脱氧血红蛋白比率，红色和红外LED用于单独的确定PPG信号，为了进行比较，我们需要将数据归一化，首先定义一个比率$R$，它与SP02成正比，其中sp02和Sa02(血氧饱和度)具有很好的近似效果。那么我们将$R$定义为：</p>
+<center>
+
+<p>$R &#x3D; \cfrac{\frac{AC_{red}}{DC_{red}}}{\frac{AC_{infrared}}{DC_{infrared}}}$</p>
+</center>
+
+<p>其中red表示红色的LED而infrared表示红外线LED。一旦确定了R，我们就可以通过曲线近似来寻找Sp02的估计值，一个最佳直线近似值导出的比率R大概在$0.4$到$3.4$，而计算公式为：</p>
+<center>
+
+<p>$SpO_2 &#x3D; 104-17R$</p>
+</center>
+
+<p>##一般性建议</p>
+<p>在一个脉冲宽度中，它告诉我们信号在多长时间内有效，如果信号激活的时间越长，那么消耗的能量就越多。而LED的驱动频率由采样率决定，采样率高就有较高的驱动频率，就会消耗更多能量</p>
+<p>在理想状态下，我们应该选择低脉冲宽度和低采样率以降低能源损耗，但这不行，因为两者是反比关系。但是手册给我们提供了一些设置，我们可以根据手册提供的参数选择我们需要的采样率和脉冲宽度。下面的两个表格展示了HR(单LED模式)和Sp02（双LED）模式的允许配置</p>
+<p>首先是心率配置</p>
+<table>
+<thead>
+<tr>
+<th align="left">采样率</th>
+<th></th>
+<th>采样宽度</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td>69</td>
+<td>118</td>
+<td>215</td>
+<td>411</td>
+</tr>
+<tr>
+<td align="left">50</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">100</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">200</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">400</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">800</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">1000</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">1600</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td align="left">3200</td>
+<td>$\circ$</td>
+<td>不允许</td>
+<td>不允许</td>
+<td>不允许</td>
+</tr>
+</tbody></table>
+<p>然后是SpO2配置</p>
+<table>
+<thead>
+<tr>
+<th align="left">采样率</th>
+<th></th>
+<th>采样宽度</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"></td>
+<td>69</td>
+<td>118</td>
+<td>215</td>
+<td>411</td>
+</tr>
+<tr>
+<td align="left">50</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">100</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">200</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">400</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+</tr>
+<tr>
+<td align="left">800</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td align="left">1000</td>
+<td>$\circ$</td>
+<td>$\circ$</td>
+<td>不允许</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td align="left">1600</td>
+<td>$\circ$</td>
+<td>不允许</td>
+<td>不允许</td>
+<td>不允许</td>
+</tr>
+<tr>
+<td align="left">3200</td>
+<td>不允许</td>
+<td>不允许</td>
+<td>不允许</td>
+<td>不允许</td>
+</tr>
+</tbody></table>
+<p>最后我们说一下模块的寄存器和一些设置。模块的使用方法就是设置寄存器来调整模块的工作方式，并得到里面的数据。这很像我们在图灵完备中得到的机器一样。</p>
+<p>我们先来看几张表，然后解释一下寄存器的作用</p>
+<center>
+
+<img src="https://www.z4a.net/images/2024/06/08/QQ20240607234655fe9c919903cef5f5.png" width = 500 height = 850>
+
+<p>图1</p>
+<img src="https://www.z4a.net/images/2024/06/08/image.png">
+
+<p>图2</p>
+<img src="https://www.z4a.net/images/2024/06/08/imagee748c06332cd0a79.png">
+图3
+
+<img src="https://www.z4a.net/images/2024/06/08/image5bbd7d341b97dfca.png">
+图4
+
+<img src="https://www.z4a.net/images/2024/06/08/image3b0b48c9dc83b97d.png">
+图5
+
+<img src="https://www.z4a.net/images/2024/06/08/imagef847cb4e895daf1f.png">
+图6
+
+<img src="https://www.z4a.net/images/2024/06/08/image8c60fbe2b6c07fe6.png">
+图7
+
+<img src="https://www.z4a.net/images/2024/06/08/imagedd5b0255902eeae4.png">
+图8
+
+</center>
+
+<p>图上是寄存器的名字和他们的地址，由于Max30102模块是通过I2C协议传输的，为此我们需要寻址，和针对寄存器做设置。</p>
+<p>0x09寄存器（模式设置）是用来控制关机、复位、HR模式和SpO2模式还有多LED模式。B7是用于控制关机的（shutdown control aka SHDN），B6是复位，而3-5我们不管，0-2的模式在图1可见，它是用来设置要工作的模式的。</p>
+<p>例如，当我们对0x09发送请求的时候收到一个ack，然后发送00000111到0x09寄存器上，则寄存器将模块设置在多LED工作模式，这时候可以同时对血氧饱和度和心率进行检测。</p>
+<p>其次，对于图1的第二部分中5-6比特位，它是设置关于SpO2的ADC范围控制，我们可以由该控制器设置量程范围，范围在2048nA到16384nA，默认范围为8192nA。</p>
+<p>而2-4字节的是对应SpO2的采样率控制，默认为100个样本（Hz）而0-1是LED脉冲宽度设置。</p>
+<p>在SpO2模式下，每个样本由6个字节组成，每个字节需要一个I2C读取器才能读取样本。</p>
+<p>其他的不太重要，我们来看图5，图5是关于中断的内容。当中断被触发后，这意味着FIFO数据已经满了(A_FULL)，而新的FIFO数据（先入先出数据）已经准备录入（PPG_RDY），B4是环境光消除（ALC_DVF）该位是用来减少环境光的影响。比较要注意的是B5的中断位，若中断，则说明环境光抵消功能已经到了最大光，正在影响传感器的输出。</p>
+<p>剩下的几个图提供了数据流和FIFO操作图。 FIFO_WR_PTR(FIFO写指针)指向下一个样本的位置，每次将新的样本弹出到FIFO上时，该指针就会前进。但注意的是，当采集的速度超过了存储的数量，这会导致数据溢出，而我们有一个寄存器OVF_COUNTER（FIFO溢出计数器）来计数这些丢失的数据，而当FIFO的数据推送完整个样本时，该计数器会清零。</p>
+<p>有几个不是很大的问题，我们想更新FIFO怎么办呢，一般来说当FIFO完全满的时候只有读取FIFO_DATA或者更改FIFO_WR_PTR&#x2F;FIFO_RD_PTR位置才可以继续更新数据，在这种情况下，标志位FIFO_ROLLOVER_EN可以通过设置其来让FIFO地址滚到0从而可以填充新数据。 一些简单的说明就到此结束，接下来让我们看看代码和实现。</p>
+<p>##代码&amp;实现</p>
+<p>分析的是这个项目的代码：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1B-Jg4EzXZLRFvTf-tbaZog?pwd=ae87">Max30102_FUNCLIB</a><br>密码ae87</p>
+<p>不过我们做了改动，让arduino变成了stm32的模板</p>
+<p><strong>实验环境：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">组件</th>
+<th align="center">数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Stm32F103c8t6</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="left">max30102</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="left">USB转TTL模块</td>
+<td align="center">1</td>
+</tr>
+<tr>
+<td align="left">ss1306驱动oled</td>
+<td align="center">1</td>
+</tr>
+</tbody></table>
+<p>代码只要的主要是四个文件，Max30102.c，Max30102.h和algorithm.c和algorithm.h。我们先来看第一个文件</p>
+<p>第一段代码，我们来看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HAL_StatusTypeDef Max30102_WriteData(uint8_t MemAddress,uint8_t Command,uint16_t SendCount)</span><br><span class="line">&#123;</span><br><span class="line">	HAL_StatusTypeDef status=HAL_OK;</span><br><span class="line">	status=HAL_I2C_Mem_Write(&amp;hi2c2,Max30102_Write_Address,MemAddress,I2C_MEMADD_SIZE_8BIT,&amp;Command,SendCount,100);</span><br><span class="line">	return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们定义了一个函数Max30102_WriteData，它的参数分别是Max30102模块的寄存器地址，第二个参数是要发送的命令，第三个是发送的字节数。我们定义了一个status，它用来返回一个状态码，HAL_I2C_Mem_Write函数是用来通过I2C向Max30102发送数据的。我们通过该函数向特定寄存器发送特定命令。</p>
+<p>接着是第二个函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">HAL_StatusTypeDef Max30102_ReadData(uint8_t DatAddress,uint8_t *Data,uint16_t ReceiveCount)</span><br><span class="line">&#123;</span><br><span class="line">	HAL_StatusTypeDef status=HAL_OK;</span><br><span class="line">	status=HAL_I2C_Mem_Read(&amp;hi2c2,Max30102_Read_Address,DatAddress,I2C_MEMADD_SIZE_8BIT,Data,ReceiveCount,100);</span><br><span class="line">	return status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们通过该函数来读取寄存器中的样本数据。</p>
+<p>我们写一个批量读取数据的函数。定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void Max30102_FIFO_ReadData(uint8_t DatAddress,uint8_t SixData[6],uint16_t Size)</span><br><span class="line">&#123;</span><br><span class="line">	uint8_t temp;</span><br><span class="line">	Max30102_ReadData(REG_INTR_STATUS_1,&amp;temp,1);</span><br><span class="line">	Max30102_ReadData(REG_INTR_STATUS_2,&amp;temp,1);</span><br><span class="line">	Max30102_ReadData(DatAddress,SixData,Size);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>跟之前一样，我们用这个函数来输出我们需要的6个样本。</p>
+<p>接着我们定义一些需要用到的符号，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">uint8_t TempData[6];</span><br><span class="line">uint32_t red_buffer[500];  //红光数据red，用于计算心率</span><br><span class="line">uint32_t ir_buffer[500];  //红外数据 ir，用于计算血氧</span><br><span class="line">int32_t ir_buffer_length=500;   //计算前500个样本得到的数据</span><br><span class="line">int32_t pn_SpO2_value;   //血氧实际值</span><br><span class="line">int8_t SpO2_valid;        //血氧值有效标志</span><br><span class="line">int32_t pn_hr_value;    //心率实际值</span><br><span class="line">int8_t hr_valid;         //心率有效标志</span><br><span class="line">uint32_t red_max=0,red_min=0x3FFFF;  //红光取值范围</span><br><span class="line">uint32_t prev_data;      //前一次的值</span><br><span class="line">float f_temp;           //临时变量</span><br><span class="line">int32_t n_brightness;    //明确变量 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后我们要来实现算法，我们知道样本是6个字节，注意的是，前3个字节是关于心率的，后三个关于血氧，为此我们可以定义一个函数用于读取红外和红色LED反射到的数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">red_buffer[i]=((TempData[0])&lt;&lt;16) | (TempData[1]&lt;&lt;8) | (TempData[2]);</span><br><span class="line">ir_buffer[i]=((TempData[3])&lt;&lt;16) | (TempData[4]&lt;&lt;8) | (TempData[5]);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>下面的函数是用来计算心率和血氧并输出的</p>
+<p>模块通过ADC进行采样储存到寄存器中，当寄存器满了之后输出中断，当检测到中断之后我们取出寄存器中的数据来进行计算。maxim_heart_rate_and_oxygen_saturation函数在等一下讲算法的时候说。</p>
+<p>为了速度，我们不妨只传入100个参数来作为计算值，那么我们定义函数体Max30102_Calculate_HR_BO_Value，它的功能是计算，传入的参数分别是心率值的地址，模块校验位，血氧数据的地址和血氧的校验位。当校验位置1的时候说明模块在工作，那么函数为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">void Max30102_Calculate_HR_BO_Value(int32_t* HR_Value,int8_t* HR_Valid,int32_t* BO_Value,int8_t* BO_Valid)</span><br><span class="line">&#123;</span><br><span class="line">	for(int i=100;i&lt;500;i++)  //将数组中的100~500采样值向前挪到0~400</span><br><span class="line">	&#123;</span><br><span class="line">		red_buffer[i-100]=red_buffer[i];</span><br><span class="line">		ir_buffer[i-100]=ir_buffer[i];</span><br><span class="line">		if(red_min&gt;red_buffer[i]) red_min=red_buffer[i];  //更新当前最小值</span><br><span class="line">		if(red_max&lt;red_buffer[i]) red_max=red_buffer[i];  //更新当前最大值</span><br><span class="line">	&#125;</span><br><span class="line">	for(int i=400;i&lt;500;i++)  //实际只取100个采样值来计算</span><br><span class="line">	&#123;</span><br><span class="line">		prev_data=red_buffer[i-1];</span><br><span class="line">		while(Max30102_INT==1); //等待中断引脚相应，默认为高,当触发后会拉低</span><br><span class="line">		Max30102_FIFO_ReadData(REG_FIFO_DATA,TempData,6);</span><br><span class="line">		red_buffer[i]=((TempData[0] )&lt;&lt;16) | (TempData[1]&lt;&lt;8) | (TempData[2]); //前三位数据组成HR</span><br><span class="line">		ir_buffer[i]=((TempData[3] )&lt;&lt;16) | (TempData[4]&lt;&lt;8) | (TempData[5]); //后三位数据组成BO</span><br><span class="line">		*HR_Value=pn_hr_value;</span><br><span class="line">		*HR_Valid=hr_valid;</span><br><span class="line">		*BO_Value=pn_SpO2_value;</span><br><span class="line">		*BO_Valid=SpO2_valid;</span><br><span class="line">	&#125;</span><br><span class="line">	maxim_heart_rate_and_oxygen_saturation(ir_buffer,ir_buffer_length,red_buffer,&amp;pn_SpO2_value,&amp;SpO2_valid,&amp;pn_hr_value,&amp;hr_valid);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当数据输出完后寄存器为空，这时候我们定义如下函数将继续填充数据直到寄存器再次充满</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void Max30102_Safety(void)</span><br><span class="line">&#123;</span><br><span class="line">	for(int i=0;i&lt;ir_buffer_length;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		while(Max30102_INT==GPIO_PIN_SET); //等待中断引脚相应，默认为高,当触发后会拉低</span><br><span class="line">		Max30102_FIFO_ReadData(REG_FIFO_DATA,TempData,6);</span><br><span class="line">		red_buffer[i]=((TempData[0]&amp;0x03)&lt;&lt;16) | (TempData[1]&lt;&lt;8) | (TempData[2]); //前三位数据组成HR</span><br><span class="line">		ir_buffer[i]=((TempData[3]&amp;0x03)&lt;&lt;16) | (TempData[4]&lt;&lt;8) | (TempData[5]); //后三位数据组成BO</span><br><span class="line">	&#125;</span><br><span class="line">	maxim_heart_rate_and_oxygen_saturation(ir_buffer,ir_buffer_length,red_buffer,&amp;pn_SpO2_value,&amp;SpO2_valid,&amp;pn_hr_value,&amp;hr_valid);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>介绍了一些具体读写寄存器数据的函数后，我们来看一些其他的。</p>
+<p>首先是复位函数，我们向0x40地址写入1来完成模块的复位</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">void Max30102_Reset(void)</span><br><span class="line">&#123;</span><br><span class="line">	Max30102_WriteData(REG_MODE_CONFIG,0x40,1);</span><br><span class="line">	Max30102_WriteData(REG_MODE_CONFIG,0x40,1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>接着我们初始化模块，定义函数Max30102_Init</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">void Max30102_Init(void)</span><br><span class="line">&#123;</span><br><span class="line">	Max30102_Reset();</span><br><span class="line">	</span><br><span class="line">	Max30102_WriteData(REG_INTR_ENABLE_1,0xc0,1);	// INTR setting</span><br><span class="line">	Max30102_WriteData(REG_INTR_ENABLE_2,0x00,1);</span><br><span class="line">	Max30102_WriteData(REG_FIFO_WR_PTR,0x00,1);  	//FIFO_WR_PTR[4:0]</span><br><span class="line">	Max30102_WriteData(REG_OVF_COUNTER,0x00,1);  	//OVF_COUNTER[4:0]</span><br><span class="line">	Max30102_WriteData(REG_FIFO_RD_PTR,0x00,1);  	//FIFO_RD_PTR[4:0]</span><br><span class="line">	Max30102_WriteData(REG_FIFO_CONFIG,0x0f,1);  	//sample avg = 1, fifo rollover=false, fifo almost full = 17</span><br><span class="line">	Max30102_WriteData(REG_MODE_CONFIG,0x03,1);  	//0x02 for Red only, 0x03 for SpO2 mode 0x07 multimode LED</span><br><span class="line">	Max30102_WriteData(REG_SPO2_CONFIG,0x27,1);  	// SPO2_ADC range = 4096nA, SPO2 sample rate (100 Hz), LED pulseWidth (400uS)  </span><br><span class="line">	Max30102_WriteData(REG_LED1_PA,0x24,1);   	//Choose value for ~ 7mA for LED1</span><br><span class="line">	Max30102_WriteData(REG_LED2_PA,0x24,1);   	// Choose value for ~ 7mA for LED2</span><br><span class="line">	Max30102_WriteData(REG_PILOT_PA,0x7f,1);   	// Choose value for ~ 25mA for Pilot LED</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>其中0x0f置1时，则指针不会滚到地址0重新填写数据。</p>
+<p>最后我们定义输出到OLED屏幕上</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">void Read(void)</span><br><span class="line">&#123;</span><br><span class="line">	int32_t HR_Value,BO_Value;</span><br><span class="line">	int8_t HR_Valid,BO_Valid;</span><br><span class="line">	Max30102_Calculate_HR_BO_Value(&amp;HR_Value,&amp;HR_Valid,&amp;BO_Value,&amp;BO_Valid);</span><br><span class="line">	if(HR_Valid==1 &amp;&amp; BO_Valid==1)</span><br><span class="line">	&#123;</span><br><span class="line">		OLED_ShowString(1,1,&quot;HR:&quot;);</span><br><span class="line">		OLED_ShowString(2,1,&quot;SaO2: &quot;);</span><br><span class="line">		OLED_ShowNum(1,5,HR_Value,3);</span><br><span class="line">		OLED_ShowNum(2,8,BO_Value,3);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>准备工作就到此结束。我们来看硬件方面的，打开文件Max30102.h，其中有一系列的定义如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">#ifndef __Max30102_h</span><br><span class="line">#define __Max30102_h</span><br><span class="line"></span><br><span class="line">#include &quot;main.h&quot;</span><br><span class="line"></span><br><span class="line">#define Max30102_INT  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_7)</span><br><span class="line"></span><br><span class="line">#define Max30102_Write_Address 0xAE</span><br><span class="line">#define Max30102_Read_Address  0xAF</span><br><span class="line">#define REG_INTR_STATUS_1 0x00</span><br><span class="line">#define REG_INTR_STATUS_2 0x01</span><br><span class="line">#define REG_INTR_ENABLE_1 0x02</span><br><span class="line">#define REG_INTR_ENABLE_2 0x03</span><br><span class="line">#define REG_FIFO_WR_PTR 0x04</span><br><span class="line">#define REG_OVF_COUNTER 0x05</span><br><span class="line">#define REG_FIFO_RD_PTR 0x06</span><br><span class="line">#define REG_FIFO_DATA 0x07</span><br><span class="line">#define REG_FIFO_CONFIG 0x08</span><br><span class="line">#define REG_MODE_CONFIG 0x09</span><br><span class="line">#define REG_SPO2_CONFIG 0x0A</span><br><span class="line">#define REG_LED1_PA 0x0C</span><br><span class="line">#define REG_LED2_PA 0x0D</span><br><span class="line">#define REG_PILOT_PA 0x10</span><br><span class="line">#define REG_MULTI_LED_CTRL1 0x11</span><br><span class="line">#define REG_MULTI_LED_CTRL2 0x12</span><br><span class="line">#define REG_TEMP_INTR 0x1F</span><br><span class="line">#define REG_TEMP_FRAC 0x20</span><br><span class="line">#define REG_TEMP_CONFIG 0x21</span><br><span class="line">#define REG_PROX_INT_THRESH 0x30</span><br><span class="line">#define REG_REV_ID 0xFE</span><br><span class="line">#define REG_PART_ID 0xFF</span><br><span class="line"></span><br><span class="line">void Max30102_Init(void);</span><br><span class="line">void Max30102_Reset(void);</span><br><span class="line">void Max30102_Safety(void);</span><br><span class="line">void Max30102_Calculate_HR_BO_Value(int32_t* HR_Value,int8_t* HR_Valid,int32_t* BO_Value,int8_t* BO_Valid);</span><br><span class="line"></span><br><span class="line">void Read(void);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#endif</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define Max30102_INT  HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_7)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>定义了引脚的位置，这里我们我们通过GPIO函数来读取A7的值，A7接线就是INT的输出。所以我们可以通过该定义使用其他的引脚。</p>
+<p>在算法文件algorithm.c中，maxim_heart_rate_and_oxygen_saturation函数是我们的重点关照对象，循环体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">// remove DC of ir signal    </span><br><span class="line">un_ir_mean =0; </span><br><span class="line">for (k=0 ; k&lt;n_ir_buffer_length ; k++ ) un_ir_mean += pun_ir_buffer[k] ;</span><br><span class="line">un_ir_mean =un_ir_mean/n_ir_buffer_length ;</span><br><span class="line">for (k=0 ; k&lt;n_ir_buffer_length ; k++ )  an_x[k] =  pun_ir_buffer[k] - un_ir_mean ; </span><br><span class="line"></span><br><span class="line">// 4 pt Moving Average</span><br><span class="line">for(k=0; k&lt; BUFFER_SIZE-MA4_SIZE; k++)&#123;</span><br><span class="line">    n_denom= ( an_x[k]+an_x[k+1]+ an_x[k+2]+ an_x[k+3]);</span><br><span class="line">    an_x[k]=  n_denom/(int32_t)4; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// get difference of smoothed IR signal</span><br><span class="line"></span><br><span class="line">for( k=0; k&lt;BUFFER_SIZE-MA4_SIZE-1;  k++)</span><br><span class="line">    an_dx[k]= (an_x[k+1]- an_x[k]);</span><br><span class="line"></span><br><span class="line">// 2-pt Moving Average to an_dx</span><br><span class="line">for(k=0; k&lt; BUFFER_SIZE-MA4_SIZE-2; k++)&#123;</span><br><span class="line">    an_dx[k] =  ( an_dx[k]+an_dx[k+1])/2 ;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>被我们用来处理信号，以得到更加平滑的信号来做运算，第一个for循环计算两个值之间的差距，第二个函数将前四个值加起来除以4做平滑化，后面两个也是对IR信号做一样的操作。</p>
+<p>接着算法使用了汉明窗来减少影响</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">   // hamming window</span><br><span class="line">   // flip wave form so that we can detect valley with peak detector</span><br><span class="line">   for ( i=0 ; i&lt;BUFFER_SIZE-HAMMING_SIZE-MA4_SIZE-2 ;i++)&#123;</span><br><span class="line">       s= 0;</span><br><span class="line">       for( k=i; k&lt;i+ HAMMING_SIZE ;k++)&#123;</span><br><span class="line">           s -= an_dx[k] *auw_hamm[k-i] ; </span><br><span class="line">                    &#125;</span><br><span class="line">       an_dx[i]= s/ (int32_t)1146; // divide by sum of auw_hamm </span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   n_th1=0; // threshold calculation</span><br><span class="line">   for ( k=0 ; k&lt;BUFFER_SIZE-HAMMING_SIZE ;k++)&#123;</span><br><span class="line">       n_th1 += ((an_dx[k]&gt;0)? an_dx[k] : ((int32_t)0-an_dx[k])) ;</span><br><span class="line">   &#125;</span><br><span class="line">n_th1= n_th1/ ( BUFFER_SIZE-HAMMING_SIZE);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>为了计算，我们需要找到精确的波峰值，那么我们就定义函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">for (k=0 ; k&lt;n_ir_buffer_length ; k++ )  &#123;</span><br><span class="line">    an_x[k] =  pun_ir_buffer[k] ; </span><br><span class="line">    an_y[k] =  pun_red_buffer[k] ; </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>获取峰值</p>
+<p>接着我们使用函数找到想要的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">n_exact_ir_valley_locs_count =0; </span><br><span class="line">for(k=0 ; k&lt;n_npks ;k++)&#123;</span><br><span class="line">    un_only_once =1;</span><br><span class="line">    m=an_ir_valley_locs[k];</span><br><span class="line">    n_c_min= 16777216;//2^24;</span><br><span class="line">    if (m+5 &lt;  BUFFER_SIZE-HAMMING_SIZE  &amp;&amp; m-5 &gt;0)&#123;</span><br><span class="line">        for(i= m-5;i&lt;m+5; i++)</span><br><span class="line">            if (an_x[i]&lt;n_c_min)&#123;</span><br><span class="line">                if (un_only_once &gt;0)&#123;</span><br><span class="line">                   un_only_once =0;</span><br><span class="line">               &#125; </span><br><span class="line">               n_c_min= an_x[i] ;</span><br><span class="line">               an_exact_ir_valley_locs[k]=i;</span><br><span class="line">            &#125;</span><br><span class="line">        if (un_only_once ==0)</span><br><span class="line">            n_exact_ir_valley_locs_count ++ ;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">if (n_exact_ir_valley_locs_count &lt;2 )&#123;</span><br><span class="line">   *pn_spo2 =  -999 ; // do not use SPO2 since signal ratio is out of range</span><br><span class="line">   *pch_spo2_valid  = 0; </span><br><span class="line">   return;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>这段代码就2个操作，一是在第二个嵌套的for循环中找最小波峰并储存到n_c_min变量中。对于第二个if，若样本超出范围，设为-999来防止使用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">if (n_middle_idx &gt;1)</span><br><span class="line">    n_ratio_average =( an_ratio[n_middle_idx-1] +an_ratio[n_middle_idx])/2; // use median</span><br><span class="line">else</span><br><span class="line">    n_ratio_average = an_ratio[n_middle_idx ];</span><br><span class="line"></span><br><span class="line">if( n_ratio_average&gt;2 &amp;&amp; n_ratio_average &lt;184)&#123;</span><br><span class="line">    n_spo2_calc= uch_spo2_table[n_ratio_average] ;</span><br><span class="line">    *pn_spo2 = n_spo2_calc ;</span><br><span class="line">    *pch_spo2_valid  = 1;//  float_SPO2 =  -45.060*n_ratio_average* n_ratio_average/10000 + 30.354 *n_ratio_average/100 + 94.845 ;  // for comparison with table</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">    *pn_spo2 =  -999 ; // do not use SPO2 since signal ratio is out of range</span><br><span class="line">    *pch_spo2_valid  = 0; </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后看一下这段代码，实际上当我们计算SpO2的时候，计算器会溢出，所以精度并不是很好，对每个精确的SpO2，都是提前计算的，这主要体现在倒数第一个if上。然后输出标志位1表示数据有效。在这段代码中，我们使用n_ratio_average进行查表，若n_ratio_average&gt;2和 小于184，则根据表我们能得到血氧值。否则我们将输出置为-999并把校验位置0表示不适用血氧仪。表在算法文件中的algorthm.h给出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//const uint8_t uch_spo2_table[184]=&#123; 95, 95, 95, 96, 96, 96, 97, 97, 97, 97, 97, 98, 98, 98, 98, 98, 99, 99, 99, 99, </span><br><span class="line">//                            99, 99, 99, 99, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, </span><br><span class="line">//                            100, 100, 100, 100, 99, 99, 99, 99, 99, 99, 99, 99, 98, 98, 98, 98, 98, 98, 97, 97, </span><br><span class="line">//                            97, 97, 96, 96, 96, 96, 95, 95, 95, 94, 94, 94, 93, 93, 93, 92, 92, 92, 91, 91, </span><br><span class="line">//                            90, 90, 89, 89, 89, 88, 88, 87, 87, 86, 86, 85, 85, 84, 84, 83, 82, 82, 81, 81, </span><br><span class="line">//                            80, 80, 79, 78, 78, 77, 76, 76, 75, 74, 74, 73, 72, 72, 71, 70, 69, 69, 68, 67, </span><br><span class="line">//                            66, 66, 65, 64, 63, 62, 62, 61, 60, 59, 58, 57, 56, 56, 55, 54, 53, 52, 51, 50, </span><br><span class="line">//                            49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 31, 30, 29, </span><br><span class="line">//                            28, 27, 26, 25, 23, 22, 21, 20, 19, 17, 16, 15, 14, 12, 11, 10, 9, 7, 6, 5, </span><br><span class="line">//                            3, 2, 1 &#125; ;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>纠结计算索引没多大意义，因为没有注释，论文，你不知道作者究竟在表达什么，我们直接讲实现</p>
+<p>首先是接线图：</p>
+<center>
+    <img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp09010306543892255%5D%20%0A%5Cdraw%20%20%20(165%2C138)%20--%20(389%2C138)%20--%20(389%2C302)%20--%20(165%2C302)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp9582784481600912%5D%20%0A%5Cdraw%20%20%20(208%2C155)%20..%20controls%20(208%2C151.13)%20and%20(211.13%2C148)%20..%20(215%2C148)%20..%20controls%20(218.87%2C148)%20and%20(222%2C151.13)%20..%20(222%2C155)%20..%20controls%20(222%2C158.87)%20and%20(218.87%2C162)%20..%20(215%2C162)%20..%20controls%20(211.13%2C162)%20and%20(208%2C158.87)%20..%20(208%2C155)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp9548306636734993%5D%20%0A%5Cdraw%20%20%20(252%2C155)%20..%20controls%20(252%2C151.13)%20and%20(255.13%2C148)%20..%20(259%2C148)%20..%20controls%20(262.87%2C148)%20and%20(266%2C151.13)%20..%20(266%2C155)%20..%20controls%20(266%2C158.87)%20and%20(262.87%2C162)%20..%20(259%2C162)%20..%20controls%20(255.13%2C162)%20and%20(252%2C158.87)%20..%20(252%2C155)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp40440802589225644%5D%20%0A%5Cdraw%20%20%20(296%2C155)%20..%20controls%20(296%2C151.13)%20and%20(299.13%2C148)%20..%20(303%2C148)%20..%20controls%20(306.87%2C148)%20and%20(310%2C151.13)%20..%20(310%2C155)%20..%20controls%20(310%2C158.87)%20and%20(306.87%2C162)%20..%20(303%2C162)%20..%20controls%20(299.13%2C162)%20and%20(296%2C158.87)%20..%20(296%2C155)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp29971395401438494%5D%20%0A%5Cdraw%20%20%20(336%2C155)%20..%20controls%20(336%2C151.13)%20and%20(339.13%2C148)%20..%20(343%2C148)%20..%20controls%20(346.87%2C148)%20and%20(350%2C151.13)%20..%20(350%2C155)%20..%20controls%20(350%2C158.87)%20and%20(346.87%2C162)%20..%20(343%2C162)%20..%20controls%20(339.13%2C162)%20and%20(336%2C158.87)%20..%20(336%2C155)%20--%20cycle%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp6650608523845745%5D%20%0A%5Cdraw%20%20%20(265%2C223)%20--%20(279%2C223)%20--%20(279%2C253)%20--%20(265%2C253)%20--%20cycle%20%3B%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp2081639981827368%5D%20%0A%5Cdraw%20%20%20(265%2C204)%20--%20(279%2C204)%20--%20(279%2C223)%20--%20(265%2C223)%20--%20cycle%20%3B%0A%0A%25Shape%3A%20Circle%20%5Bid%3Adp9248310721937647%5D%20%0A%5Cdraw%20%20%20(209%2C285)%20..%20controls%20(209%2C281.13)%20and%20(212.13%2C278)%20..%20(216%2C278)%20..%20controls%20(219.87%2C278)%20and%20(223%2C281.13)%20..%20(223%2C285)%20..%20controls%20(223%2C288.87)%20and%20(219.87%2C292)%20..%20(216%2C292)%20..%20controls%20(212.13%2C292)%20and%20(209%2C288.87)%20..%20(209%2C285)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp1413160951626189%5D%20%0A%5Cdraw%20%20%20(253%2C285)%20..%20controls%20(253%2C281.13)%20and%20(256.13%2C278)%20..%20(260%2C278)%20..%20controls%20(263.87%2C278)%20and%20(267%2C281.13)%20..%20(267%2C285)%20..%20controls%20(267%2C288.87)%20and%20(263.87%2C292)%20..%20(260%2C292)%20..%20controls%20(256.13%2C292)%20and%20(253%2C288.87)%20..%20(253%2C285)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp002928946318944803%5D%20%0A%5Cdraw%20%20%20(297%2C285)%20..%20controls%20(297%2C281.13)%20and%20(300.13%2C278)%20..%20(304%2C278)%20..%20controls%20(307.87%2C278)%20and%20(311%2C281.13)%20..%20(311%2C285)%20..%20controls%20(311%2C288.87)%20and%20(307.87%2C292)%20..%20(304%2C292)%20..%20controls%20(300.13%2C292)%20and%20(297%2C288.87)%20..%20(297%2C285)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp29620294983282935%5D%20%0A%5Cdraw%20%20%20(337%2C285)%20..%20controls%20(337%2C281.13)%20and%20(340.13%2C278)%20..%20(344%2C278)%20..%20controls%20(347.87%2C278)%20and%20(351%2C281.13)%20..%20(351%2C285)%20..%20controls%20(351%2C288.87)%20and%20(347.87%2C292)%20..%20(344%2C292)%20..%20controls%20(340.13%2C292)%20and%20(337%2C288.87)%20..%20(337%2C285)%20--%20cycle%20%3B%0A%0A%25Straight%20Lines%20%5Bid%3Ada09548373808244737%5D%20%0A%5Cdraw%20%20%20%20(216%2C285)%20--%20(216%2C339)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada5099814040227271%5D%20%0A%5Cdraw%20%20%20%20(260%2C285)%20--%20(260%2C339)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9073352423195626%5D%20%0A%5Cdraw%20%20%20%20(304%2C285)%20--%20(304%2C339)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada28147241057163574%5D%20%0A%5Cdraw%20%20%20%20(344%2C285)%20--%20(344%2C339)%20%3B%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp775217700497361%5D%20%0A%5Cdraw%20%20%20(107%2C343)%20--%20(475%2C343)%20--%20(475%2C421)%20--%20(107%2C421)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada24113748106416755%5D%20%0A%5Cdraw%20%20%20%20(343%2C155)%20--%20(432%2C155)%20--%20(432%2C344)%20%3B%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp8709156716065634%5D%20%0A%5Cdraw%20%20%20(148%2C444)%20--%20(427%2C444)%20--%20(427%2C588)%20--%20(148%2C588)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp6023318321657378%5D%20%0A%5Cdraw%20%20%20(220%2C464)%20..%20controls%20(220%2C460.13)%20and%20(223.13%2C457)%20..%20(227%2C457)%20..%20controls%20(230.87%2C457)%20and%20(234%2C460.13)%20..%20(234%2C464)%20..%20controls%20(234%2C467.87)%20and%20(230.87%2C471)%20..%20(227%2C471)%20..%20controls%20(223.13%2C471)%20and%20(220%2C467.87)%20..%20(220%2C464)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp6454547005559974%5D%20%0A%5Cdraw%20%20%20(257%2C465)%20..%20controls%20(257%2C461.13)%20and%20(260.13%2C458)%20..%20(264%2C458)%20..%20controls%20(267.87%2C458)%20and%20(271%2C461.13)%20..%20(271%2C465)%20..%20controls%20(271%2C468.87)%20and%20(267.87%2C472)%20..%20(264%2C472)%20..%20controls%20(260.13%2C472)%20and%20(257%2C468.87)%20..%20(257%2C465)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp7665588833401951%5D%20%0A%5Cdraw%20%20%20(301%2C465)%20..%20controls%20(301%2C461.13)%20and%20(304.13%2C458)%20..%20(308%2C458)%20..%20controls%20(311.87%2C458)%20and%20(315%2C461.13)%20..%20(315%2C465)%20..%20controls%20(315%2C468.87)%20and%20(311.87%2C472)%20..%20(308%2C472)%20..%20controls%20(304.13%2C472)%20and%20(301%2C468.87)%20..%20(301%2C465)%20--%20cycle%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp5577578469104796%5D%20%0A%5Cdraw%20%20%20(341%2C465)%20..%20controls%20(341%2C461.13)%20and%20(344.13%2C458)%20..%20(348%2C458)%20..%20controls%20(351.87%2C458)%20and%20(355%2C461.13)%20..%20(355%2C465)%20..%20controls%20(355%2C468.87)%20and%20(351.87%2C472)%20..%20(348%2C472)%20..%20controls%20(344.13%2C472)%20and%20(341%2C468.87)%20..%20(341%2C465)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6904988801423257%5D%20%0A%5Cdraw%20%20%20%20(308%2C413)%20--%20(308%2C467)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada618052088975841%5D%20%0A%5Cdraw%20%20%20%20(348%2C411)%20--%20(348%2C465)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4960648339555864%5D%20%0A%5Cdraw%20%20%20%20(264%2C411)%20--%20(264%2C465)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada30400909490221983%5D%20%0A%5Cdraw%20%20%20%20(227%2C410)%20--%20(227%2C464)%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(286%2C204)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BIRD%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(286%2C232)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BRD%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(199%2C258)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BVIN%20%5C%20%5C%20%5C%20SDA%20%5C%20%5C%20%5C%20SCL%20%5C%20%5C%20GND%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(208%2C168)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BGND%20%5C%20%5C%20RD%20%5C%20%5C%20IRD%20%5C%20%5C%20INT%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(202%2C347)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BVIN%20%5C%20%5C%20%5C%20B11%20%5C%20%5C%20B10%20%5C%20%5C%20GND%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(227%2C378)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BSTM32f103c8t6%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(422%2C350)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BA7%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(177%2C215)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BMax30102%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(255%2C523)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BOLED%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(207%2C483)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BVCC%20%5C%20%5C%20GND%20%5C%20SCL%20%5C%20SDA%20%5C%20%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(214%2C397)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7BVCC%20%5C%20GND%20%5C%20B6%20%5C%20%5C%20%5C%20%5C%20%5C%20B7%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D"	witdh = "50%">
+
+</center>
+
+<p>接着只需要烧录就行了。</p>
+<p>我自己修改的项目地址：<a target="_blank" rel="noopener" href="https://github.com/MonsterGeo/Code/blob/main/Max30102.zip">链接</a></p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/tech/">tech</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2024/06/25/%E6%9F%AF%E8%A5%BF-%E9%BB%8E%E6%9B%BC%E6%96%B9%E7%A8%8B/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          拓扑空间
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/04/07/%E5%B0%BE%E5%A3%B0/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          迦罗瓦理论-尾声
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

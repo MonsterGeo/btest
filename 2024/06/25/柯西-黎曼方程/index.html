@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>拓扑空间 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        拓扑空间
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        拓扑空间
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2024-06-27</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>7 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>2.1k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>##紧致性</p>
+<p>我们先来讲讲紧致这一个重要的概念，度量空间的紧致性，首先，一个空间$A$的距离函数$d$指的是对任意两个元素$a,b\in A$，则有$d(a,b)\geq 0$，即意味着$d$的映射会得到一个非负实数。若$d(x_n,x) \to 0$，则我们说$x_n\to x$。若对$d(x_n,x_m)\to\infty$，其中$n,m\to \infty$时趋向$0$。则我们说${x_n}$是一个柯西序列。显然，收敛序列都是柯西列，对于$R,C$，它的逆命题是成立的。即每个柯西序列都是收敛序列，但在我古早的文章之前我已经指出，在一些空间上，收敛序列可以不是柯西序列。例如无穷维的单位球。而后我们也证明了对于任意维度的$R^n$，逆命题是成立的。</p>
+<p>####定义：一个度量空间称为是完备的，这是在说每个柯西序列是收敛的。</p>
+<p>若一个自己被看成一个子空间时是完备的，则说它是完备的，不难发现，一个度量空间的完备子集是闭的；一个完备空间的闭子集是完备的。</p>
+<p>虽然在复分析中完备性就已经够用了，但我还是决定吧一个比完备性更强的概念写入。我们将会提到紧致性的概念。紧空间是完备的，但反过来不成立。事实上，$\mathbb{R,C}$的紧致子集都是有界闭集。但删掉这个概念不太明智，我不想混淆一些重要的事实</p>
+<p>我们说开集族是集合$X$的一个开覆盖，若$X$包含在这些开集的并集中。子覆盖就是具有同一性质的开集族的一个子集。有限子覆盖指的是由有限的集合组成的一个覆盖。现在，紧致的定义如下：</p>
+<p>####定义（紧致）：集合$X$是紧致的，当且仅当每个开覆盖包含一个有限子覆盖。</p>
+<p>我们可以表示为：</p>
+<center>
+
+<p>\begin{equation}<br> 对任意X的开覆盖{G_a}, 存在{a_1,\cdots,a_n}使得X\subset \bigcup^n_{i&#x3D;1}G_a<br>\end{equation}</p>
+</center>
+
+<p>若我们把$X$设想为度量空间$S$的一个子集，并用$S$的开集来对它进行覆盖。若$U$是$S$中的一个开集，那么$U\cap X$也是是一个$X$的一个开子集（相对开集）。反之，$X$的每个开子集也可以表示成这一形式。所以我们的定义究竟是对全空间阐述，或者是说一个子集，都是没有区别的。</p>
+<p>我们刚才说的，其实是实分析中的一个著名定理–海涅-博雷尔性质。它的重要性在于，若我们使用开覆盖来阐述，许多的证明会变得特别简单。</p>
+<p>我们首先证明每个紧致空间必须是完备的。</p>
+<p><strong>证明：</strong> 设$X$是紧致的，并设${x_n}$是$X$中的一个柯西序列。若$y$不是${x_n}$的极限，则存在一个$\epsilon&gt;0$，使得对无穷多个$n$，存在$d(x_n,y)&gt;2\epsilon$。我们固定一个$n\geq n_0$，使得$d(x_n,y) &gt; 2\epsilon$。则对所有的$m\geq n_0$，存在$d(x_m,y) \geq d(x_n,y) - d(x_m,x_n) &gt; \epsilon$。这意味着$\epsilon$的邻域$B(y,\epsilon)$是有限的（包括$x_n$）。</p>
+<p>现在，我们考虑由这有限多个$x_n$组成的开集$U$组成的集族，若${x_n}$不收敛，那么我们用这个集族$U_n$可以得到一个$X$的开覆盖。那么就存在一个有限子覆盖，它由$U_1,\cdots,U_N$组成。并且这些子覆盖中的开集都是有限个元素组成的。也就是说，这些集合组成的序列是一个有限序列。但这不可能，我们不可能用一个有限的序列去覆盖一个无限的序列。</p>
+<p>另一方面，紧致集是有界的，为了得到这点，我们取点$x_0$，并考虑它的一个球$B(x_0,r)$，其中$r$是半径。由这些球组成一些开覆盖。若$X$是紧致的，它将有一个有限的子覆盖。即$X\subset \bigcup^m_{i&#x3D;1} B(x_0,r_i)$。只要选取$\max{r_1,\cdots,r_m} &#x3D; r$，就有$X\subset B(x_0,r)$（注意我们已经固定点$x_0$）。由此可知对任意的$x,y\in X$。有$d(x,y) \leq d(x,x_0)+d(y,x_0) &lt; 2r$，这说明$X$是有界的。</p>
+<p>我们可以得到较强的性质</p>
+<p>####定义（全有界）：我们说集合$X$是全有界的，指对于任一$\epsilon &gt; 0$，可用有限多个半径为$\epsilon$的球覆盖$X$</p>
+<p>####定理 一个集合是紧致的当且仅当其是完备且全有界的。</p>
+<p>证明：我们设度量空间$S$是完备且全有界的，设存在一个开覆盖，但其不包含任何的有限子覆盖。令$\epsilon_n &#x3D; 2^{-n}$，那么根据全有界，$S$应该是可以被有限多个$B(x,\epsilon_1)$覆盖的，如果每个都有一个有限的子覆盖，则$S$也是。由假设，我们设存在一个球$B(x_1,\epsilon_1)$，它是不可有限覆盖的，但因为$B(x_1,\epsilon_1)$是有界的，因此我们可以在里面找到一个$x_2\in B(x_1,\epsilon_1)$，它使得$B(x_2,\epsilon_2)$不存在有限覆盖。我们可以一直这样构造下去就得到了一个序列$x_n$，它具有以下性质：$B(x_n,\epsilon_n)$不存在有限覆盖，并且$x_{n+1}\in B(x_n,\epsilon_n)$。那么后一个性质意味着$d(x_n,x_{n+1}) &lt; \epsilon_n$，那么$d(x_n,x_{n+p}) &lt; \epsilon_n+\epsilon_{n+1} &lt; \cdots &lt; \epsilon_{n+p-1}$。这意味着$x_n$是柯西序列，将收敛到某个极限$y$，而这个$y$在我们给定的某个开覆盖$U$中的一个，由于$U$是开的，它包含球$B(y,\delta)$，取最大的$n$使得$d(x_n,y) &lt; \delta&#x2F;2$和$\epsilon_n &lt; \delta&#x2F;2$。那么$B(x_n,\epsilon_n)\subset B(y,\delta)$。由于$d(x,x_n)&lt; \epsilon_n$。利用三角不等式，$d(x,y) \leq d(x,x_n)+d(x_n,y) &lt; \delta$。那么实际上我们得到了一个覆盖$B(x_n,\epsilon_n)$。这与我们假设矛盾，因此$S$满足海涅-博雷尔性质。</p>
+<p>####推论：$\mathbb{R,C}$的一个子集是紧的当且仅当它是闭而有界。</p>
+<p><strong>证明：</strong> 这是海涅-博雷尔定理的内容</p>
+<p>对于紧致，我们还有另一种表达，它与极限点相关。我们说$y$是${x_n}$的一个极限点，若存在一个${x_n}$的子序列收敛到$y$。一个极限点几乎与$x_n$组成的集合的一个聚点是相同的。不同的地方在于一个序列可以允许同一极限点重复出现，若$y$是极限点，则它的每个邻域包含无穷多个$x_n$。反过来同样成立</p>
+<p>####定理 一个度量空间是紧的当且仅当对每个无穷序列具有一个极限点</p>
+<p><strong>证明：</strong> 我们只是在重写刚才的证明。若$y$不是${x_n}$的极限点，则$y$有一个包含有限个$x_n$的邻域。那么就可以得到有限个子覆盖。我们设是紧的，那么就存在一个有限子覆盖，可以得到序列是有限的，同样的，我们不可能用一个有限的序列覆盖一个无穷序列，这是一个矛盾。所以每个紧空间的无穷序列都存在一个极限点。</p>
+<p>另一方面，每个序列都存在一个极限点，这意味着这是一个柯西数列。我们设空间不是全有界的，则存在$\epsilon&gt;0$不能被有限多个$\epsilon$覆盖，我们构造序列${x_n}$，选定$x_1,\cdots,x_n$。那么由假设，存在一个$x_{n+1}$不被$B(x_1,\epsilon)\cup B(x_2,\epsilon)\cup\cdots\cup B(x_n,\epsilon)$包含。这是可能的，因为我们的空间不是全有界的，所以这些邻域并不能覆盖全空间。因此${x_n}$不存在收敛子序列，矛盾。</p>
+<p>那么我们给出三种等价命题</p>
+<p>对于任意$E\subseteq R^k$，下面三个命题是等价的</p>
+<ul>
+<li>集合$E$是闭的且有界</li>
+<li>$E$是紧的</li>
+<li>$E$的每个无限子集在$E$中有一极限点</li>
+</ul>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/complex-analysis/">complex_analysis</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2024/06/29/%E5%BC%A7%E4%B8%8E%E9%97%AD%E6%9B%B2%E7%BA%BF/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          线积分的性质
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/06/07/Max30102/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          Max30102
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

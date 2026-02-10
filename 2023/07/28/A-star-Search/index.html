@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>A-star_Search | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        A-star_Search
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        A-star_Search
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2023-07-29</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>12 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>3.2k words</span>
+          </span>
+          
+            <span class="text-gray-400">·</span>
+            <span class="flex items-center gap-1">
+              <iconify-icon width="16" icon="icon-park-outline:box" class="mr-2"></iconify-icon>
+              <a class="article-category-link" href="/btest/categories/computer/">computer</a>
+            </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h1 id="A-寻路算法的基本思想和基本代码实现："><a href="#A-寻路算法的基本思想和基本代码实现：" class="headerlink" title="A*寻路算法的基本思想和基本代码实现："></a>A*寻路算法的基本思想和基本代码实现：</h1><p>关于寻路算法有许多不同的答案，像广度搜索，深度搜索、跳点搜索算法、弗洛伊德等等算法，但今天我们主要讲一个常用的算法A*(A-star)算法。</p>
+<p>A*算法是建立在曼哈顿度量（又名出租车度量或者出租车几何）他有个非常好的性质，相比欧几里得度量来说，出租车度量更适合现实的空间。所以，我们首先来介绍一下曼哈顿度量</p>
+<p>#度量空间和曼哈顿距离</p>
+<p>一个度量空间$(X,d)$指的是具备距离$d(x,y)$的集合$X$，它的元素是点。而其中距离也叫距离函数，在接下来的代码里面我们会给出一个简单的空间例子，但最主要的还是关注这个度量空间的距离函数。</p>
+<p>度量具备四个良好性质</p>
+<ul>
+<li>非负性</li>
+<li>三角不等式</li>
+<li>对称性</li>
+<li>对于任意的$x\in X$都有$d(x,x)&#x3D;0$</li>
+</ul>
+<p>在算法中我们一般会想无视障碍物获取与终点的最短路径，这个时候就考虑使用欧几里得度量（或者欧几里得距离）</p>
+<p>##欧几里得距离（$l^2$距离）</p>
+<p>定义：$d_{l^2}$距离被定义为映射$d_{l^2}:R^n\times R^n\to R$，它由函数：</p>
+<center>
+
+<p>$<br>\begin{aligned}<br>    d_{l^2}((x_1,\cdots,x_n),(y_1,\cdots,y_n)) &#x3D;&amp; \sqrt{(x_1-y_1)^2+\cdots+(x_n-y_n)^2}\<br>    &#x3D;&amp; \left(\sum^n_{i&#x3D;1}(x_i-y_i)^2 \right)^{1&#x2F;2}<br>\end{aligned}<br>$</p>
+</center>
+
+<p>定义，实际上就是我们一般说的向量的点积。</p>
+<p>而现在我们定义出租车度量($l^1$度量)由函数</p>
+<center>
+
+<p>$<br>\begin{aligned}<br>    d_{l^1} &#x3D; ((x_1,\cdots,x_n),(y_1,\cdots,y_n)) &#x3D;&amp; \mid x_1-y_1\mid +\cdots+\mid x_n-y_n\mid\<br>    &#x3D;&amp;\sum^n_{i&#x3D;1}\mid x_i-y_i\mid<br>\end{aligned}<br>$</p>
+</center>
+
+<p>定义的。</p>
+<p>我们如此定义这个函数，是因为当出租车从一点驶向另一点的时候，如果只能沿着坐标方向（北、南、东、西）而不允许走对角线，那么出租车驶过的距离就可以用曼哈顿距离计算。</p>
+<h1 id="算法的简单介绍"><a href="#算法的简单介绍" class="headerlink" title="算法的简单介绍"></a>算法的简单介绍</h1><h2 id="广度优先搜索算法"><a href="#广度优先搜索算法" class="headerlink" title="广度优先搜索算法"></a>广度优先搜索算法</h2><p>广度优先搜索算法（Breadth-first search，缩写为BFS） BFS是从根节点开始，沿着树的宽度遍历树的结点，当我们遍历完树的全部节点或者遍历到我们想要的节点，则算法终止。</p>
+<p>举个例子，我们假设有一个迷宫，迷宫由一个起点和一些格子，格子上有的标记为障碍物。当我们走到岔路口的时候，会放弃继续进入岔路口，而是回头继续探索别的路直到碰到岔路口，然后重复这个过程直到遍历到终点，这个算法的好处就是他找到的第一条路就是最短路径。但是耗费的时间会很多。</p>
+<h2 id="A-star算法的简单描述和场景设置"><a href="#A-star算法的简单描述和场景设置" class="headerlink" title="A-star算法的简单描述和场景设置"></a>A-star算法的简单描述和场景设置</h2><p>为了算法的实现，我们首先把空间抽象成一个由二维格子组成的二维平面，为了描述我们要做的东西，</p>
+<p>#估价函数</p>
+<p>为了不像广度搜索算法一样盲目乱走，如何选择格子去走就成了第一个问题，这也就是为什么要对格子进行估价的原因，那么我们定义一个比较简单的东西。</p>
+<p>我们给每个格子都定义一些代价，即从起点到格子的之间格子的数量，记为$g(n)$，再定义<br>格子到终点之间隔了多少个格子的数量，记为$h(n)$</p>
+<p>那么定义估价函数为</p>
+<center>
+
+<p>$<br>f(n) &#x3D; g(n)+h(n)<br>$</p>
+</center>
+
+<p>现在看个例子：</p>
+<center>
+
+<img src='/Btest/2023/07/28/A-star-Search/1.png'>
+
+</center>
+
+<ul>
+<li><p>橙色格子要移动到1号格子，那么它只需移动一步，因此$g(1)&#x3D;1$，但1号格子它离红色格子的<strong>直线距离</strong>为 $d_{l^2} (2,6) &#x3D; \sqrt{2^2+6^2} &#x3D; \sqrt{40}$个格子</p>
+</li>
+<li><p>进一步的，对于2，3格子，格子的估阶函数是$g(2) &#x3D; 1, g(3) &#x3D; \sqrt{2}$，$h(2) &#x3D; \sqrt{26} ,h(3) &#x3D; \sqrt{17}$则</p>
+</li>
+</ul>
+<center>
+
+<p>$<br>f(2) &#x3D; 1+\sqrt{26} \approx 6 &gt; f(3) &#x3D; \sqrt{2} + \sqrt{17} \approx 5.53<br>$</p>
+</center>
+
+<p>+对于4号格子，我们可以得到$f(4) &#x3D; g(4)+h(4) &#x3D; 2+5&#x3D;7$</p>
+<p>因此，根据估阶函数给出的值我们大概知道 $f(3)&lt;f(2)&lt;f(4)&lt;f(1)$</p>
+<p>所以我们优先考虑格子3。现在我们发现两个问题</p>
+<ul>
+<li>计算的过程中伴随开方和根号运算，需要使用浮点数。</li>
+<li>实际的过程我们并不能平滑的移动到红色格子，需要水平+对角移动相结合，例如格子3到终点的距离实际上是：$h(3) &#x3D; \sqrt{8}+2$，因为要翻跃障碍物。</li>
+</ul>
+<p>所以，这就是为什么我一开始就侧重讲曼哈顿度量的原因，它更符合我们的想法。</p>
+<p>因此，曼哈顿度量是小于等于欧拉度量的。</p>
+<h3 id="h-n-对选择的影响"><a href="#h-n-对选择的影响" class="headerlink" title="$h(n)$对选择的影响"></a>$h(n)$对选择的影响</h3><p>我们假设有一个$6\times 4$棋盘，设起点为$A(0,0)$，终点为$B(6,4)$代表第4行的第六个格子。再任取两个格子$C(1,3)$和$D(3,1)$。</p>
+<p>障碍物为如下四个格子：$\alpha(4,2), \beta(4,3),\gamma(3,3),\omega(2,3)$</p>
+<p>不妨计算一下它们的估阶函数，$g(D) &#x3D;g(C) &#x3D; 2$，因为是朝上边和右边走两格就到了。然后我们计算$h(n)$的曼哈顿度量。$h(D) &#x3D; 6 &#x3D; h(C)$，这出现了一个问题，我们不知道如何选择最优路径。因为它们的估阶函数一样。现在，让我们计算它们的对角线距离</p>
+<center>
+
+<p>$<br>\begin{aligned}<br>    h(D) &#x3D;&amp; \sqrt{(6-3)^2+(4-1)^2} &#x3D; 3\sqrt{2} \approx 4.24\<br>    h(C) &#x3D;&amp; \sqrt{(6-1)^2+(4-3)^2} &#x3D; \sqrt{26} \approx 5<br>\end{aligned}<br>$</p>
+</center>
+
+<p>所以，我们更应该选择格子$D$为最优路径，实际上这也确实是对的。因为格子D的实际距离为$1+\sqrt{2}+1+\sqrt{2} &#x3D; 2+2\sqrt{2} \approx 4.8$稍微比对角线距离大点。所以我们得到</p>
+<center>
+
+<p>曼哈顿距离&gt;实际距离&gt;对角线距离</p>
+</center>
+
+<p>现在该总结一下了</p>
+<ul>
+<li>若$h(n) \leq $到终点的实际距离，那么A*可以找到最短路径，但随着搜索的点越多，范围就越大效率也越低</li>
+<li>若$h(n)&gt;$到终点的实际距离，则搜索的点少，搜索范围小，效率高，但不一定是最优解。</li>
+<li>$h(n) \sim $实际距离，那么$A^*$算法越完美。</li>
+<li>若$h(n)&#x3D;0$，这说明$f(n)&#x3D;g(n)$，那么会发生一种情况，算法会毫无目的的在四周搜索。</li>
+<li>若$h(n) &gt; g(n)$，那么$f(n)$的大头主要看$h(n)$，这就变成了广度优先算法。</li>
+</ul>
+<p>##具体的寻路过程</p>
+<p>还是那个例子：</p>
+<center>
+
+<img src='/Btest/2023/07/28/A-star-Search/2.png'>
+</center>
+
+<p>它们的估阶函数如下：</p>
+<ul>
+<li>1：$f(1) &#x3D; 6.4, g(1)&#x3D;1,h(1)&#x3D;5.4$</li>
+<li>2：$f(2) &#x3D; 5.8, g(2) &#x3D; 1.4,h(2)&#x3D;4.4$</li>
+<li>3：$f(3) &#x3D; 5,g(3) &#x3D; 1,h(3) &#x3D; 4$</li>
+<li>4：$f(4) &#x3D; 5.8,g(4)&#x3D;1.4,h(4)&#x3D;4.4$</li>
+<li>5：$f(5) &#x3D; 6.4,,g(5) &#x3D; 1,h(5)&#x3D;5.4$</li>
+</ul>
+<p>若在$f$相同的时候，我们考虑$g$的值。根据$f$，那么实际上我们选择格子$3$，然后我们进行下一步，</p>
+<p>第二步：我们走到第三个格子后，又产生了新的路径选择，如下图所示：</p>
+<center>
+
+<img src='/Btest/2023/07/28/A-star-Search/3.png'>
+</center>
+
+<p>于是，我们再次计算格子的估阶函数，这次注意的是，$4,5$ 是障碍，所以不需要考虑这两个格子。格子$8$实际上就是起点，所以也不需要考虑，我们只需要考虑$2,3,6$三个格子就行了，它们的估阶函数为：</p>
+<ul>
+<li>$f(2) &#x3D; 5.8,g &#x3D; 1.4,h &#x3D;4.4$</li>
+<li>$f(3) &#x3D; 5.8,g&#x3D;2.4,h&#x3D;3.4$</li>
+<li>$f(6) &#x3D; 5.8,g&#x3D;1.4,h&#x3D;4.4$</li>
+</ul>
+<p>正如我们刚才所说，我们计算的$g$是起点到格子的距离，$h$是终点的，但现在情况不一样，我们已经走了一格，所以到起点的路也必须经过我们走过的格子，所以，实际上$f(2)$应该在$g$上加$1$,$6$也是一样的道理，但$3$不用，因为它本身就包含了走过的格子的距离，那么更新后的为<br>$f(2) &#x3D; 6.8&#x3D;f(6)$。所以我们这次选择$3$号格子。</p>
+<p>然后我们不断的重复这个步骤直到遍历到终点。</p>
+<center>
+
+<img src='/Btest/2023/07/28/A-star-Search/4.png'>
+
+</center>
+
+<p>然后只需要根据格子$n$一路前进即可得到最优路线。当然，如果使用曼哈顿距离，我们可以得到更简单的表达方法。但是不能走斜线。</p>
+<p>##代码编写环节</p>
+<p>##初始化</p>
+<p>我们先初始化一些参数，定义一个类<strong>Node</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Node:</span><br><span class="line">    def __init__(self,x,y):</span><br><span class="line">        self.x = x #纵坐标</span><br><span class="line">        self.y=y #横坐标</span><br><span class="line">        self.g =0 #代价g</span><br><span class="line">        self.h=0 #代价h</span><br><span class="line">        self.parent = None #初始化父节点</span><br></pre></td></tr></table></figure>
+
+<p>然后我们定义一个估阶函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def f(self):</span><br><span class="line">    return self.g+self.h</span><br></pre></td></tr></table></figure>
+
+<p>并使用曼哈顿度量作为标准度量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def heuristic(node,goal): </span><br><span class="line">#node 是当前节点的坐标信息</span><br><span class="line">#goal 指的是目标节点的坐标信息</span><br><span class="line"> return abs(node.x - goal.x) + abs(node.y - goal.y)</span><br><span class="line">#它返回目标和当前节点的距离</span><br></pre></td></tr></table></figure>
+<p>最后我们定义估阶函数的对比函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def __lt__(self, other):</span><br><span class="line">    # 实现节点的比较方法，使用 f() 函数值进行比较</span><br><span class="line">    return self.f() &lt; other.f()</span><br></pre></td></tr></table></figure>
+
+
+<p>初始化到这里就差不多了，接下来让我们进入到下一个部分</p>
+<p>##准备</p>
+<p>我们需要判断当前节点的临近节点状态，看看是否有超过地图的，那么定义函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def get_neighbors(node,grid):</span><br><span class="line">    neighbors = []</span><br><span class="line">    for dx,dy in [(1,0),(-1,0),(0,1),(0,-1)]:</span><br><span class="line">        x,y = node.x+dx, node.y+dy</span><br><span class="line">        if 0&lt;= x &lt;len(grid) and 0 &lt;= len(grid[0]) and not grid[x][y]:</span><br><span class="line">            neighbors.append(Node(x, y))</span><br><span class="line">    return neighbors</span><br></pre></td></tr></table></figure>
+<p>这里重点解释一下这个if语句，前面两个是检测是否超过边界，而我们的重点在最后一个条件。由于我们是用一个二维矩阵（二维数组）表示的地图，而每个点$(x,y)$表示数组上的一个数字（1表示障碍物，0表示通道）因此在这里我们用not 符号检测点是否为障碍物，若为1，not后是0（等价于布尔值的 false，不满足条件，因此不会计入neighbors组中）</p>
+<p>如果我们已经遍历完成且找到终点了呢？那么现在我们定义回溯函数，它被用来从终点找到返回起点的最短路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def reconstruct_path(node);</span><br><span class="line">    path = []</span><br><span class="line">    while node:</span><br><span class="line">        path.append((node.x, node.y))</span><br><span class="line">        node = node.parent</span><br><span class="line">    return path[::-1]</span><br></pre></td></tr></table></figure>
+<p>它被设定用来接收每一个路径上的节点并反向的打印。</p>
+<p>##A-star 搜索实现</p>
+<p>最后，我们来定义搜索函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">def a_star_search(grid,start,goal): #把地图，起点，终点当成参数</span><br><span class="line">    open_list = [] #储存待探索的节点</span><br><span class="line">    closed_list = []#储存已探索的节点</span><br><span class="line"></span><br><span class="line">    start_node = Node(start[0],start[1]) #start是一个包含两个元素的一维数组，这里是传入第一个和第二个元素作为点的坐标 </span><br><span class="line">    goal_node = Node(goal[0],goal[1])</span><br><span class="line">    heapq.heappush(open_list, (start_node.f(), start_node))  # 将起始节点加入 open_list</span><br><span class="line"></span><br><span class="line">    while open_list:</span><br><span class="line">        _, current_node = heapq.heappop(open_list)</span><br><span class="line">        if(current_node.x,current_node.y) == (goal_node.x,goal_node.y) #判断是否为终点</span><br><span class="line">            return reconstruct_path(current_node)</span><br><span class="line">         closed_set.add((current_node.x, current_node.y))  # 将当前节点加入已探索集合</span><br><span class="line">        for neighbor in get_neighbors(current_node, grid):</span><br><span class="line">            if (neighbor.x, neighbor.y) in closed_set:</span><br><span class="line">                continue  # 如果邻居节点已探索过，跳过本次循环</span><br><span class="line"></span><br><span class="line">            tentative_g = current_node.g + 1  # 这里假设每一步的代价都是 1</span><br><span class="line"></span><br><span class="line">            if (neighbor.f(), neighbor) in open_list:</span><br><span class="line">                # 如果邻居节点已经在 open_list 中，更新代价和父节点</span><br><span class="line">                if neighbor.g &gt; tentative_g:</span><br><span class="line">                    neighbor.g = tentative_g</span><br><span class="line">                    neighbor.parent = current_node</span><br><span class="line">            else:</span><br><span class="line">                # 否则，将邻居节点加入 open_list，并设置代价和父节点</span><br><span class="line">                neighbor.g = tentative_g</span><br><span class="line">                neighbor.h = heuristic(neighbor, goal_node)</span><br><span class="line">                neighbor.parent = current_node</span><br><span class="line">                heapq.heappush(open_list, (neighbor.f(), neighbor))</span><br><span class="line"></span><br><span class="line">    return None  # 如果 open_list 为空，则无法找到路径，返回 None</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们需要将三个参数传入搜索函数，我们定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">grid = [</span><br><span class="line">    [0, 0, 0, 0, 0],</span><br><span class="line">    [0, 0, 1, 1, 0],</span><br><span class="line">    [0, 0, 1, 0, 0],</span><br><span class="line">    [0, 0, 1, 0, 0],</span><br><span class="line">    [0, 0, 1, 0, 0]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">start = (0, 2)</span><br><span class="line">goal = (4, 1)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>第一个是地图，第二个是起点，第三个是终点。<br>最后调用函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">path = a_star_search(grid, start, goal)</span><br><span class="line">print(path) </span><br></pre></td></tr></table></figure>
+<p>那么理论上它输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[(0, 2), (0, 1), (1, 1), (2, 1), (3, 1), (4, 1)]</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2023/11/26/ocr/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          ocr
+        </a>
+      
+    </div>
+    <div>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

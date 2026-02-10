@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>链表 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        链表
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        链表
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2025-05-06</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>30 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>7.6k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>这节我们讲讲链表，书籍是Weiss的《数据结构与算法分析》</p>
+<h1 id="抽象数据类型"><a href="#抽象数据类型" class="headerlink" title="抽象数据类型"></a>抽象数据类型</h1><p>一个好的程序之一是每个模块都应该尽量的小而美，换句话说，每个模块是一个逻辑单位并执行某个特定的任务，它将通过调用其他模块而使本身变得很小。模块化有一些优点，比如调试小程序总比调试大程序容易得多；第二，多个人对一个模块化程序编程要简单一些；第三，一个写得好的模块化程序把某些以来关系只局限在某个例程中，修改调试会很方便。</p>
+<p>抽象数据类型（ADT:abstract data type）是一些操作的集合，我们可以理解为数学上的抽象。例如将等式1+2&#x3D;3改写为用未知量替代的方程x+y&#x3D;z。也就是写成一些比较通用的形式。一般来说，在ADT中定义我们是不涉及如何实现操作的集合，所以这可以看作是模块化设计的扩充。因为我们正在设计一些通用程序。</p>
+<p>对表、集合、图和他们的操作可以看作是抽象数据类型，就像整数、实数和布尔值是数据类型一样，它们各自有各自相关的操作。而抽象数据类型也有它们自己相关的操作，对集合ADT，我们可以有交、并、测量大小以及取余（取补集）的操作。或者，我们也可以只有两种操作：并和查找。这两种操作也在集合上定义了一种不同的ADT。</p>
+<p>现在我们有一种简单的思想，重复的模块运用十分的讨厌，为此我们只将这些操作编写一遍，而在程序中如何部分需要在该ADT上运行其中一种函数的时候，我们就通过调用适当的函数来解决问题。如果有一些其他的细节，我们可以简单的修改该模块实现。本章我们将讨论几种最基本的数据结构：</p>
+<h1 id="表-ADT"><a href="#表-ADT" class="headerlink" title="表 ADT"></a>表 ADT</h1><p>现在，我们将处理一般形如$A_1,A_2,\cdots, A_n$的表，我们说这个表的大小为$n$。而$n&#x3D;0$的情况下，也就是大小为0的表我们称为空表。</p>
+<p>除空表以外，我们对$ 1&lt; i &lt; n$中的元素$A_{i+1}$称为是$A_i$的后继元，而$A_{i-1}$称为$A_{i}$的前驱元。表中的第一个元素是$A_1$，最后一个元素是$A_n$。对于这两个元素，前者不定义前驱元，后者不定义后继元，因为这是没有意义的。为了简单的讨论，我们现在只假设表中的元素是整数。</p>
+<p>跟这些定义相关的是我们要在表ADT上就行的操作的集合，例如 <strong>PrintList</strong>和<strong>MakeEmpty</strong>。第一个是打印表的元素，第二个是创造一个空表。接着我们定义<strong>Find</strong> 表示返回特定关键字首次出现的位置。而<strong>Insert</strong>和<strong>Delete</strong>表示插入元素在指定位置和删除某个关键字。接着，我们记 <strong>FindKth</strong>返回某个元素的位置，例如FindKth($A_3$)返回3。若34,12,52,16,12是一个表，则Find(52)返回3；Insert(X,3)则把表变为34,12,X,52,16,12。而Delet(52)则把表变成34,12,X,16,12。</p>
+<h2 id="表的简单数组实现"><a href="#表的简单数组实现" class="headerlink" title="表的简单数组实现"></a>表的简单数组实现</h2><p>对表的所有操作都可以通过数组来实现，虽然数组是动态指定的，但我们还是得对表的最大值进行估计。</p>
+<p>数组的实现使得 <strong>PrintList</strong>和 <strong>Find</strong>是呈线性时间运行的，而 <strong>FindKth</strong>花费常数时间。但是插入和删除则花费更多的时间。比如插入，我们在位置0插入一个值，则首先需要将数组后移一个位置空出空间，而删除第一个元素需要将表中的元素全部向前移动一个单位，所以这两种最坏的情况都是O(N)的。所以在数组上建表其实是一种比较浪费资源的事情。</p>
+<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><p>为了避免插入和删除的线性开销，我们需要允许表可以不连续储存。否则表的部分或者全部都需要整体移动。现在给出一个链表（ <strong>linked list</strong>）的一般想法：</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C300)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20300%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp8685412453588284%5D%20%0A%5Cdraw%20%20%20(83%2C93)%20--%20(133.33%2C93)%20--%20(133.33%2C118.67)%20--%20(83%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2924787203268844%5D%20%0A%5Cdraw%20%20%20%20(115%2C93)%20--%20(115%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp23953376359227185%5D%20%0A%5Cdraw%20%20%20(173%2C93)%20--%20(223.33%2C93)%20--%20(223.33%2C118.67)%20--%20(173%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada19475134989952791%5D%20%0A%5Cdraw%20%20%20%20(205%2C93)%20--%20(205%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp4299481344913403%5D%20%0A%5Cdraw%20%20%20(259%2C93.19)%20--%20(309.33%2C93.19)%20--%20(309.33%2C118.68)%20--%20(259%2C118.68)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6439366692998871%5D%20%0A%5Cdraw%20%20%20%20(291%2C93.19)%20--%20(291%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp43933548186680627%5D%20%0A%5Cdraw%20%20%20(346%2C93)%20--%20(396.33%2C93)%20--%20(396.33%2C118.67)%20--%20(346%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9607504964332989%5D%20%0A%5Cdraw%20%20%20%20(378%2C93)%20--%20(378%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp9171375634741383%5D%20%0A%5Cdraw%20%20%20(437%2C93)%20--%20(487.33%2C93)%20--%20(487.33%2C118.67)%20--%20(437%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada09955567487572092%5D%20%0A%5Cdraw%20%20%20%20(469%2C93)%20--%20(469%2C120.67)%20%3B%0A%0A%25Straight%20Lines%20%5Bid%3Ada8225271136365326%5D%20%0A%5Cdraw%20%20%20%20(134%2C106)%20--%20(168.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(170.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada03167607141309481%5D%20%0A%5Cdraw%20%20%20%20(224%2C107)%20--%20(258.39%2C107)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(260.39%2C107)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9576619970510003%5D%20%0A%5Cdraw%20%20%20%20(310%2C106)%20--%20(344.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(346.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada963313497337551%5D%20%0A%5Cdraw%20%20%20%20(398%2C106)%20--%20(432.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(434.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(89%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B1%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(180%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B2%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(267%2C98.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B3%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(354%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B4%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(439%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B5%7D%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D
+" width="60%"></p>
+</center>
+
+<p>链表由一系列不必在内存中相连的结构组成，每个结构均含有表元素和指向包含改元素后继元的结构的指针。我们称为Next指针，最后一个单元的Next指向 NULL。</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C300)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20300%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp8685412453588284%5D%20%0A%5Cdraw%20%20%20(83%2C93)%20--%20(133.33%2C93)%20--%20(133.33%2C118.67)%20--%20(83%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2924787203268844%5D%20%0A%5Cdraw%20%20%20%20(115%2C93)%20--%20(115%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp23953376359227185%5D%20%0A%5Cdraw%20%20%20(173%2C93)%20--%20(223.33%2C93)%20--%20(223.33%2C118.67)%20--%20(173%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada19475134989952791%5D%20%0A%5Cdraw%20%20%20%20(205%2C93)%20--%20(205%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp4299481344913403%5D%20%0A%5Cdraw%20%20%20(259%2C93.19)%20--%20(309.33%2C93.19)%20--%20(309.33%2C118.68)%20--%20(259%2C118.68)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6439366692998871%5D%20%0A%5Cdraw%20%20%20%20(291%2C93.19)%20--%20(291%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp43933548186680627%5D%20%0A%5Cdraw%20%20%20(346%2C93)%20--%20(396.33%2C93)%20--%20(396.33%2C118.67)%20--%20(346%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9607504964332989%5D%20%0A%5Cdraw%20%20%20%20(378%2C93)%20--%20(378%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp9171375634741383%5D%20%0A%5Cdraw%20%20%20(437%2C93)%20--%20(487.33%2C93)%20--%20(487.33%2C118.67)%20--%20(437%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada09955567487572092%5D%20%0A%5Cdraw%20%20%20%20(469%2C93)%20--%20(469%2C120.67)%20%3B%0A%0A%0A%25%20Text%20Node%0A%5Cdraw%20(89%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B1%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(180%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B2%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(267%2C98.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B3%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(354%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B4%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(439%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B5%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(117%2C103)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B800%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(100%2C128)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B1000%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(208%2C104)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B712%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(191%2C130)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B800%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(281%2C126)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B712%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(292%2C104.93)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B992%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(367%2C127)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B992%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(379%2C103)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B692%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(455%2C128)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B692%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(476%2C103)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%5Bfont%3D%5Ctiny%5D%20%5Balign%3Dleft%5D%20%7B0%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D
+" width="60%"></p>
+</center>
+
+<p>若P声明为指向一个结构的指针，那么P中的值就是主存中的一个位置，通过该位置就可以找到一个结构，该结构可以通过P -&gt; FieldName访问。其中FieldName是我们想要考察的域的名字。例如上图，这个表有5个结构，恰好内存中分配的地址是1000,800,712,992,692.第一个结构的指针含有800，它提供了第二个指针的位置。其余每个结构也也有一个指针用于类似的目的，而指针只是一个数，在后面我们用箭头画出指针即可，因为这样更直观。</p>
+<p>删除命令可以通过修改一个指针实现，例如下图：</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C300)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20300%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp8685412453588284%5D%20%0A%5Cdraw%20%20%20(83%2C93)%20--%20(133.33%2C93)%20--%20(133.33%2C118.67)%20--%20(83%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2924787203268844%5D%20%0A%5Cdraw%20%20%20%20(115%2C93)%20--%20(115%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp23953376359227185%5D%20%0A%5Cdraw%20%20%20(173%2C93)%20--%20(223.33%2C93)%20--%20(223.33%2C118.67)%20--%20(173%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada19475134989952791%5D%20%0A%5Cdraw%20%20%20%20(205%2C93)%20--%20(205%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp4299481344913403%5D%20%0A%5Cdraw%20%20%20(259%2C93.19)%20--%20(309.33%2C93.19)%20--%20(309.33%2C118.68)%20--%20(259%2C118.68)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6439366692998871%5D%20%0A%5Cdraw%20%20%20%20(291%2C93.19)%20--%20(291%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp43933548186680627%5D%20%0A%5Cdraw%20%20%20(346%2C93)%20--%20(396.33%2C93)%20--%20(396.33%2C118.67)%20--%20(346%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9607504964332989%5D%20%0A%5Cdraw%20%20%20%20(378%2C93)%20--%20(378%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp9171375634741383%5D%20%0A%5Cdraw%20%20%20(437%2C93)%20--%20(487.33%2C93)%20--%20(487.33%2C118.67)%20--%20(437%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada09955567487572092%5D%20%0A%5Cdraw%20%20%20%20(469%2C93)%20--%20(469%2C120.67)%20%3B%0A%0A%25Straight%20Lines%20%5Bid%3Ada8225271136365326%5D%20%0A%5Cdraw%20%20%20%20(134%2C106)%20--%20(168.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(170.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada03167607141309481%5D%20%0A%5Cdraw%20%20%5Bdash%20pattern%3D%7Bon%200.84pt%20off%202.51pt%7D%5D%20%20(224%2C107)%20--%20(258.39%2C107)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(260.39%2C107)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9576619970510003%5D%20%0A%5Cdraw%20%20%20%20(310%2C106)%20--%20(344.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(346.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada963313497337551%5D%20%0A%5Cdraw%20%20%20%20(398%2C106)%20--%20(432.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(434.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Curve%20Lines%20%5Bid%3Ada5940988043363349%5D%20%0A%5Cdraw%20%20%20%20(232%2C86)%20..%20controls%20(271.6%2C56.3)%20and%20(292.96%2C56.19)%20..%20(338.99%2C87.24)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(340.39%2C88.19)%7D%2C%20rotate%20%3D%20214.25%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(89%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B1%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(180%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B2%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(267%2C98.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B3%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(354%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B4%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(439%2C96.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B5%7D%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D," width="60%"></p>
+</center>
+
+<p>而插入命令需要通过一次 malloc 调用动态的从系统得到一个新单元，如何执行两次指针调整，一般想法如下图给出：</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C300)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20300%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp8685412453588284%5D%20%0A%5Cdraw%20%20%20(83%2C93)%20--%20(133.33%2C93)%20--%20(133.33%2C118.67)%20--%20(83%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2924787203268844%5D%20%0A%5Cdraw%20%20%20%20(115%2C93)%20--%20(115%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp23953376359227185%5D%20%0A%5Cdraw%20%20%20(173%2C93)%20--%20(223.33%2C93)%20--%20(223.33%2C118.67)%20--%20(173%2C118.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada19475134989952791%5D%20%0A%5Cdraw%20%20%20%20(205%2C93)%20--%20(205%2C120.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp4299481344913403%5D%20%0A%5Cdraw%20%20%20(335%2C92.19)%20--%20(385.33%2C92.19)%20--%20(385.33%2C117.68)%20--%20(335%2C117.68)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada6439366692998871%5D%20%0A%5Cdraw%20%20%20%20(367%2C92.19)%20--%20(367%2C119.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp43933548186680627%5D%20%0A%5Cdraw%20%20%20(422%2C92)%20--%20(472.33%2C92)%20--%20(472.33%2C117.67)%20--%20(422%2C117.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9607504964332989%5D%20%0A%5Cdraw%20%20%20%20(454%2C92)%20--%20(454%2C119.67)%20%3B%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp9171375634741383%5D%20%0A%5Cdraw%20%20%20(513%2C92)%20--%20(563.33%2C92)%20--%20(563.33%2C117.67)%20--%20(513%2C117.67)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada09955567487572092%5D%20%0A%5Cdraw%20%20%20%20(545%2C92)%20--%20(545%2C119.67)%20%3B%0A%0A%25Straight%20Lines%20%5Bid%3Ada8225271136365326%5D%20%0A%5Cdraw%20%20%20%20(134%2C106)%20--%20(168.39%2C106)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(170.39%2C106)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada03167607141309481%5D%20%0A%5Cdraw%20%20%5Bdash%20pattern%3D%7Bon%200.84pt%20off%202.51pt%7D%5D%20%20(224%2C107)%20--%20(321.39%2C106.2)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(323.39%2C106.19)%7D%2C%20rotate%20%3D%20179.53%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9576619970510003%5D%20%0A%5Cdraw%20%20%20%20(386%2C105)%20--%20(420.39%2C105)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(422.39%2C105)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada963313497337551%5D%20%0A%5Cdraw%20%20%20%20(474%2C105)%20--%20(508.39%2C105)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(510.39%2C105)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp09844710560424663%5D%20%0A%5Cdraw%20%20%20(240%2C153)%20--%20(300.39%2C153)%20--%20(300.39%2C182.19)%20--%20(240%2C182.19)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada5427351175215294%5D%20%0A%5Cdraw%20%20%20%20(284%2C154)%20--%20(284%2C180.19)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada07461142976815816%5D%20%0A%5Cdraw%20%20%20%20(224%2C107)%20--%20(237.69%2C143.32)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(238.39%2C145.19)%7D%2C%20rotate%20%3D%20249.35%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2206194336005527%5D%20%0A%5Cdraw%20%20%20%20(296%2C165)%20--%20(326.3%2C118.86)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(327.39%2C117.19)%7D%2C%20rotate%20%3D%20123.29%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(89%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B1%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(180%2C100.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B2%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(337%2C95.59)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B3%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(430%2C95.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B4%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(515%2C95.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24A_%7B5%7D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(252%2C160.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24X%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D" width="60%"></p>
+</center>
+
+<h2 id="程序的设计细节"><a href="#程序的设计细节" class="headerlink" title="程序的设计细节"></a>程序的设计细节</h2><p>我们现在开始按照上述一般想法来编写一些程序。我们使用一些标志来做识别，例如表的第一个元素，我们记为 Header（表头）或哑结点（Dummy node）。不过至于要不要使用表头则是个人的兴趣问题。</p>
+<p>我们定义一些抽象函数，一般来说我们会有2个文件.h和.c的文件，原型我们存放在所谓的.h头文件中，而具体的函数声明存放在.c文件中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#ifndef _List_H  // 防止头文件被多次重复定义</span><br><span class="line">#define _List_H </span><br><span class="line"></span><br><span class="line">struct Node; //声明Node结构体</span><br><span class="line">typedef struct Node *PtrToNode; //声明一个定位到Node结构的指针 PtrToNode</span><br><span class="line">typedef PtrToNode List; //定义链表类型List，表示指向表中的元素</span><br><span class="line">typedef PtrToNode Position; //定义链表的位置，表示表中某个元素的节点。</span><br><span class="line"></span><br><span class="line">List MakeEmpty(List L); //创建空列表</span><br><span class="line">int IsEmpty(List L); //判断列表是否为空</span><br><span class="line">int IsLast(Position P, List L); //是否为表中最后一个元素</span><br><span class="line">Position Find(ElementType X, List L); //查找是否含有元素X并返回位置</span><br><span class="line">void Delete(ElementType X, List L); //删除特定元素X</span><br><span class="line">Position FindPrevious(ElementType X, List L); //查找元素X的前一个元素</span><br><span class="line">void Insert(ElementType X, List L, Position P); //插入X在表中的位置P</span><br><span class="line">void DeleteList(List L); //删除整个表</span><br><span class="line">Position Header(List L); //返回头的位置</span><br><span class="line">Position First(List L); //返回第一个元素的位置</span><br><span class="line">Position Advance(Position P); //返回P的下一个位置</span><br><span class="line">ElementType Retrieve(Position P); //返回位置P的元素</span><br><span class="line"></span><br><span class="line">#endif /* _List_H */ //结束头文件保护</span><br><span class="line">/* Place in the implementation file */</span><br><span class="line">struct Node //具体Node的实现：</span><br><span class="line">&#123;</span><br><span class="line">    ElementType Element; //该结构包含一个元素Element和指向下一个节点位置的指针Next</span><br><span class="line">    Position Next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>首先第一个函数是测试表是否是空的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* Return true if L is empty */</span><br><span class="line">int IsEmpty(List L)</span><br><span class="line">&#123;</span><br><span class="line">    return L-&gt;Next == NULL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>若表L的表头下一个元素为Null，则我们知道L是空的。</p>
+<p>接着我们编写一个测试元素是否在表的末尾的函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/* Return true if P is the last position in list L */</span><br><span class="line">/* Parameter L is unused in this implementation */</span><br><span class="line">int IsLast(Position P, List L)</span><br><span class="line">&#123;</span><br><span class="line">    return P-&gt;Next == NULL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数定义了两个输入，一个是位置P，一个是表L，若L的第P个位置的下一个指针是Null，则说明P位置的元素是最后的一个元素。</p>
+<p>若我们递归的定义Find函数，则我们必须想办法避免冗长的终止条件，我们可以使用 &amp;&amp;符号，若前半部分为假，则自动终止函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/* Return Position of X in L; NULL if not found */</span><br><span class="line">Position Find(ElementType X, List L)</span><br><span class="line">&#123;</span><br><span class="line">    Position P;</span><br><span class="line"></span><br><span class="line">    P = L-&gt;Next;</span><br><span class="line">    while (P != NULL &amp;&amp; P-&gt;Element != X)</span><br><span class="line">        P = P-&gt;Next;</span><br><span class="line"></span><br><span class="line">    return P;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数定义了两个输入，一个是要查找的元素X，一个是表L。给定位置P，并定义P是L表头的下一个元素的地址。现在通过条件判断P是否导向NUll或者P处的元素是否等于X，若都不是，则P的指针重置为下一个元素的指针接着重新运行。</p>
+<p>接着是删除函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/* Delete first occurrence of X from a list */</span><br><span class="line">/* Assume use of a header node */</span><br><span class="line"></span><br><span class="line">void Delete(ElementType X, List L)</span><br><span class="line">&#123;</span><br><span class="line">    Position P, TmpCell;</span><br><span class="line"></span><br><span class="line">    P = FindPrevious(X, L);</span><br><span class="line"></span><br><span class="line">    if (!IsLast(P, L)) /* Assumption of header use */</span><br><span class="line">    &#123;</span><br><span class="line">        TmpCell = P-&gt;Next;</span><br><span class="line">        P-&gt;Next = TmpCell-&gt;Next; /* Bypass deleted cell */</span><br><span class="line">        free(TmpCell);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>给定位置P和Tmpceli，后者为储存被删除函数的临时变量。现在，定义P为X在L中的前一个元素（若存在的话），若P不是L中最后一个元素，则我们储存P的下一个元素的指针在TmpCeli。现在，重新令P的下一个元素链接到P的下一个元素再下一个元素的地址 。最后删除元素X，释放TmpCeli的内存即可完成操作。</p>
+<p>上述的 <strong>FindPrevious</strong>函数如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/* If X is not found, then Next field of returned */</span><br><span class="line">/* Position is NULL */</span><br><span class="line">/* Assumes a header */</span><br><span class="line"></span><br><span class="line">Position FindPrevious(ElementType X, List L)</span><br><span class="line">&#123;</span><br><span class="line">    Position P;</span><br><span class="line"></span><br><span class="line">    P = L;</span><br><span class="line">    while (P-&gt;Next != NULL &amp;&amp; P-&gt;Next-&gt;Element != X)</span><br><span class="line">        P = P-&gt;Next;</span><br><span class="line"></span><br><span class="line">    return P;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后一段代码是插入例程，我们将传入3个参数，要插入表中的元素X，表L和要插入的位置P</p>
+<p>为了精准插入，我们需要调用 <strong>FindPrevious</strong>函数得知前一个值是什么。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/* Insert (after legal position P) */</span><br><span class="line">/* Header implementation assumed */</span><br><span class="line">/* Parameter L is unused in this implementation */</span><br><span class="line"></span><br><span class="line">void Insert(ElementType X, List L, Position P)</span><br><span class="line">&#123;</span><br><span class="line">    Position TmpCell;</span><br><span class="line"></span><br><span class="line">    TmpCell = malloc(sizeof(struct Node));</span><br><span class="line">    if (TmpCell == NULL)</span><br><span class="line">        FatalError(&quot;Out of space!!!&quot;);</span><br><span class="line"></span><br><span class="line">    TmpCell-&gt;Element = X;</span><br><span class="line">    TmpCell-&gt;Next = P-&gt;Next;</span><br><span class="line">    P-&gt;Next = TmpCell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该函数接受三个参数，要插入表的元素X，表L，还有要插入的位置P。定义临时变量TmpCeli的位置。首先，动态的分配一块内存给新的节点TmpCeli，若该元素分配为NULL，则返回分配错误。接着把X的指针储存在TmpCeli中，现在，为了完成插入操作，我们把原本在位置P的元素的下一个元素的指针分配给TmpCeli，这样就完成了对P的替换，接着，只需要把P的下一个指针指向Tmpceli，这样表就链接起来了。就成功的把X插入到P和P-next的中间。</p>
+<h2 id="常见的错误"><a href="#常见的错误" class="headerlink" title="常见的错误"></a>常见的错误</h2><p>在实际的编程中，也许我们会遇到一些诸如 <strong>memory access violation</strong> 或者 <strong>segmentation violation</strong>的报错，通常情况下，这意味着指针包含了伪地址。而这样的结果来源自初始化变量失败，例如下述代码的第一行若遗漏，则P就是未定义的，的人也不可能指向内存的有效部分。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/* Incorrect DeleteList algorithm */</span><br><span class="line"></span><br><span class="line">void DeleteList(List L)</span><br><span class="line">&#123;</span><br><span class="line">    Position P;</span><br><span class="line"></span><br><span class="line">    P = L-&gt;Next; /* Header assumed */</span><br><span class="line">    L-&gt;Next = NULL;</span><br><span class="line">    while (P != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        free(P);</span><br><span class="line">        P = P-&gt;Next;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>另一个典型的错误是上述 Insert函数遗漏了最后一行代码，若P是NULL，该指向就是非法的。但函数知道P不是NULL，所以例程不会有问题。一些编译器可能会给你做隐式检查，不过这不是c标准的一部分。所以有时候你可以在一个编译器上运行程序，在另一个编译器上则不行。</p>
+<p>第二种错误涉及何时使用或者不使用malloc来获取一个新的单元。声明一个指向某结构的指针并不创建该结构，而只是给出足够的空间容纳结构可能会使用的地址。而创建尚未被声明过的记录的唯一方法就是使用malloc库函数，它会迫使系统创建一个新的结构并返回该结构的指针。</p>
+<p>当你不需要这些东西的时候，你可以使用free函数来回收这段空间，free(P) 的结果是：P指向的数据是无定义的，但指针还存在。</p>
+<p>当我们把free应用在链表中，那么调用free的次数应该对于表的大小，若表头存在就再加1，否则你会得到一个错误的程序。多一点你就会浪费空间也浪费时间。也许你在使用了大量空间之后，新单元的申请会返回NULL。</p>
+<p>在执行一次删除表后，我们应该需要一个临时变量来储存被放弃的单元，因为你在删除后将不能引用它。所以上述free的例子不太完整，我们现在给出较完整的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/* Correct DeleteList algorithm */</span><br><span class="line"></span><br><span class="line">void DeleteList(List L)</span><br><span class="line">&#123;</span><br><span class="line">    Position P, Tmp;</span><br><span class="line"></span><br><span class="line">    P = L-&gt;Next; /* Header assumed */</span><br><span class="line">    L-&gt;Next = NULL;</span><br><span class="line">    while (P != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        Tmp = P-&gt;Next; // 先保存下一个节点</span><br><span class="line">        free(P);       // 释放当前节点</span><br><span class="line">        P = Tmp;       // 移动到下一个节点</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后提一个警告，malloc(sizeof(PtrToNode))是合法的，但是它并不给结构体分配足够的空间，它只会给指针分配一个空间。</p>
+<h2 id="双链表"><a href="#双链表" class="headerlink" title="双链表"></a>双链表</h2><p>在某些时候，倒序扫描链表是很方便的，标准实现方法在这时候不能发挥作用，但是解决方法异常的简单，只需要在结构上附加一个域，它包含一个指向前一个单元的指针。但开销是一个附加的链。增加了空间的需求且使得插入和删除的开销增加一倍，因为有更多的指针需要定位，但简化了删除操作，因为你不再被迫使用一个指向前驱元的指针来访问一个关键字。</p>
+<h2 id="循环链表"><a href="#循环链表" class="headerlink" title="循环链表"></a>循环链表</h2><p>另一个思想是，将最后一个单元反过来直指第一个单元。它可以有表头，也可以没有表头。（若存在表头，则最后的单元就指向它）并且还可以是双向的链表。下面是一个简单的流程图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A &lt;--&gt; B &lt;--&gt; C &lt;--&gt; A </span><br></pre></td></tr></table></figure>
+
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>我们提供三个使用链表的例子，第一个是表示一元多项式的简单方法，第二个是在某些情况下以线性时间进行排序的方法。最后我们介绍一个复杂的例子，它讲述链表如何用于大学的课程注册。</p>
+<h3 id="多项式-ADT"><a href="#多项式-ADT" class="headerlink" title="多项式 ADT"></a>多项式 ADT</h3><p>我们可以用表定义一种关于一元（具有非负次幂）多项式的抽象数据类型。令$f(x) &#x3D; \sum^n_{i&#x3D;0} a_ix^i$。若大部分系数非零，则我们可以用一个简单的数组来储存这些系数（更数学的来说，可以当作是多项式域里面的一个向量来看），然后我们可以编写一些对多项式进行加、减、乘、微分等其他操作的例程，我们将忽略初始化多项式为零的时间，则乘法例程的运行时间将和两个多项式的次数的乘机成正比。另一个问题接踵而至，若$P_1(x)$是次数为1000的多项式，而$P_2(x)$是次数为1990的多项式，那么这个时间就可能不太能接受了。因为大部分的时间都花费在了乘以0和单步调试两个输入多项式的大量不存在的部分上。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">typedef struct</span><br><span class="line">&#123;</span><br><span class="line">    int CoeffArray[MaxDegree + 1];</span><br><span class="line">    int HighPower;</span><br><span class="line">&#125; *Polynomial;</span><br></pre></td></tr></table></figure>
+
+<p>我们定义了一个数组，它用来储存系数，一个是存储多项式的最高次幂。</p>
+<p>然后我们来定义初始化多项式的函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">void ZeroPolynomial(Polynomial Poly)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    for (i = 0; i &lt;= MaxDegree; i++)</span><br><span class="line">        Poly-&gt;CoeffArray[i] = 0;</span><br><span class="line">    Poly-&gt;HighPower = 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>该函数体通过指针设定Poly里面的数组都是0，然后初始化最高次幂为0.</p>
+<p>然后我们定义多项式加法，对任意两个多项式$f,g$，则$f+g$就是对应幂次的多项式的加法：$f&#x3D;10x^2+6,g&#x3D;5x^2+10x+7$，则$f+g &#x3D; (10+5)x^2 + 10x + (6+7)$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void AddPolynomial(const Polynomial Poly1, const Polynomial Poly2, Polynomial PolySum)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    ZeroPolynomial(PolySum);</span><br><span class="line">    PolySum-&gt;HighPower = Max(Poly1-&gt;HighPower, Poly2-&gt;HighPower);</span><br><span class="line">    for (i = PolySum-&gt;HighPower; i &gt;= 0; i--)</span><br><span class="line">        PolySum-&gt;CoeffArray[i] = Poly1-&gt;CoeffArray[i] + Poly2-&gt;CoeffArray[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个模块首先引入三个参数，多项式1，多项式2，还有多项式sum，最后是用来储存结果的多项式。接着调用zeroPolynomial函数初始化PolySum多项式。第二步，由于多项式的和最高次幂取决于谁的次数高，所以Max函数在2个幂次里面返回一个值最大的。最后是加法，把每个位置上的系数一一配对然后加起来，接着存储到PolySum里面就结束了。</p>
+<p>然后是乘法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">void MultiPolynomial(const Polynomial Poly1, const Polynomial Poly2, Polynomial PolyProd)</span><br><span class="line">&#123;</span><br><span class="line">    int i, j;</span><br><span class="line"></span><br><span class="line">    ZeroPolynomial(PolyProd);</span><br><span class="line">    PolyProd-&gt;HighPower = Poly1-&gt;HighPower + Poly2-&gt;HighPower;</span><br><span class="line"></span><br><span class="line">    if (PolyProd-&gt;HighPower &gt; MaxDegree)</span><br><span class="line">        Error(&quot;Exceeded array size&quot;);</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        for (i = 0; i &lt;= Poly1-&gt;HighPower; i++)</span><br><span class="line">            for (j = 0; j &lt;= Poly2-&gt;HighPower; j++)</span><br><span class="line">                PolyProd-&gt;CoeffArray[i + j] += Poly1-&gt;CoeffArray[i] * Poly2-&gt;CoeffArray[j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于乘法，若$P_1(x) &#x3D; 10x^2+2x+1$，而$P_2(x) &#x3D;x^2+x+1$，则$P_1 \times P_2 &#x3D; 10x^2(x^2+x+1) + 2x(x^2+x+1) + (x^2+x+1)$，即把每一个$P_1$的项都去乘整个$P_2$，然后加起来。显然的事情是，若$P_1$有n个项，而$P_2$有$m$个，则$P_1 \times P_2$的项的个数就取决于$P_2$到底有多少个项。</p>
+<p>另一种实现方法是用单链表，我们可以把多项式的每一项存在一个单元内，然后让这些单元按照次数递减的方式排序。例如下述例子，令$P_1 &#x3D; 10x^2+2x+1$，$P_2 &#x3D; x^2 + 3x + 7$，那么两个链表可以如下表示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">P_1 : (2) 10 --&gt; (1) 2 --&gt; (0) 1</span><br><span class="line">P_2 : (2) 1 --&gt; (1) 3 --&gt; (0) 7</span><br></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">typedef struct Node *PtrToNode;</span><br><span class="line"></span><br><span class="line">struct Node</span><br><span class="line">&#123;</span><br><span class="line">    int Coefficient; # 系数</span><br><span class="line">    int Exponent; #多项式的指针</span><br><span class="line">    PtrToNode Next; #下一个节点的指针</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef PtrToNode Polynomial; /* Nodes sorted by exponent */</span><br></pre></td></tr></table></figure>
+
+<p>利用链表的一个难点是如何合并同类项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 定义结构体</span><br><span class="line"></span><br><span class="line">typedef struct &#123;</span><br><span class="line">    PolynomialNode* head;</span><br><span class="line">    int degree;</span><br><span class="line">&#125; Polynomial</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">// 定义链表节点结构</span><br><span class="line">typedef struct Node &#123;</span><br><span class="line">    int Coefficient; // 系数</span><br><span class="line">    int Exponent;    // 指数</span><br><span class="line">    struct Node* Next; // 指向下一个节点的指针</span><br><span class="line">&#125; Node, *Polynomial;</span><br><span class="line"></span><br><span class="line">// 创建新节点</span><br><span class="line">Node* CreateNode(int coeff, int exp) &#123;</span><br><span class="line">    Node* newNode = (Node*)malloc(sizeof(Node));</span><br><span class="line">    if (newNode == NULL) &#123;</span><br><span class="line">        fprintf(stderr, &quot;内存分配失败\n&quot;);</span><br><span class="line">        exit(1);</span><br><span class="line">    &#125;</span><br><span class="line">    newNode-&gt;Coefficient = coeff;</span><br><span class="line">    newNode-&gt;Exponent = exp;</span><br><span class="line">    newNode-&gt;Next = NULL;</span><br><span class="line">    return newNode;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 插入节点（按指数排序）</span><br><span class="line">void InsertNode(Polynomial* P, int coeff, int exp) &#123;</span><br><span class="line">    // 创建一个新节点，存储系数和指数</span><br><span class="line">    Node* newNode = CreateNode(coeff, exp);</span><br><span class="line"></span><br><span class="line">    // 如果链表为空，直接将新节点作为头节点</span><br><span class="line">    if (*P == NULL) &#123;</span><br><span class="line">        *P = newNode;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // 初始化 current 为链表的头节点，prev 为 NULL</span><br><span class="line">        Node* current = *P;</span><br><span class="line">        Node* prev = NULL;</span><br><span class="line"></span><br><span class="line">        // 遍历链表，找到插入位置</span><br><span class="line">        // 按指数降序排列，找到第一个小于等于 exp 的节点</span><br><span class="line">        while (current != NULL &amp;&amp; current-&gt;Exponent &gt; exp) &#123;</span><br><span class="line">            prev = current;          // 保存当前节点</span><br><span class="line">            current = current-&gt;Next; // 移动到下一个节点</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 如果找到相同指数的节点，合并同类项</span><br><span class="line">        if (current != NULL &amp;&amp; current-&gt;Exponent == exp) &#123;</span><br><span class="line">            current-&gt;Coefficient += coeff; // 合并系数</span><br><span class="line">            free(newNode);                // 释放新节点，因为不需要插入</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // 如果没有找到相同指数的节点，插入新节点</span><br><span class="line">            if (prev == NULL) &#123;</span><br><span class="line">                // 插入到链表头部</span><br><span class="line">                newNode-&gt;Next = *P;</span><br><span class="line">                *P = newNode;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                // 插入到 prev 和 current 之间</span><br><span class="line">                newNode-&gt;Next = current;</span><br><span class="line">                prev-&gt;Next = newNode;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 多项式乘法</span><br><span class="line">Polynomial MultiplyPolynomials(Polynomial Poly1, Polynomial Poly2) &#123;</span><br><span class="line">    Polynomial result = NULL;</span><br><span class="line">    Node* p1 = Poly1;</span><br><span class="line">    Node* p2 = Poly2;</span><br><span class="line"></span><br><span class="line">    while (p1 != NULL) &#123;</span><br><span class="line">        p2 = Poly2; // 重置 p2</span><br><span class="line">        while (p2 != NULL) &#123;</span><br><span class="line">            int coeff = p1-&gt;Coefficient * p2-&gt;Coefficient;</span><br><span class="line">            int exp = p1-&gt;Exponent + p2-&gt;Exponent;</span><br><span class="line">            InsertNode(&amp;result, coeff, exp); // 插入结果多项式</span><br><span class="line">            p2 = p2-&gt;Next;</span><br><span class="line">        &#125;</span><br><span class="line">        p1 = p1-&gt;Next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 打印多项式</span><br><span class="line">void PrintPolynomial(Polynomial P) &#123;</span><br><span class="line">    while (P != NULL) &#123;</span><br><span class="line">        printf(&quot;%dx^%d&quot;, P-&gt;Coefficient, P-&gt;Exponent);</span><br><span class="line">        if (P-&gt;Next != NULL) &#123;</span><br><span class="line">            printf(&quot; + &quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        P = P-&gt;Next;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 释放多项式内存</span><br><span class="line">void FreePolynomial(Polynomial P) &#123;</span><br><span class="line">    Node* temp;</span><br><span class="line">    while (P != NULL) &#123;</span><br><span class="line">        temp = P;</span><br><span class="line">        P = P-&gt;Next;</span><br><span class="line">        free(temp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p>链表的第二个例子是基数排序，有时候也叫卡式排序，因为直到现代计算机的出现之前，它一直用于对老式穿孔卡的排序</p>
+<p>若现在我们存在$n$个整数，范围在$1$到$M$（或者$0 $到$M-1$。那么我们可以用这个信息得到一种快速排序，或者叫桶式排序。我们设一个数组，叫 Count，大小为M，并初始化为0。于是Count存在M个单元（或者叫桶），开始时它们是空的，当$A_i$被读入时，Count[$A_i$]+1，在所有的输入读入之后，扫描数组Count并打印排好序的表，该算法花费$O(M+n)$，若$M &#x3D; \Theta (N)$，则桶式排序是O(N)的。</p>
+<p>证明如下：我们假设排序方法是快速排序，快速排序的时间复杂度在$O(N\log(N))$，再设存在$m$个桶，则每个桶里面存在$n&#x2F;m$个元素，排序后花费的时间是$(n&#x2F;m)\log(n&#x2F;m)$，一共有m个桶，所以总的排序花费$O(m\times (n&#x2F;m)\log(n&#x2F;m) &#x3D; n(\log(n)-\log(m))$，把排序后的数据合并成一个数组花费大概$O(N)$，因为桶的数量是常数，所以$mN &#x3D; O(N)$，加起来就是$O(2n+c)$，$c &#x3D; n(\log(n)-\log(m))$，现在，数据限定的是整数，所以范围$M \geq N$。最终复杂度就是$O(N+M)$，若$M &#x3D; \Theta(N)$，这时候$O(2N) &#x3D; O(N)$。</p>
+<h3 id="多重表"><a href="#多重表" class="headerlink" title="多重表"></a>多重表</h3><p>最后我们说一个复杂的实现，一所有4万名学生和2千5百门课程的大学需要生成两种类型的报告，一是列出每个班的注册者，而是报告列出每个学生注册的班级。</p>
+<p>常见的方法是使用二维数组，而这样的数据大概能有一亿个，但平均一个学生注册3门课，所以真正有意义的数据只有12万项，大概占里面的0.1%。</p>
+<p>该链表具体情况如下：首先学生自己选择的课是一个循环列表，而每门课的数据也是用循环列表储存，若c1有一个学生s1，则c1和s1指向的数据包含至少4个指针，一个是指向前驱元s1的指针和指向前驱元c1的指针，接着是指向下一门课和选择了c1的同学的指针：</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%5Cdraw%20%20%20(120%2C31)%20--%20(159.18%2C31)%20--%20(159.18%2C50.19)%20--%20(120%2C50.19)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(335%2C29)%20--%20(374.18%2C29)%20--%20(374.18%2C48.19)%20--%20(335%2C48.19)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(264%2C30)%20--%20(303.18%2C30)%20--%20(303.18%2C49.19)%20--%20(264%2C49.19)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(193%2C31)%20--%20(232.18%2C31)%20--%20(232.18%2C50.19)%20--%20(193%2C50.19)%20--%20cycle%20%3B%0A%0A%5Cdraw%20%20%20(59%2C88.19)%20--%20(93.67%2C88.19)%20--%20(93.67%2C108)%20--%20(59%2C108)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(61%2C142.19)%20--%20(95.67%2C142.19)%20--%20(95.67%2C162)%20--%20(61%2C162)%20--%20cycle%20%3B%0A%0A%5Cdraw%20%20%20(122%2C87.19)%20--%20(156.67%2C87.19)%20--%20(156.67%2C107)%20--%20(122%2C107)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(123%2C141.19)%20--%20(157.67%2C141.19)%20--%20(157.67%2C161)%20--%20(123%2C161)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(195%2C142.19)%20--%20(229.67%2C142.19)%20--%20(229.67%2C162)%20--%20(195%2C162)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(265%2C85.19)%20--%20(299.67%2C85.19)%20--%20(299.67%2C105)%20--%20(265%2C105)%20--%20cycle%20%3B%0A%5Cdraw%20%20%20(341%2C139.19)%20--%20(375.67%2C139.19)%20--%20(375.67%2C159)%20--%20(341%2C159)%20--%20cycle%20%3B%0A%0A%5Cdraw%20%20%20%20(141%2C54)%20--%20(141%2C82.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(141%2C84.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(140%2C108)%20--%20(140%2C136.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(140%2C138.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(142%2C167)%20--%20(142%2C199.19)%20--%20(113.18%2C199.19)%20--%20(113.18%2C11.19)%20--%20(139.18%2C11.19)%20--%20(139.18%2C26.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(139.18%2C28.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(211%2C65)%20--%20(211%2C129.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(211%2C131.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(209%2C165)%20--%20(209%2C197.19)%20--%20(180.18%2C197.19)%20--%20(180.18%2C9.19)%20--%20(206.18%2C9.19)%20--%20(206.18%2C24.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(206.18%2C26.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(282%2C52)%20--%20(282%2C84.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(282%2C86.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(282%2C112.19)%20--%20(282%2C195.19)%20--%20(253.18%2C195.19)%20--%20(253.18%2C7.19)%20--%20(279.18%2C7.19)%20--%20(279.18%2C22.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(279.18%2C24.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(357%2C60)%20--%20(357%2C124.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(357%2C126.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(355%2C162.19)%20--%20(355%2C195.19)%20--%20(326.18%2C195.19)%20--%20(326.18%2C7.19)%20--%20(352.18%2C7.19)%20--%20(352.18%2C22.19)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(352.18%2C24.19)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(94%2C98)%20--%20(119.18%2C98)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(121.18%2C98)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(168%2C96)%20--%20(257.18%2C96)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(259.18%2C96)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(306.32%2C93.81)%20--%20(377.5%2C93.81)%20--%20(377.5%2C65)%20--%20(44.5%2C65)%20--%20(44.5%2C102)%20--%20(53.5%2C102)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(55.5%2C102)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(378.5%2C145.81)%20--%20(378.5%2C117)%20--%20(45.5%2C117)%20--%20(45.5%2C154)%20--%20(54.5%2C154)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(56.5%2C154)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(98%2C151)%20--%20(122.18%2C151)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(124.18%2C151)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(164%2C151)%20--%20(188.18%2C151)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(190.18%2C151)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20%20%20%20(237%2C153)%20--%20(334.18%2C153)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(336.18%2C153)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%5Cdraw%20(133%2C34)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bs1%7D%3B%0A%5Cdraw%20(206%2C34)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bs2%7D%3B%0A%5Cdraw%20(276%2C34)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bs3%7D%3B%0A%5Cdraw%20(347%2C31)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bs4%7D%3B%0A%5Cdraw%20(67%2C91)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bc1%7D%3B%0A%5Cdraw%20(68%2C145)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%5Balign%3Dleft%5D%20%7Bc2%7D%3B%0A%5Cend%7Btikzpicture%7D" width="60%"></p>
+</center>
+
+<p>具体的实现情况如下，例如我们查询$c_3$学生的信息，由于我们需要这门课包含了多少学生，以及该学生选了多少门课，所以 首先再c3表头开始找数据，直到发现第一个选择该门课的学生si，这个时候停止搜索c3中其他学生的信息，转而找学生si的选课情况知道返回si单元，然后跳转回c3重新寻找下一个选了c3的学生sj，</p>
+<h2 id="栈-ADT"><a href="#栈-ADT" class="headerlink" title="栈 ADT"></a>栈 ADT</h2><h3 id="栈模型"><a href="#栈模型" class="headerlink" title="栈模型"></a>栈模型</h3><p>栈是限制插入和删除只能在一个位置上进行的表，该位置是表的末端，叫做栈的顶（Top），栈的基本操作有2个，<strong>Push</strong>（进栈）和 <strong>Pop</strong>（出栈）。前者相当于是插入元素，后者是删除最后插入的元素。最后插入的元素可以通过使用Top例程在执行Pop之前考察。对空栈执行pop可能会导致错误，这一般是ADT的错误，另一方面，若运行push的时候空间用尽是一个实现错误，不是ADT错误。</p>
+<p>一个简单的栈结构和操作可以这样描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| Top |           | es  |        |Top|</span><br><span class="line">| en  |  Push(es) | Top |  Pop   | en|</span><br><span class="line">| en-1|   ----&gt;   | en  | ----&gt;  |...|</span><br><span class="line">| ... |           | ... |        |e1 |</span><br><span class="line">| e1  |           | e1  |</span><br></pre></td></tr></table></figure>
+
+<p>所以栈有时叫LIFO（后进先出）表。普通的清空栈的操作和判断是否空栈的测试都是栈的操作指令系统的一部分，但是对栈能做的基本上只有pop和push操作。</p>
+<h3 id="栈的实现"><a href="#栈的实现" class="headerlink" title="栈的实现"></a>栈的实现</h3><p>栈是一个表，所以实际上实现表的方法都能实现栈。我们给出2个方法，一个是指针，一个是数组。</p>
+<h4 id="链表实现"><a href="#链表实现" class="headerlink" title="链表实现"></a>链表实现</h4><p>栈的第一种实现方法是使用单链表。我们通过在表顶插入实现push，删除表的顶端元素实现Pop。Top操作只是考察顶端元素并返回他的值。有时候需要Pop和Top操作合二为一。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;Stack_h&gt;</span><br><span class="line"></span><br><span class="line">struct Node;</span><br><span class="line">typedef struct Node *PtrToNode;</span><br><span class="line">typedef PtrToNode Stack;</span><br><span class="line"></span><br><span class="line">int IsEmpty(Stack S);</span><br><span class="line">Stack CreateStack(void);</span><br><span class="line">void DisposeStack(Stack S);</span><br><span class="line">void MakeEmpty(Stack S);</span><br><span class="line">void Push(ElementType X, Stack S);</span><br><span class="line">ElementType Top(Stack S);</span><br><span class="line">void Pop(Stack S);</span><br><span class="line"></span><br><span class="line">#endif /* _Stack_h */</span><br><span class="line"></span><br><span class="line">/* Place in implementation file */</span><br><span class="line">/* Stack implementation is a linked list with a header */</span><br><span class="line">struct Node</span><br><span class="line">&#123;</span><br><span class="line">    ElementType Element;</span><br><span class="line">    PtrToNode Next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>和之前一样，我们依然声明Node（节点）为一个结构，在结尾的Node给出了详细的结构，包含一段数据和一个指向下一个元素的指针Next。typedef定义了一个指向结构的指针PtrToNode。接着定义Stack也是PtrToNode的结构。可以直接用Stack定义所需的链表结构。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stack myStack; // 等价于 struct Node* myStack;</span><br></pre></td></tr></table></figure>
+
+<p>其他的是一些函数，等一下讲实现的时候说明。</p>
+<p>首先是第一个函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int IsEmpty(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    return S-&gt;Next == NULL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数接收一个栈结构S，若S表头的下一个元素为空，则返回1。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Stack CreateStack(void)</span><br><span class="line">&#123;</span><br><span class="line">    Stack S;</span><br><span class="line">    S = malloc(sizeof(struct Node));</span><br><span class="line">    if (S == NULL)</span><br><span class="line">        FatalError(&quot;Out of space!!!&quot;);</span><br><span class="line">    S-&gt;Next = NULL;</span><br><span class="line">    MakeEmpty(S);</span><br><span class="line">    return S;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MakeEmpty(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (S == NULL)</span><br><span class="line">        Error(&quot;Must use CreateStack first&quot;);</span><br><span class="line">    else</span><br><span class="line">        while (!IsEmpty(S))</span><br><span class="line">            Pop(S);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该代码创建了一个空栈的例程,MakeEmpty函数是用来确保栈是空的。它会一直pop栈中的元素，直到栈是空的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void Pop(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    PtrToNode FirstCell;</span><br><span class="line">    if (IsEmpty(S))</span><br><span class="line">        Error(&quot;Empty stack&quot;);</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        FirstCell = S-&gt;Next;</span><br><span class="line">        S-&gt;Next = S-&gt;Next-&gt;Next;</span><br><span class="line">        free(FirstCell);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Pop函数是通过删除表的前端元素实现的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">void Push(ElementType X, Stack S) &#123;</span><br><span class="line">    PtrToNode TmpCell;</span><br><span class="line"></span><br><span class="line">    TmpCell = malloc(sizeof(struct Node));</span><br><span class="line">    if (TmpCell == NULL)</span><br><span class="line">        FatalError(&quot;Out of space!!!&quot;);</span><br><span class="line">    else</span><br><span class="line">    &#123;</span><br><span class="line">        TmpCell-&gt;Element = X;</span><br><span class="line">        TmpCell-&gt;Next = S-&gt;Next;</span><br><span class="line">        S-&gt;Next = TmpCell;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数接受2个参数，元素X和栈S。</p>
+<p>首先给定一个临时变量TmpCell用来储存临时变量。接着申请一个Node结构大小的内存。若临时变量为空，返回插入失败。否则，令临时变量的内容为X，令Tmpcell下一个指针指向表头的下一个单元。接着令表头的下一个元素指向Tmpcell就完成了压栈操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ElementType Top(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (!IsEmpty(S))</span><br><span class="line">        return S-&gt;Next-&gt;Element;</span><br><span class="line">    Error(&quot;Empty stack&quot;);</span><br><span class="line">    return 0; /* Return value used to avoid warning */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Top函数用来检查栈顶元素。</p>
+<p>所有的操作均花费常数时间，比较花费的地方主要在于free和malloc函数，可以通过使用第二个栈去避免，第二个栈初始化为空，当一个单元要从第一个栈弹出时，它只是被丢在第二个栈中。此后，当第一个栈需要新单元，它首先去检查第二个栈。</p>
+<h4 id="数组实现栈"><a href="#数组实现栈" class="headerlink" title="数组实现栈"></a>数组实现栈</h4><p>数组的使用方法可能是更好的结果，缺点是需要提前声明一个数组的大小。</p>
+<p>用数组实现栈稍微简单些，每一个栈都有一个栈顶的索引，称它为TopOfStack。而空栈的索引是-1，为了将一个元素压栈。则将需要将索引+1.然后令Stack[TopOfStack] &#x3D; X。其中Stack是一个具体的数组。</p>
+<p>一个影响栈的执行效率的问题是错误检测，我们的链表实现是有仔细的检查错误的，比如，对空栈的pop和push或者是对满栈的push都会引起程序崩溃。显然我门不希望出现这种情况。数组去做检查效率非常的慢，一半来说除非在重要场合，否则一般会省去这种检查。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#ifndef _Stack_h</span><br><span class="line"></span><br><span class="line">struct StackRecord;</span><br><span class="line">typedef struct StackRecord *Stack;</span><br><span class="line"></span><br><span class="line">int IsEmpty(Stack S);</span><br><span class="line">int IsFull(Stack S);</span><br><span class="line">Stack CreateStack(int MaxElements);</span><br><span class="line">void DisposeStack(Stack S);</span><br><span class="line">void MakeEmpty(Stack S);</span><br><span class="line">void Push(ElementType X, Stack S);</span><br><span class="line">ElementType Top(Stack S);</span><br><span class="line">void Pop(Stack S);</span><br><span class="line">ElementType TopAndPop(Stack S);</span><br><span class="line"></span><br><span class="line">#endif /* _Stack_h */</span><br><span class="line"></span><br><span class="line">/* Place in implementation file */</span><br><span class="line">/* Stack implementation is a dynamically allocated array */</span><br><span class="line">#define EmptyTOS (-1)</span><br><span class="line">#define MinStackSize (5)</span><br><span class="line"></span><br><span class="line">struct StackRecord</span><br><span class="line">&#123;</span><br><span class="line">    int Capacity;</span><br><span class="line">    int TopOfStack;</span><br><span class="line">    ElementType *Array;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>数组的实现需要的东西如上。Stack被定义为一个指向结构体的指针，其包含TopOfStack的大小和Capcity的大小。也叫做域。一旦知道最大容量，则栈可以被动态的确定。 </p>
+<p>在CreatStack中，我们将创建一个具有给定最大值的栈。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Stack CreateStack(int MaxElements)</span><br><span class="line">&#123;</span><br><span class="line">    Stack S;</span><br><span class="line"></span><br><span class="line">    if (MaxElements &lt; MinStackSize)</span><br><span class="line">        Error(&quot;Stack size is too small!&quot;);</span><br><span class="line"></span><br><span class="line">    S = malloc(sizeof(struct StackRecord));</span><br><span class="line">    if (S == NULL)</span><br><span class="line">        FatalError(&quot;Out of space!!!&quot;);</span><br><span class="line"></span><br><span class="line">    S-&gt;Array = malloc(sizeof(ElementType) * MaxElements);</span><br><span class="line">    if (S-&gt;Array == NULL)</span><br><span class="line">        FatalError(&quot;Out of space!!!&quot;);</span><br><span class="line">    S-&gt;Capacity = MaxElements;</span><br><span class="line">    MakeEmpty(S);</span><br><span class="line"></span><br><span class="line">    return S;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数接受一个最大元素数量的参数，一开始我们定义MinStackSize &#x3D; 5，若低于这个数量，则栈太小。需要重新配置。</p>
+<p>在DisposeStack中，该函数用于释放一个栈结构。该程序首先释放栈数组，然后释放栈结构体。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void DisposeStack(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (S != NULL)</span><br><span class="line">    &#123;</span><br><span class="line">        free(S-&gt;Array);</span><br><span class="line">        free(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>接着是检测一个空栈，生成空栈和push操作的例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">int IsEmpty(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    return S-&gt;TopOfStack == EmptyTOS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void MakeEmpty(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    S-&gt;TopOfStack = EmptyTOS;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Push(ElementType X, Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (IsFull(S))</span><br><span class="line">        Error(&quot;Full stack&quot;);</span><br><span class="line">    else</span><br><span class="line">        S-&gt;Array[++S-&gt;TopOfStack] = X;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着是返回栈顶的例子</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ElementType Top(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (!IsEmpty(S))</span><br><span class="line">        return S-&gt;Array[S-&gt;TopOfStack];</span><br><span class="line">    Error(&quot;Empty stack&quot;);</span><br><span class="line">    return 0; /* Return value used to avoid warning */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后是Pop操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">void Pop(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (IsEmpty(S))</span><br><span class="line">        Error(&quot;Empty stack&quot;);</span><br><span class="line">    else</span><br><span class="line">        S-&gt;TopOfStack--;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>++表示+1，–表示-1，这是直接将栈的空间减小1。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ElementType TopAndPop(Stack S)</span><br><span class="line">&#123;</span><br><span class="line">    if (!IsEmpty(S))</span><br><span class="line">        return S-&gt;Array[S-&gt;TopOfStack--];</span><br><span class="line">    Error(&quot;Empty stack&quot;);</span><br><span class="line">    return 0; /* Return value used to avoid warning */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该例子是给出栈顶并pop元素的例子。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/algorithms/">algorithms</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2025/02/12/Ring_buffer/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          循环队列
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/12/10/%E7%B4%A0%E6%95%B0%E6%B5%8B%E8%AF%95/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          素数测试
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

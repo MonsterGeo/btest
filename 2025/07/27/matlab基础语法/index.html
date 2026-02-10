@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>matlab基础语法 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        matlab基础语法
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        matlab基础语法
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2025-07-28</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>13 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>2.9k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="任意符号矩阵生成"><a href="#任意符号矩阵生成" class="headerlink" title="任意符号矩阵生成"></a>任意符号矩阵生成</h2><p>利用命令</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A = sym(<span class="string">&#x27;a&#x27;</span>,[n,m]) , B = sym(<span class="string">&#x27;b%d%d&#x27;</span>,[n,m])</span><br></pre></td></tr></table></figure>
+
+<p>其中，$n,m$表示矩阵的行数和列数，若$n,m$其中一个值为1，那么我们定义的是一个向量（行&#x2F;列）。</p>
+<p>若你想使用方阵，但无需给出具体的值，上述两个命令都可以实现，不同的是，前者的形式为<code>ai_j</code>，后者为<code>bij</code>。注意的是，单下标的列向量无需指定下标形式。</p>
+<p>例子：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">A = sym(<span class="string">&#x27;a%d%d&#x27;</span>,[<span class="number">3</span>,<span class="number">4</span>]), f = sym(<span class="string">&#x27;f&#x27;</span>,[<span class="number">3</span>,<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; A</span><br><span class="line">A =</span><br><span class="line"> </span><br><span class="line">[a11, a12, a13, a14]</span><br><span class="line">[a21, a22, a23, a24]</span><br><span class="line">[a31, a32, a33, a34]</span><br><span class="line"></span><br><span class="line">&gt;&gt;f</span><br><span class="line">f =</span><br><span class="line"> </span><br><span class="line">f1</span><br><span class="line">f2</span><br><span class="line">f3</span><br></pre></td></tr></table></figure>
+
+<h2 id="其他数据结构"><a href="#其他数据结构" class="headerlink" title="其他数据结构"></a>其他数据结构</h2><p>讲一些常用的例子</p>
+<h3 id="基本赋值结构"><a href="#基本赋值结构" class="headerlink" title="基本赋值结构"></a>基本赋值结构</h3><p>给定函数$f(x)$，我们想计算一些嵌套函数，比如$f(f(f(x)))$，那么我们可以用如下的方法解决：</p>
+<p>例子：若$f(x) &#x3D; x^2-x-1$，试着求$F(x) &#x3D; f(f(f(f(f(f(x))))))$，若结果是多项式，则$\deg f$是多少？</p>
+<p>使用如下命令，可以在MATLAB得到结果</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">syms x</span><br><span class="line">f(x) = x^<span class="number">2</span>-x<span class="number">-1</span></span><br><span class="line">F(x) = f(f(f(f(f(x)))))</span><br><span class="line">F1 = expand(F)</span><br></pre></td></tr></table></figure>
+
+<p>前者F(x)会得到一个没有展开的多项式，后者expand命令则表示将F全部展开。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; F(x) = f(f(f(f(f(x)))))</span><br><span class="line"> </span><br><span class="line">F(x) =</span><br><span class="line"> </span><br><span class="line">(x + (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span> - (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span>)^<span class="number">2</span> + <span class="number">1</span>)^<span class="number">2</span> + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span> - (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span>)^<span class="number">2</span>)^<span class="number">2</span> - (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span> - (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span>)^<span class="number">2</span> + <span class="number">1</span>)^<span class="number">2</span> - x - (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> + x^<span class="number">2</span> + (x + (- x^<span class="number">2</span> + x + <span class="number">1</span>)^<span class="number">2</span> - x^<span class="number">2</span>)^<span class="number">2</span> - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; F1 = expand(F)</span><br><span class="line">F1(x) =</span><br><span class="line"> </span><br><span class="line">x^<span class="number">32</span> - <span class="number">16</span>*x^<span class="number">31</span> + <span class="number">96</span>*x^<span class="number">30</span> - <span class="number">200</span>*x^<span class="number">29</span> - <span class="number">444</span>*x^<span class="number">28</span> + <span class="number">2968</span>*x^<span class="number">27</span> - <span class="number">3052</span>*x^<span class="number">26</span> - <span class="number">11804</span>*x^<span class="number">25</span> + <span class="number">30944</span>*x^<span class="number">24</span> + <span class="number">9832</span>*x^<span class="number">23</span> - <span class="number">112076</span>*x^<span class="number">22</span> + <span class="number">68760</span>*x^<span class="number">21</span> + <span class="number">216048</span>*x^<span class="number">20</span> - <span class="number">279328</span>*x^<span class="number">19</span> - <span class="number">218500</span>*x^<span class="number">18</span> + <span class="number">525046</span>*x^<span class="number">17</span> + <span class="number">47653</span>*x^<span class="number">16</span> - <span class="number">591744</span>*x^<span class="number">15</span> + <span class="number">164520</span>*x^<span class="number">14</span> + <span class="number">416864</span>*x^<span class="number">13</span> - <span class="number">232442</span>*x^<span class="number">12</span> - <span class="number">175256</span>*x^<span class="number">11</span> + <span class="number">154806</span>*x^<span class="number">10</span> + <span class="number">35134</span>*x^<span class="number">9</span> - <span class="number">58854</span>*x^<span class="number">8</span> + <span class="number">1496</span>*x^<span class="number">7</span> + <span class="number">12614</span>*x^<span class="number">6</span> - <span class="number">2044</span>*x^<span class="number">5</span> - <span class="number">1382</span>*x^<span class="number">4</span> + <span class="number">300</span>*x^<span class="number">3</span> + <span class="number">69</span>*x^<span class="number">2</span> - <span class="number">9</span>*x - <span class="number">1</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>我们可以简单的看出，在expand(F)后，最高次是32。</p>
+<h3 id="函数调用"><a href="#函数调用" class="headerlink" title="函数调用"></a>函数调用</h3><p>函数调用的基本结构为</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[返回元列表] = fun_name(输入变元列表)</span><br></pre></td></tr></table></figure>
+<p>其中fun_name指的是调用的函数名字，一般函数名对应于一个MATLAB路径下的文件，比如：函数名my_fun应该对应于my_fun.m文件，一些函数名需要对应于MATLAB内核中的内核函数，比如inv()函数之类。</p>
+<p>返回变元列表，输入变元列表指的是由若干个变量名组成，变量名之间用逗号分隔，或者空格分隔。例如 <code>[U S V] = svd(X)</code>，该函数对给定的X矩阵进行奇异值分解，所得结果由 U、S、V三个变量返回。</p>
+<p>当然，格式不是死的，我们可以根据需要进行调用。譬如内核函数d &#x3D; eig(A)，则直接返回A矩阵的特征向量d，若调用格式<code>[V,D] = eig(A)</code>，则除了返回特征值D之外，还返回特征向量矩阵V，若调用格式为<code>eig(A,B)</code> 则将求解广义特征值问题。</p>
+<h3 id="冒号表达式"><a href="#冒号表达式" class="headerlink" title="冒号表达式"></a>冒号表达式</h3><p>现在，我们想生成一些数据，可以使用冒号表达式，它的格式为<code>v = s1:s2:s3 </code>，其中s1是起点，s2是步距，s3是终点。该函数v生成一个从s1开始，隔s2取一个点，直到不超过s3的最大值的元素组成的向量。若省略s2，则默认s2 &#x3D; 1.</p>
+<h3 id="子矩阵提取"><a href="#子矩阵提取" class="headerlink" title="子矩阵提取"></a>子矩阵提取</h3><p>提取子矩阵的具体方法为：B &#x3D; A(v1,v2)，其中v1表示保留的行号构成的向量，而v2表示要保留的列号构成的向量。</p>
+<p>若想删除矩阵的第i行元素，则直接给出简单的命令<code>A(i,:) = [] </code>，i也可以是向量。其中:在v1表示提取全部行，v2表示提取全部列。</p>
+<p>我们用如下的命令定义一个矩阵A</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>;<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>;<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]</span><br><span class="line">B1 = A(<span class="number">1</span>:<span class="number">2</span>:<span class="keyword">end</span>, :)</span><br></pre></td></tr></table></figure>
+<p>第一行建立一个3x3矩阵，第二行提取奇数行，:表示带有全部列</p>
+<p>结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; A = [1:3;4:6;7:9]</span><br><span class="line"></span><br><span class="line">A =</span><br><span class="line"></span><br><span class="line">     1     2     3</span><br><span class="line">     4     5     6</span><br><span class="line">     7     8     9</span><br><span class="line"></span><br><span class="line">&gt;&gt; B1 = A(1:2:end,:)</span><br><span class="line"></span><br><span class="line">B1 =</span><br><span class="line"></span><br><span class="line">     1     2     3</span><br><span class="line">     7     8     9</span><br></pre></td></tr></table></figure>
+
+
+
+<p>B2 &#x3D; A([3,2,1],[1,1,1])将提取A矩阵的3,2,1行，并且由3个首列构成矩阵。改成[1,3,1]则会吧第二列变成A的第三列倒转。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; B2 = A([3,2,1],[1,1,1])</span><br><span class="line"></span><br><span class="line">B2 =</span><br><span class="line"></span><br><span class="line">     7     7     7</span><br><span class="line">     4     4     4</span><br><span class="line">     1     1     1</span><br><span class="line"></span><br><span class="line">&gt;&gt; B2 = A([3,2,1],[1,3,1])</span><br><span class="line"></span><br><span class="line">B2 =</span><br><span class="line"></span><br><span class="line">     7     9     7</span><br><span class="line">     4     6     4</span><br><span class="line">     1     3     1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>使用命令<code>B3 = A(:,end:-1:1)</code>可以让A矩阵左右翻转。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; B3 = A(:,end:-1:1)</span><br><span class="line"></span><br><span class="line">B3 =</span><br><span class="line"></span><br><span class="line">     3     2     1</span><br><span class="line">     6     5     4</span><br><span class="line">     9     8     7</span><br></pre></td></tr></table></figure>
+
+<p>A(2,:) &#x3D; []删除第二行, A(:,3) &#x3D; []删除第三列</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; A(<span class="number">2</span>,:) =[];A(:,<span class="number">3</span>) =[]</span><br><span class="line"></span><br><span class="line">A =</span><br><span class="line"></span><br><span class="line">     <span class="number">1</span>     <span class="number">2</span></span><br><span class="line">     <span class="number">7</span>     <span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来我们讲讲一些函数运算</p>
+<h2 id="MATLAB的运算"><a href="#MATLAB的运算" class="headerlink" title="MATLAB的运算"></a>MATLAB的运算</h2><h3 id="符号表达式的处理"><a href="#符号表达式的处理" class="headerlink" title="符号表达式的处理"></a>符号表达式的处理</h3><p>我们可以用符号运算工具推导数学公式，但结果可能不是最简形式，或者是我们期待的。因此我们要做一些化简处理。</p>
+<p>调用函数<code>simplify()</code> 会调用所有化简函数对表达式进行简化。除了这个还有一些其他的函数可以用</p>
+<table>
+<thead>
+<tr>
+<th align="left">格式</th>
+<th align="left">函数说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[n,d] &#x3D; numden(s)</td>
+<td align="left">提取符号表达式s的分子n和分母d</td>
+</tr>
+<tr>
+<td align="left">expand(s,fun)</td>
+<td align="left">表达式展开，可用于三角函数或者多项式</td>
+</tr>
+<tr>
+<td align="left">collect(s,s1)</td>
+<td align="left">按照s1表达式对s做同类项合并</td>
+</tr>
+<tr>
+<td align="left">v &#x3D; factor(s)</td>
+<td align="left">对s进行因式分解</td>
+</tr>
+<tr>
+<td align="left">subs(s,s1,s2)</td>
+<td align="left">对s中的子表达式s1换成s2，并且可以拓展到更多个替换.subs(s,s1,s2,…,sn)</td>
+</tr>
+<tr>
+<td align="left">rewrite(s,fun)</td>
+<td align="left">对表达式s进行自定义改写。其中fun是自选的改写方式，例如’sin’表示化简结果中只含正弦函数,’sincos’表示只有正弦和余弦函数，也可以用一些其他的函数替代，例如exp,sqrt等等</td>
+</tr>
+</tbody></table>
+<p>例子：我们尝试吧$\tan(x+y)$改写为只有$\sin x$的表达式</p>
+<p>命令：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syms x,y; F = <span class="built_in">tan</span>(x+y)</span><br><span class="line">F1 = rewrite(expand(F),<span class="string">&#x27;sin&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">F1 =</span><br><span class="line"> </span><br><span class="line">(<span class="built_in">sin</span>(x)/(<span class="number">2</span>*<span class="built_in">sin</span>(x/<span class="number">2</span>)^<span class="number">2</span> - <span class="number">1</span>) + <span class="built_in">sin</span>(y)/(<span class="number">2</span>*<span class="built_in">sin</span>(y/<span class="number">2</span>)^<span class="number">2</span> - <span class="number">1</span>))/((<span class="built_in">sin</span>(x)*<span class="built_in">sin</span>(y))/((<span class="number">2</span>*<span class="built_in">sin</span>(x/<span class="number">2</span>)^<span class="number">2</span> - <span class="number">1</span>)*(<span class="number">2</span>*<span class="built_in">sin</span>(y/<span class="number">2</span>)^<span class="number">2</span> - <span class="number">1</span>)) - <span class="number">1</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>现在，给定$x\in R$，试着把表达式$y &#x3D; \mid 2x^2-3\mid + \mid 4x-5\mid$表示为分段函数</p>
+<p>MATLAB中，分段函数用piecewise表示，那么输入如下命令即可</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">syms x <span class="built_in">real</span>; y(x) = <span class="built_in">abs</span>(<span class="number">2</span>*x^<span class="number">2</span><span class="number">-3</span>)+<span class="built_in">abs</span>(<span class="number">4</span>*x<span class="number">-5</span>)</span><br><span class="line">y1 = rewrite(y,<span class="string">&#x27;piecewise&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; y1 = rewrite(y,<span class="string">&#x27;piecewise&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">y1(x) =</span><br><span class="line"> </span><br><span class="line">piecewise(<span class="number">5</span>/<span class="number">4</span> &lt;= x, <span class="number">2</span>*x^<span class="number">2</span> + <span class="number">4</span>*x - <span class="number">8</span>, x &lt;= <span class="number">5</span>/<span class="number">4</span> &amp; <span class="number">0</span> &lt;= <span class="number">2</span>*x^<span class="number">2</span> - <span class="number">3</span>, <span class="number">2</span>*x^<span class="number">2</span> - <span class="number">4</span>*x + <span class="number">2</span>, x &lt;= <span class="number">5</span>/<span class="number">4</span> &amp; <span class="number">2</span>*x^<span class="number">2</span> - <span class="number">3</span> &lt;= <span class="number">0</span>, - <span class="number">2</span>*x^<span class="number">2</span> - <span class="number">4</span>*x + <span class="number">8</span>)</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>也就是</p>
+<p>$$<br>y_1(x) &#x3D; \begin{cases}<br>    2x^2+4x-8 &amp; 5&#x2F;4 \leq x\<br>    2x^2-4x+2 &amp; x\leq 5&#x2F;4 且 0\leq 2x^2-3\<br>    -2x^2-4x+8 &amp; x\leq 5&#x2F;4 且 2x^2 -3 \leq 0<br>\end{cases}<br>$$</p>
+<h2 id="循环结构"><a href="#循环结构" class="headerlink" title="循环结构"></a>循环结构</h2><h3 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h3><p>我们用一个简单的例子讲for的使用</p>
+<p>求解$S &#x3D; \sum^{100}_{i&#x3D;1} i$可以这样做：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">s = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="number">100</span></span><br><span class="line">   s = s+<span class="built_in">i</span></span><br><span class="line">   <span class="keyword">end</span></span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+<p>即可。</p>
+<p>那么一些递推序列怎么办呢，比如假设$a_1 &#x3D; 3$，第二项为$a_2 &#x3D; \sqrt{1+a_1}$，此后的每一项都是$a_{k+1} &#x3D; \sqrt{1+a_k}$，我们如何计算$a_{32}$呢</p>
+<p>在计算机中，对于一般递推式我们使用称为迭代的方法，即先写出递推式的代码，然后循环变量k执行31次。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">a =<span class="number">3</span>; format long</span><br><span class="line"><span class="keyword">for</span> k=<span class="number">1</span>:<span class="number">31</span></span><br><span class="line">a=<span class="built_in">sqrt</span>(<span class="number">1</span>+a)</span><br><span class="line"><span class="built_in">disp</span>(a) <span class="comment">%显示每一步的结果</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; a</span><br><span class="line"></span><br><span class="line">a =</span><br><span class="line"></span><br><span class="line">   <span class="number">1.618033988749895</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="while表达式"><a href="#while表达式" class="headerlink" title="while表达式"></a>while表达式</h3><p>while和for不同的地方在于，while是带条件的循环，一旦条件表达式不成立则自动终止循环。</p>
+<p>一样，我们使用while循环求解$\sum^{100}_{i&#x3D;1}i$</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="number">0</span>;<span class="built_in">i</span> =<span class="number">1</span></span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">i</span> &lt;= <span class="number">100</span>)</span><br><span class="line">s = s+<span class="built_in">i</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">s</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们求出满足$s &#x3D; \sum^m_{i&#x3D;1}i &gt; 100000$ 的最小m</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="number">0</span>; m=<span class="number">0</span></span><br><span class="line"><span class="keyword">while</span>( s &lt;= <span class="number">10000</span>)</span><br><span class="line">m = m+<span class="number">1</span>;</span><br><span class="line">s = s+m</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="向量化编程"><a href="#向量化编程" class="headerlink" title="向量化编程"></a>向量化编程</h3><p>循环结构的执行较慢，在实际编程中若能对矩阵或者向量运算时，尽量不要使用循环结构。而是使用向量化方法优化。</p>
+<p>假设一组圆，半径为r &#x3D; 1,1.2,0.9,0.7,0.85。试着求出这些圆的面积。</p>
+<p>面积公式为$S &#x3D; \pi r^2$。</p>
+<p>若用for 循环，则需要先定义数组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">r = [1,1.2,0.9,0.7,0.85]</span><br><span class="line">for i:length(r)</span><br><span class="line">S(i) = pi *r(i)^2</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>若使用向量化，则代码为</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S = <span class="built_in">pi</span>.*r.^<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="函数的基本结构"><a href="#函数的基本结构" class="headerlink" title="函数的基本结构"></a>函数的基本结构</h2><p>现在，我们尝试写一些函数用来实现一些特定的功能。</p>
+<p>假设我想写一个函数生成$n\times m$阶希尔伯特矩阵，第i行j列元素$h_{i,j} &#x3D; 1&#x2F;(i+j-1)$。</p>
+<p>那么我们可以这样做，首先，我们的函数名字叫myhilb，它有两种调用格式，即<code>H =myhilb(n,m) 和 H = myhilb(n)</code></p>
+<p>前者生成矩阵，后者生成方阵</p>
+<p>M-函数由function语句引导，基本结构为</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">[out1,out2,...,outm]</span> = <span class="title">fun_name</span><span class="params">(in1,in2,...,inn)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>函数的输入和返回由nargin和nargout两个保留变量给出。在进入函数的时候自动生成，我们演示如何创建一个自己的函数。首先新建脚本， 名字为myhilb.m。接着在里面输入如下内容</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> = <span class="title">A</span>=<span class="title">myhilb</span><span class="params">(n,m)</span></span></span><br><span class="line"><span class="keyword">if</span> nargin == <span class="number">1</span>,m=n,<span class="keyword">end</span> <span class="comment">%若输入只有1个变量，则定义m=n。</span></span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:n, <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:m, A(<span class="built_in">i</span>,<span class="built_in">j</span>) = <span class="number">1</span>/(<span class="built_in">i</span>+<span class="built_in">j</span><span class="number">-1</span>);<span class="keyword">end</span>,<span class="keyword">end</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>保存后即可在命令行界面用如下方法调用该函数</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A1 = myhilb(<span class="number">4</span>,<span class="number">3</span>)</span><br><span class="line">A2 = myhilb((sym(<span class="number">4</span>)))</span><br></pre></td></tr></table></figure>
+<p>结果为：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt;&gt; A1 = myhilb(<span class="number">4</span>,<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">A1 =</span><br><span class="line"></span><br><span class="line">   <span class="number">1.000000000000000</span>   <span class="number">0.500000000000000</span>   <span class="number">0.333333333333333</span></span><br><span class="line">   <span class="number">0.500000000000000</span>   <span class="number">0.333333333333333</span>   <span class="number">0.250000000000000</span></span><br><span class="line">   <span class="number">0.333333333333333</span>   <span class="number">0.250000000000000</span>   <span class="number">0.200000000000000</span></span><br><span class="line">   <span class="number">0.250000000000000</span>   <span class="number">0.200000000000000</span>   <span class="number">0.166666666666667</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; A2 = myhilb(sym(<span class="number">4</span>))</span><br><span class="line"> </span><br><span class="line">A2 =</span><br><span class="line"> </span><br><span class="line">[  <span class="number">1</span>, <span class="number">1</span>/<span class="number">2</span>, <span class="number">1</span>/<span class="number">3</span>, <span class="number">1</span>/<span class="number">4</span>]</span><br><span class="line">[<span class="number">1</span>/<span class="number">2</span>, <span class="number">1</span>/<span class="number">3</span>, <span class="number">1</span>/<span class="number">4</span>, <span class="number">1</span>/<span class="number">5</span>]</span><br><span class="line">[<span class="number">1</span>/<span class="number">3</span>, <span class="number">1</span>/<span class="number">4</span>, <span class="number">1</span>/<span class="number">5</span>, <span class="number">1</span>/<span class="number">6</span>]</span><br><span class="line">[<span class="number">1</span>/<span class="number">4</span>, <span class="number">1</span>/<span class="number">5</span>, <span class="number">1</span>/<span class="number">6</span>, <span class="number">1</span>/<span class="number">7</span>]</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<h3 id="函数的递归调用"><a href="#函数的递归调用" class="headerlink" title="函数的递归调用"></a>函数的递归调用</h3><p>现在，我们编写一个求解阶乘n!的函数</p>
+<p>核心思想是不停的调用函数直到停止，那么第k个变量为 k - n*my_fact(n-1)</p>
+<p>一样的，新建脚本，名字my_fact.m，并写入如下代码</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">k</span> = <span class="title">my_fact</span><span class="params">(n)</span></span></span><br><span class="line"><span class="keyword">if</span> nargin ~= <span class="number">1</span>, error(<span class="string">&#x27;Error:Only one input variable accepted&#x27;</span>); <span class="keyword">end</span> <span class="comment">%判断有几个输入</span></span><br><span class="line"><span class="keyword">if</span> <span class="built_in">abs</span>(n-<span class="built_in">floor</span>(n)) &gt; <span class="built_in">eps</span> || n&lt;<span class="number">0</span> </span><br><span class="line">    error(<span class="string">&#x27;you son of beach get me mtf negative integer&#x27;</span>);</span><br><span class="line"><span class="keyword">end</span> <span class="comment">%判断输入是否是负数</span></span><br><span class="line"><span class="keyword">if</span> n&gt; <span class="number">1</span>, k=n*my_fact(n<span class="number">-1</span>); <span class="comment">%递归调用</span></span><br><span class="line"><span class="keyword">elseif</span> any([<span class="number">0</span> <span class="number">1</span>]==n),k=<span class="number">1</span>;<span class="keyword">end</span> <span class="comment">%函数出口，即n=1的时候。</span></span><br></pre></td></tr></table></figure>
+
+<p>调用结果：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt; k = my_fact(<span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">k =</span><br><span class="line"></span><br><span class="line">   <span class="number">120</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>更多例子：若输入参数不确定个数，可以用varargin变量表示，使用varargin{i}提取第i个输入。</p>
+<p>现在，我们编写一个加法mat_add，它接收任意多矩阵作为变量，并且输出加后的结果</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">result</span> = <span class="title">mat_add</span><span class="params">(varargin)</span></span></span><br><span class="line">    <span class="keyword">if</span> nargin == <span class="number">1</span></span><br><span class="line">       result = varargin&#123;<span class="number">1</span>&#125;;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">if</span> nargin == <span class="number">0</span></span><br><span class="line">        error(<span class="string">&#x27;至少一个输入&#x27;</span>);</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    [rows,cols] = <span class="built_in">size</span>(varargin&#123;<span class="number">1</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">2</span>:nargin</span><br><span class="line">        [r,c]=<span class="built_in">size</span>(varargin&#123;<span class="built_in">i</span>&#125;);</span><br><span class="line">        <span class="keyword">if</span> r~=rows || c ~= cols</span><br><span class="line">            error(<span class="string">&#x27;矩阵需要有相同的维度&#x27;</span>);</span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line">    result = <span class="built_in">zeros</span>(rows,cols);</span><br><span class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:nargin</span><br><span class="line">        result = result +varargin&#123;<span class="built_in">i</span>&#125;;</span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果:</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">A = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>;<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>;<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>]</span><br><span class="line">B = [<span class="number">7</span>,<span class="number">9</span>,<span class="number">7</span>;<span class="number">4</span>,<span class="number">6</span>,<span class="number">4</span>;<span class="number">1</span>,<span class="number">3</span>,<span class="number">1</span>]</span><br><span class="line">&gt;&gt; S = mat_add(A)</span><br><span class="line"></span><br><span class="line">S =</span><br><span class="line"></span><br><span class="line">     <span class="number">1</span>     <span class="number">2</span>     <span class="number">3</span></span><br><span class="line">     <span class="number">4</span>     <span class="number">5</span>     <span class="number">6</span></span><br><span class="line">     <span class="number">7</span>     <span class="number">8</span>     <span class="number">9</span></span><br><span class="line"></span><br><span class="line">&gt;&gt; S = mat_add(A,B)</span><br><span class="line"></span><br><span class="line">S =</span><br><span class="line"></span><br><span class="line">     <span class="number">8</span>    <span class="number">11</span>    <span class="number">10</span></span><br><span class="line">     <span class="number">8</span>    <span class="number">11</span>    <span class="number">10</span></span><br><span class="line">     <span class="number">8</span>    <span class="number">11</span>    <span class="number">10</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/matlab/">matlab</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2025/08/31/ocrs/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          边缘识别
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          红外射频
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

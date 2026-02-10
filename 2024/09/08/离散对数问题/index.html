@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>离散对数问题 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        离散对数问题
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        离散对数问题
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2024-09-08</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>7 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>1.8k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <p>这节先讲$\mod p$的离散对数问题，还有一个椭圆曲线版本的下次讲。上节讲了，关于非对称密钥的提出是由<br>*Diffie *和 <em>Hellman</em>提出的。而第一个公钥也是，它基于有限域$F_p$中的离散对数问题。其中$F_p$是一个具有$p$个元素的域，$p$是素数。其次，对于一个域$\mathrm{Z}&#x2F;p\mathrm{Z}$也是具有$p$个元素的，所以我们有时会交替使用，那么涉及到$F_p$时，我们使用等号，提及$\mathrm{Z}&#x2F;p\mathrm{Z}$时，我们使用同余符号。</p>
+<p>令$p$是素数，则存在一个本原元素$g$，将使得$F_p$上的元素都是$g$的幂次。特别的，由费马小定理可知，$g^{p-1} &#x3D; 1$。而$F_p$的乘法群是一个只有$p-1$个元素的域。即：</p>
+<center>
+
+<p>$\begin{aligned}<br>    1,g,g^2,g^3,\cdots,g^{p-2}\in F^*_p<br>\end{aligned}$</p>
+</center>
+
+<h4 id="定义：离散对数问题（DLP）"><a href="#定义：离散对数问题（DLP）" class="headerlink" title="定义：离散对数问题（DLP）"></a>定义：离散对数问题（DLP）</h4><p>令$g$是$F_p$的本原根且令$h$是$F_p$的非零元素。则离散对数问题(DLP)是指找一个指数$x$使得</p>
+<center>
+
+<p>$\begin{aligned}<br>    g^x\equiv h \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>的问题 。数字$x$称为$h$的离散对数。它是以$g$为底的，我们记为$\log_g(h)$</p>
+<p><strong>注意1：</strong> 离散对数问题是一个良定义问题(well-posed problem)。即找到整数$x$使得$g^x &#x3D; h$。另一方面，若$x$被我们找到了一个解，则这意味着存在无穷多个解：由费马小定理，$g^{p-1} \equiv 1\mod p$，若$x$是一个$g^x&#x3D;h$的解，则$x+k(p-1)$也是另一个方程的解，注意</p>
+<center>
+
+<p>$\begin{aligned}<br>    g^{x+k(p-1)} &#x3D; g^x\cdot (g^{p-1})^k \equiv h\cdot 1^k \equiv h \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>不难验证，$\log_g$给出了一个良定义的函数。</p>
+<center>
+
+<p>$\begin{aligned}<br>    \log_g:F^*_p \to \frac{\mathrm{Z}}{(p-1)\mathrm{Z}}<br>\end{aligned}$</p>
+</center>
+
+<p>有时为了具体说明，我们将离散对数称为满足同余式$g^x\equiv h \mod p$且位于$0$和$p-2$之间的整数x。</p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>$p &#x3D; 56509$是素数，我们可以验证$2$是$\mod p$的一个原根（理论上说，域$F_{56509}$存在$56508$个元素）。若我们想计算$h &#x3D; 38679$的离散对数，一种显而易见的方法就是计算：</p>
+<center>
+
+<p>$\begin{aligned}<br>    2^2, 2^3,\cdots \mod 56509<br>\end{aligned}$</p>
+</center>
+
+<p>直到得到$38679$的幂。就别用你那个破纸在那画了，用计算机，我们得到$\log_p(h) &#x3D;  11235$。</p>
+<p>我们转化为群论的一般结论：</p>
+<h4 id="定义：群-G-上的DLP"><a href="#定义：群-G-上的DLP" class="headerlink" title="定义：群$G$上的DLP"></a>定义：群$G$上的DLP</h4><p>令$G$是群，则$G$上的DLP问题指的是对$G$中的任意两个元素$g,h$，求整数$x$满足：</p>
+<center>
+
+<p>$\begin{aligned}<br>    \underbrace{g\cdot g\cdot g\cdots}_{x\text{次}}&#x3D;h.<br>\end{aligned}$</p>
+</center>
+
+<h3 id="Diffie-Hellman密钥交换"><a href="#Diffie-Hellman密钥交换" class="headerlink" title="Diffie-Hellman密钥交换"></a><em>Diffie-Hellman</em>密钥交换</h3><p>D-H密钥交换解决了下述问题：</p>
+<p>爱丽丝和鲍勃想要共享一个用于对称密码的密钥，但他们的通信方式是不安全的。则交换的每条信息都能被他们的对手伊娃看到，那么爱丽丝和鲍勃两人如何在共享密钥的同时不被伊娃发现呢。D-H的绝妙见解是，$F^*_p$上的离散对数问题提供了一个可能的解决方案。</p>
+<p>第一步，爱丽丝和鲍勃取一个较大的素数$p$和$\mod p$的非零整数$g$。然后他们将$p$和$g$的值公开，例如可以发到自己的个人博客上。所以伊娃也可以看到。当然，选择$g$的时候最好是一个较大的素数。</p>
+<p>下一步，爱丽丝将选择一个不向任何人透露的秘密整数$a$，同时鲍勃选择一个私密的整数$b$。然后分别用这两个私密整数计算</p>
+<center>
+
+<p>$\begin{aligned}<br>    \underbrace{A\equiv g^a\pmod{p}}<em>{\text{爱丽丝}}\quad\text{和}\quad\underbrace{B\equiv g^b\pmod{p}}</em>{\text{鲍勃}}.<br>\end{aligned}$</p>
+</center>
+
+<p>接着鲍勃和爱丽丝交换他们计算出来的值，注意的是，伊娃也可以看到这些值。这是我们一开始的假设。接着将用私密整数计算</p>
+<center>
+
+<p>$\begin{aligned}<br>    \underbrace{A’\equiv B^a\pmod{p}}<em>{\text{爱丽丝负责的部分}}\quad\text{和}\quad\underbrace{B’\equiv A^b\pmod{p}}</em>{\text{鲍勃负责的部分}}.<br>\end{aligned}$</p>
+</center>
+
+<p>如果正确，那实际上计算出来的值是一样的，注意到</p>
+<center>
+
+<p>$\begin{aligned}<br>    A’\equiv B^a\equiv(g^b)^a\equiv g^{ab}\equiv(g^a)^b\equiv A^b\equiv B’\pmod{p}.<br>\end{aligned}$</p>
+</center>
+
+<p>总结一下：</p>
+<h4 id="D-H密钥交换流程"><a href="#D-H密钥交换流程" class="headerlink" title="D-H密钥交换流程"></a>D-H密钥交换流程</h4><ol>
+<li>选择大素数$p$和在关于素数$p$的域$F_p^*$中的具有大阶数的$g$</li>
+<li>然后爱丽丝和鲍勃各自选择一个私密整数$a,b$，然后计算$A\equiv g^a \mod p$和$B\equiv g^b\mod p$</li>
+<li>接着，爱丽丝将$A$发送给鲍勃，鲍勃将$B$发送给爱丽丝。</li>
+<li>最后爱丽丝计算$B^a \mod p$，鲍勃计算$A^b\mod p$。注意共享值是$B^{a}\equiv(g^{b})^{a}\equiv g^{ab}\equiv(g^{a})^{b}\equiv A^{b}\pmod{p}.$</li>
+</ol>
+<h4 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h4><p>现在我们选择素数$p &#x3D; 941$和本原根$g &#x3D;627$，爱丽丝选择$a &#x3D;347$，则$A &#x3D; 390 \equiv 627^{347}\mod 941$，类似的，鲍勃选择$b&#x3D;781$并计算$B &#x3D; 691 \equiv 627^{781}\mod 941$。接着爱丽丝给鲍勃发送$390$，鲍勃给爱丽丝发送$691$。而且我们应该将$A,B$视为公开发送的。$a,b$是保密的。然后，理论上说，爱丽丝和鲍勃都能计算到数字</p>
+<center>
+
+<p>$\begin{aligned}<br>    470\equiv627^{347\cdot781}\equiv A^b\equiv B^a\pmod{941},<br>\end{aligned}$</p>
+</center>
+
+<p>则$470$是他们共享的密钥。</p>
+<p>若此时伊娃想破解这个秘密，只要能解决其中任何一个问题，他就能解出爱丽丝和鲍勃的的密钥：</p>
+<center>
+
+<p>$\begin{aligned}<br>    627^a \equiv 390 \mod 941 或者 627^b \equiv 691 \mod 941<br>\end{aligned}$</p>
+</center>
+
+<p>这是伊娃在没有爱丽丝和鲍勃帮助的情况下得到秘密共享值的唯一方法。</p>
+<p>上述例子选择的$p$比较小，所以计算机可以在很短的时间给出答案。总的来说，伊娃的困境在于，若知道$A,B$，所以他也知道$g^a$和$g^b$的值，如果伊娃有能力解决DLP，则他可以找到$a$和$b$。之后就能很简单的计算出爱丽丝和鲍勃共享的私密值$g^{ab}$。因此，若伊娃无法解决DLP，那么鲍勃和爱丽丝就安全了。而该安全性实际上取决于以下可能更简单的问题。</p>
+<h4 id="定义-Diffie-Hellman-Problem-DHP"><a href="#定义-Diffie-Hellman-Problem-DHP" class="headerlink" title="定义 Diffie-Hellman Problem(DHP)"></a>定义 <em>Diffie-Hellman Problem</em>(DHP)</h4><p>令$p$是素数，$g$是整数，则$DHP$指的是根据已知的$g^a\mod p$和$g^b\mod p$计算$g^{ab}\mod p$的问题。</p>
+<p>这和我们之前提到的非对称密码是很相似的，区别在于本质上还是一个对称密码。即可以通过自己的私钥去解密别人发送过来的密文。回到问题上来，显然的是$DHP$并不比$DLP$难，若伊娃可以解决DLP，则解决DHP是容易的，但反过来就不一定了。如果伊娃有一个可以有效解决DHP的方法，但能不能解决DLP是尚未清楚的事实。</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2024/09/09/ElGamal%E5%85%AC%E9%92%A5%E7%B3%BB%E7%BB%9F/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          ElGamal公钥系统
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2024/09/05/%E5%AF%B9%E7%A7%B0%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          对称和非对称加密
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>

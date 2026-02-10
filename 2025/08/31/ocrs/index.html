@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta name="author" content="Marcus">
+
+
+  <meta name="subtitle" content="Hello">
+
+
+  <meta name="description" content="nop">
+
+
+
+<title>边缘识别 | Marcus&#39;s Blog</title>
+
+
+
+<link rel="icon" href="/btest/favicon.png">
+
+
+
+<link rel="stylesheet" href="/btest/css/main.css">
+
+
+<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
+
+
+
+<script src="/btest/lib/jquery.min.js"></script>
+
+
+<script src="/btest/lib/iconify-icon.min.js"></script>
+
+
+<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+<script>
+  tailwind.config = {
+    darkMode: "class",
+  };
+</script>
+
+
+<script src="/btest/lib/nprogress/nprogress.js"></script>
+
+<script>
+  $(document).ready(() => {
+    NProgress.configure({
+      showSpinner: false,
+    });
+    NProgress.start();
+    $("#nprogress .bar").css({
+      background: "#de7441",
+    });
+    $("#nprogress .peg").css({
+      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
+    });
+    $("#nprogress .spinner-icon").css({
+      "border-top-color": "#de7441",
+      "border-left-color": "#de7441",
+    });
+    setTimeout(function () {
+      NProgress.done();
+      $(".fade").removeClass("out");
+    }, 800);
+  });
+</script>
+
+<script>
+  (function () {
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+    if (setting === "dark" || (prefersDark && setting !== "light"))
+      document.documentElement.classList.toggle("dark", true);
+    let isDark = document.documentElement.classList.contains("dark");
+  })();
+
+  $(document).ready(function () {
+    // init icon
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = document.documentElement.classList.contains("dark");
+    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+
+    function toggleGiscusTheme() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const giscusFrame = document.querySelector("iframe.giscus-frame");
+      if (giscusFrame) {
+        giscusFrame.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: isDark ? "dark" : "light",
+              },
+            },
+          },
+          "https://giscus.app"
+        );
+      }
+    }
+
+    // toggle dark mode
+    function toggleDark() {
+      let isDark = document.documentElement.classList.contains("dark");
+      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+      isDark = !isDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
+      if (prefersDark === isDark) {
+        localStorage.setItem("hexo-color-scheme", "auto");
+      } else {
+        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
+      }
+      toggleGiscusTheme();
+    }
+
+    // listen dark mode change
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
+        if (setting === "auto") {
+          document.documentElement.classList.toggle("dark", e.matches);
+          $("#theme-icon").attr(
+            "icon",
+            e.matches ? "ri:moon-line" : "ri:sun-line"
+          );
+          toggleGiscusTheme();
+        }
+      });
+
+    $("#toggle-dark").click((event) => {
+      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (!isAppearanceTransition) {
+        toggleDark()
+        return
+      }
+      const x = event.clientX
+      const y = event.clientY
+      const endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y),
+      )
+      const transition = document.startViewTransition(async () => {
+        toggleDark()
+      })
+
+      transition.ready
+        .then(() => {
+          const isDark = document.documentElement.classList.contains("dark")
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+          document.documentElement.animate(
+            {
+              clipPath: isDark
+                ? [...clipPath].reverse()
+                : clipPath,
+            },
+            {
+              duration: 400,
+              easing: 'ease-out',
+              pseudoElement: isDark
+                ? '::view-transition-old(root)'
+                : '::view-transition-new(root)',
+            },
+          )
+        })
+    });
+  });
+</script>
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
+  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
+  <div class="max-auto">
+    <nav class="flex items-center text-base">
+      <a href="/btest/" class="group">
+        <h2 class="font-medium tracking-tighterp text-l p-2">
+          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
+          Marcus&#39;s Blog
+        </h2>
+      </a>
+      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
+        边缘识别
+      </div>
+      <div class="flex-1"></div>
+      <div class="flex items-center gap-3">
+        
+          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
+        
+          <a class="hidden sm:flex" href="/btest/category">Categories</a>
+        
+          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
+        
+        
+          
+        
+        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
+          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
+        </a>
+        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
+          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
+        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
+          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
+        </span>
+        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
+          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
+        </span>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
+  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
+    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
+        </li>
+      
+        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
+          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
+        </li>
+      
+    </ul>
+  </div>
+  <div class="mask bg-black/20 absolute inset-0"></div>
+</div>
+
+  <main class="pt-14">
+    <!-- css -->
+
+<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
+
+
+<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
+
+<!-- toc -->
+
+  <!-- tocbot -->
+<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
+
+
+<section class="px-6 max-w-prose mx-auto md:px-0">
+  <!-- header -->
+  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
+    <div class="pt-4 md:pt-6">
+      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+        边缘识别
+      </h1>
+      <div>
+        <section class="flex items-center gap-3 text-sm">
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
+            <time>2025-09-05</time>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
+            <span>10 min</span>
+          </span>
+          <span class="text-gray-400">·</span>
+          <span class="flex items-center gap-1">
+            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
+            <span>2.7k words</span>
+          </span>
+          
+        </section>
+      </div>
+    </div>
+  </header>
+  <!-- content -->
+  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>视觉中有一个非常重要的模块叫边缘识别，顾名思义，这是用来帮助计算机如何识别图像边缘的技术。在这一节中，我们将介绍几种计算机视觉中常用的算法，并讲解原理和代码。</p>
+<p>你也许需要的前置知识：<strong>线性代数</strong>+<strong>多元微积分</strong></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="颜色空间"><a href="#颜色空间" class="headerlink" title="颜色空间"></a>颜色空间</h3><p>是的，一张图片上的一个像素点可以由一个$1\times 3$的数组组成，其中每个分量代表了一种不可被继续分解的颜色——红、绿、蓝。也就是我们一般说的RGB颜色。而每种颜色有255个亮度，换句话说，255表示纯色（最大亮度），而0表示黑色（关闭显示这种颜色），比如，橙色可以由R &#x3D; 200,G&#x3D;100,B &#x3D; 50混合而成。而每种颜色都是这三种不可分解颜色混合而成的，因此，利用线性代数的知识，我们知道这三种颜色生成一个空间，并且是以RGB为基的。</p>
+<p>我们可以简单的验证颜色空间是一个线性空间，并且是以(1,0,0),(0,1,0)和(0,0,1)为基。(计算机中是以8bit去存储颜色的，所以值在0-255，显示中是以颜色的比例去调的，所以我们应该用0-1的值去做验证)</p>
+<h3 id="图像梯度"><a href="#图像梯度" class="headerlink" title="图像梯度"></a>图像梯度</h3><p>众所周知,数学上的梯度是表示一个函数在某个点的变化率（斜率）通过该点的变化率，我们可以得知这个点和上一个点或者是下一个点的关系，比如费马点，即对一元函数$f(x)$的导数$f’(x)$满足$f’(x) &#x3D; 0$的点。那么这样的点要么是极大值要么是极小值。因为对该点的变化率前后都是要么大于它的，要么小于他的。</p>
+<center>
+<img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svgb/3ZTNjtowEMfveYo5FDVIxvXYsWODOFTqsaoqtbfAwRBDomYT6pguW8S7V_lYdkHbB2hzsmf-8_XLyKtQ_vjdunB2v5x_gkO5DUfvPtA2PFVuea7K2sFjmYdiyWgqD-FygUnrAuRuZ49VgBcBhAYGDYxfFK02bl_W567GmPmSncZM5Ol6aLe2cssZktNwwnU0Odbb5uHB1QHKHXj381h6N4fVwYYCYkYEY9PF2Epp994-QOV2AdpgfQAbgBGwdQ6FbaFw5b4I0OxAMBZFk2-FPbg5fDyVLfBPkJX5PD8YpVPFpFQJcpGINUSr3NtHgFgywlFQlUxhNoOYc0b5syVWKWWcpGbwDTfONVVTiDsNJ5zpt2MHy6DBQRMr3iXQ6nW65-Tp1QeL6xBfrbebprLjFIJrNCk3zGjDjBTJyxwQoxjaG8tTCtumDr6pWoixMxqCqCmm0x5dbBgV8mqi9DrfmKDrInjbw_1c1q4dmrCKC9TIOWOolXmFEiBOkWCCw0AoU8qH62KUZG1R7sLyHKM0o-9CwDfBBgdLQM3WkG2bqvHLs99vCHAp597lBNgC9t65uj9tqqMjwOACsM7udnjd94GMGkFmgnJzR0JRI8kMaTJSEFQgmTEqBgSMsLuAXtD7e30f34d38qHOUAb-SsxoKY0UUkiutJDpDTItun8wIhNI0RBUiqJ5C5vgVBFUKVU34DiX_yW4lGkU2nBtpJGJVre7lhJUfASHkhpDkAvK3tw3TGlCkOMdOBT_OrhoAt_dKcCXJnfj1DEqJN0qJVOom9xBZutt0fhl3fhQwKNrwzor69p5aN1hfKb7Kc7vdu9jOE3fXRZRFEUrV-c3r_sf",width="60%"/>
+</center>
+
+<p>因此，若这些梯度很多的时候，我们可以看到这些箭头逐渐的组成函数的图形，可以看到从点0上去又下来。现在，我们回到图形上，一个图形由x和y两个方向组成，即水平和垂直两个方向，而图像梯度反应的是像素值(灰度或强度)在空间中的变化率，定义为：</p>
+<p>对二维灰度图$I(x,y)$。它的梯度定义为图形对空间坐标偏导数组成的向量</p>
+<center>
+
+<p>$\nabla I &#x3D; \left(I_x’,I_y’\right)$</p>
+</center>
+
+<p>其中$I_x’$表示水平方向(x轴)上的变化率，$I_y’$表示垂直方向(y轴)上的变化率。接着，利用平行四边形定理，我们可以得到一个新的向量$\nabla I &#x3D; I_x’ + I_y’$，新向量永远指向函数增长最大的地方。利用这个特性，在灰度图上我们就可以清楚的看到哪里是颜色变化最厉害的地方。那么这个最厉害的地方就有很大的可能是边界。</p>
+<p>比如，我们定义函数$I(x,y)$是一个关于RGB内颜色运算的函数，那么他是下面这个图</p>
+<center>
+<img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svgb/hVLLrtowEN3nK2aDBJJx_YidBJRV_6BdAguTDIlVk6SO03sp4t8rQm6gVat6NTNnzpkztvfBfvvZY7jiD_QX6GwRBo-faB8uDvOrsw3Cmy1DnTOaqC7cbrDoMUCJJzO4AM8GCC08emA6UbQ_YmWb633GpHzbvU9K5DIHfWEc5mtO3h8RP0SLoSna8xmbAPYEHr8P1uMG9p0JNSwZkYyttpMVaypvzuDwFKAPxgcwARgB05RQmx5qtFUdoD2BZCyKFl9r0-EGvmARTFM5hJ0tN2UXa55lUjEmdJKmQsoDRPvSmzeA3ck6l199dSQglNp4LAlwuYXKIzYE2BaObkACDG4A5N4NbWcKGy45hwMsZUJSvYL1GpZcaSr-yASTdCrI5CUrLoVD2M6WP1tfPP2KWOk05jxNuYy1jv_jVyg1Gx7jh2Wh1D9Ma0EzwuOYpiugFIq2Cb51_QcgNOXZarzlZZLQLCOcc8rH3mWmqX7Jn1zOFRX8AxrJXDIqZ707e6r8ZfSEaEnjmT4pJilVr8Pn_MmebD6QkfxYZZK7c1-XfnmB8eyxKX_7zL8A" ,width="60%" />
+
+</center>
+
+<p>它的图形梯度就是从黑色指向白色区域的向量，其上的函数是对颜色的值求变化率得到的</p>
+<center>
+<img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svgb/3ZXLktowEEX3_oreTBVUiY5ab0GxyjarzBJYeGwBrnhsYovMEIp_T2E7vIovGK0kdd--0mk_lrH49bcN8Rj-hOYAuyKL-yZ8wzYeyjA_lkUV4KPI43bO0epdPJ3gpQ0R8rBO92WEawLEGvocGEaSLN_CpqiOZ4-h8mnxOVRih8ukzdIyzCfEPvsZrZKXfZXV7--hilCsoQm_90UTprDcpXELI84k5-PZcJQi3TTpO5RhHaGNaRMhjcAZpFUO27SFbSg22wj1GiTnSfLyuk13YQo_QxbTalMGWBT5NN8pQ95Lzbkw1jkh5QqSZd6kHwAwkpY5M4bJBEakDYqHleAShw1pb1bZISsDzC6e34smuxoKpY1TRM6RVMaoW0Mj0DNSCt0YECGrq9jUZfs_IAySH3dXHFmL3jMiQupyR96guVlftUQaBf0PdWKSHOWl3lk97DyxHiJGorrIh4rWob41v6yv6uGYfaQT91cZyp21t5e-oZe8vMYm7Zr4o6hC2_NLHXlP3BinnVFGmBt8MFKOed93xCi0Zz4arR_DbEhatNtiHefHkTk3kMiiGJ8YNHVMY4A5CKFXsMjqsm7mx2bzxkBoPW1CzoDPYNOEUHWzt3IfGHA4AawWD-_LqjsKcfSSTSQK_9hL9JpNCNUARKIkNuEoexyc8QdBl9DFe4BnfSfvGtf59DbQPXTPqEkpPSnluTCSC-nvqFnOPPXUrEUlGXGHVj-hZl1HjaO5p6Ysyi_JjZPVpAQn7Y20xil1R46EYMT58FEgjaQYkUCnnsAjUh099UjPOyT6mviEtUY6zr3Tjpx3dgVJN5ahyu9-Ef8A" ,width="60%" />
+</center>
+
+<p>它刚好就是两个图形重叠的区域产生的边界。</p>
+<p>现在我们开始真正的内容，进入到边缘检测的部分</p>
+<h3 id="Sobel算子"><a href="#Sobel算子" class="headerlink" title="Sobel算子"></a>Sobel算子</h3><p>sobel算子是由 Irwin Sobel的名字命名的，它是下述的两个矩阵：</p>
+<p>$$<br>G_x &#x3D; \left( \begin{matrix}<br>    -1&amp;		0&amp;		1\<br>    -2&amp;		0&amp;		2\<br>    -1&amp;		0&amp;		1\<br>\end{matrix} \right) , G_y &#x3D; \left( \begin{matrix}<br>    1&amp;		2&amp;		1\<br>    0&amp;		0&amp;		0\<br>    -1&amp;		-2&amp;		-1\<br>\end{matrix} \right)<br>$$</p>
+<p>其中$G_x$来得到水平方向的导数，而$G_y$得到垂直方向的导数。</p>
+<p>连续的梯度定义是取极限，而图形不同，因为图形的表示是离散的，所以实际上我们通过离散卷积的形式来实现类似于求导的操作。</p>
+<p>Sobel算子的图像梯度计算步骤如下：</p>
+<p>对输入图像进行卷积操作，分别计算图像在水平$G_x$和$G_y$方向的梯度。令$A &#x3D; {a_{ij}}_{3\times 3}$是$3\times 3$的相邻像素矩阵，那么$A$上有9个相邻的像素点，那么它的梯度如下计算</p>
+<center>
+
+<p>$I_x’ &#x3D; A \times G_x $<br>和<br>$I_y’ &#x3D; A \times G_y $</p>
+</center>
+
+<p>通过卷积核我们可以得知，其实$G_x$就是用后一个像素的颜色值去减前一个像素的颜色值，若颜色相差不大，这一减得到的值就趋近于0，否则这个值将增大。会得到一个不同于黑色非常明显的像素点。另一个也是一样的道理，基于此，卷积完得到的值就是边缘（高亮）+ 图片内点的像素（黑色）。</p>
+<p>而计算完9个像素后，sobel一般使用步长为1的滑动窗口计算下一个矩阵，也就是将$a_{21}$的9个相邻像素点计算完之后就从$a_{22}$取9个相邻像素点计算。</p>
+<p>接着，我们有两种方法去计算它的梯度的值，一种是欧式距离，即$G &#x3D; \sqrt{I_x^2+I^2_y}$，另一种是出租车距离$G &#x3D; \mid I_{x_2} - I_{x_1}\mid + \mid I_{y_2}  - I_{y_1}\mid $，前者精度较高，后者较快。梯度的值表示边缘的强度，而梯度的方向表示边缘在哪。</p>
+<p>只需要将得到的G标准化处理，那么我们就能得到最终的边缘图像。</p>
+<h4 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="comment">#G_x和G_y卷积核定义</span></span><br><span class="line">G_x = np.array(</span><br><span class="line">    [[-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],</span><br><span class="line">     [-<span class="number">2</span>,<span class="number">0</span>,<span class="number">2</span>],</span><br><span class="line">     [-<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>]]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">G_y = np.array(</span><br><span class="line">    [</span><br><span class="line">        [-<span class="number">1</span>,-<span class="number">2</span>,-<span class="number">1</span>],</span><br><span class="line">        [<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>],</span><br><span class="line">        [<span class="number">1</span>,<span class="number">2</span>,<span class="number">1</span>]</span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line"><span class="comment">#图像处理函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">sobel_test_fun</span>(<span class="params">image_pth</span>):</span><br><span class="line">    img = Image.<span class="built_in">open</span>(image_pth).convert(<span class="string">&#x27;L&#x27;</span>)</span><br><span class="line">    img_array = np.array(img,dtype=np.float32)</span><br><span class="line">    height,width = img_array.shape </span><br><span class="line">    plt.imshow(img_array,cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">#初始化梯度数组</span></span><br><span class="line"></span><br><span class="line">    grandient_x = np.zeros_like(img_array)<span class="comment">#x</span></span><br><span class="line">    grandient_y = np.zeros_like(img_array)<span class="comment">#y</span></span><br><span class="line">    g_magnitude = np.zeros_like(img_array) <span class="comment">#x+y</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#卷积处理</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,height-<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,width -<span class="number">1</span>):</span><br><span class="line">            region = img_array[i-<span class="number">1</span>:i+<span class="number">2</span>, j-<span class="number">1</span>:j+<span class="number">2</span>]<span class="comment"># 选取9个像素点</span></span><br><span class="line">            </span><br><span class="line">            grandient_x[i,j] = np.<span class="built_in">sum</span>(region * G_x)</span><br><span class="line">            grandient_y[i,j] = np.<span class="built_in">sum</span>(region * G_y)</span><br><span class="line"></span><br><span class="line">            g_magnitude[i,j] = np.sqrt(grandient_x[i,j]**<span class="number">2</span> + grandient_y[i,j]**<span class="number">2</span>) <span class="comment">#使用欧氏距离</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#归一化到0-255范围</span></span><br><span class="line">    gradient_x = np.clip(grandient_x, <span class="number">0</span>, <span class="number">255</span>)</span><br><span class="line">    gradient_y = np.clip(grandient_y, <span class="number">0</span>, <span class="number">255</span>)</span><br><span class="line">    gradient_magnitude = np.clip(g_magnitude, <span class="number">0</span>, <span class="number">255</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> img_array, grandient_x,grandient_y,g_magnitude</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">display</span>(<span class="params">original,gx,gy,gm</span>):</span><br><span class="line">    plt.figure(figsize=(<span class="number">16</span>, <span class="number">12</span>))</span><br><span class="line">    </span><br><span class="line">    plt.subplot(<span class="number">221</span>)</span><br><span class="line">    plt.imshow(original, cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    plt.title(<span class="string">&#x27;orginal img&#x27;</span>)</span><br><span class="line">    plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    plt.subplot(<span class="number">222</span>)</span><br><span class="line">    plt.imshow(gx, cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    plt.title(<span class="string">&#x27;img of x (Gx)&#x27;</span>)</span><br><span class="line">    plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    plt.subplot(<span class="number">223</span>)</span><br><span class="line">    plt.imshow(gy, cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    plt.title(<span class="string">&#x27;img of y (Gy)&#x27;</span>)</span><br><span class="line">    plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    plt.subplot(<span class="number">224</span>)</span><br><span class="line">    plt.imshow(gm, cmap=<span class="string">&#x27;gray&#x27;</span>)</span><br><span class="line">    plt.title(<span class="string">&#x27;edge of img&#x27;</span>)</span><br><span class="line">    plt.axis(<span class="string">&#x27;off&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">    plt.tight_layout()</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    image_path = <span class="string">&quot;your img&quot;</span></span><br><span class="line">    original,gx,gy,gm = sobel_test_fun(image_path)</span><br><span class="line">    display(original,gx,gy,gm)</span><br></pre></td></tr></table></figure>
+
+<p>原图：</p>
+<center>
+<img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svgb/hVLLrtowEN3nK2aDBJJx_YidBJRV_6BdAguTDIlVk6SO03sp4t8rQm6gVat6NTNnzpkztvfBfvvZY7jiD_QX6GwRBo-faB8uDvOrsw3Cmy1DnTOaqC7cbrDoMUCJJzO4AM8GCC08emA6UbQ_YmWb633GpHzbvU9K5DIHfWEc5mtO3h8RP0SLoSna8xmbAPYEHr8P1uMG9p0JNSwZkYyttpMVaypvzuDwFKAPxgcwARgB05RQmx5qtFUdoD2BZCyKFl9r0-EGvmARTFM5hJ0tN2UXa55lUjEmdJKmQsoDRPvSmzeA3ck6l199dSQglNp4LAlwuYXKIzYE2BaObkACDG4A5N4NbWcKGy45hwMsZUJSvYL1GpZcaSr-yASTdCrI5CUrLoVD2M6WP1tfPP2KWOk05jxNuYy1jv_jVyg1Gx7jh2Wh1D9Ma0EzwuOYpiugFIq2Cb51_QcgNOXZarzlZZLQLCOcc8rH3mWmqX7Jn1zOFRX8AxrJXDIqZ707e6r8ZfSEaEnjmT4pJilVr8Pn_MmebD6QkfxYZZK7c1-XfnmB8eyxKX_7zL8A" ,width="60%" />
+
+</center>
+
+<p>经过sobel算子得到的边缘图：</p>
+<center>
+<img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svgb/lZPPjuIwDMbvfQpfkEAKmTj9D-K0b7B7BA6hddtoQ9tJw86wiHdf0XZKZzSXzcmx_X3-WVEOTv_-25G70R-yV2h15i6WXnjnroZ2N6Nrgjedu2oneBy27n6HRUcOcirUxTh4NoBrYOiB8Xje4USlrm-PGaPzff8-OrHrFHSZMrRbI3sfIjx6i0udNecz1Q50AZZeL9rSBg6tchUsBfOFWG1HFK1Kq85gqHDQOWUdKAeCgapzqFQHFemyctAU4AvheYtflWppAz8pc6ouDcFe55u8xSANUz-IMRIo0iRIjuAdcqveAPaFNmZ3s-WJgQzDjaWcAYotlJaoZiC2cDIXYiDgDsAe3dC0KtPuukM4whJ9nyViBes1LGUoufxywzTm0ZB4tD6v2TUzBNsJ-oe22UQcJQH6KcowiSPEGGfAWWMa-5VYBtGELAP5AS0D2WP30hn2t1v_z9JhwlOGfsKTFXAOWVM725huqkjBMV3177TE2OdpylCEHPvuJaaSR7PEUy4RucSPUi-XMuL-5PiQj5lvpo-VMObBJB8dY8nDT9OnxAx-JB1KA_ywz-jYy-e7z97xcQ5U55_-xD8" ,width="60%" />
+
+</center>
+
+<h3 id="canny边缘检测算法"><a href="#canny边缘检测算法" class="headerlink" title="canny边缘检测算法"></a>canny边缘检测算法</h3><p>sobel算子是一种不错的检测方法，但不太够，容易受到噪声影响。比如有一笔小划痕在中间，用卷积核之后该划痕也会被划入边缘的集合内，这是不行的。现在我们介绍另一种算法，它的核心目标是低误测率、良好的定位性和最少的响应次数。它有5个主要步骤，即</p>
+<ul>
+<li>噪声抑制</li>
+<li>计算梯度</li>
+<li>非极大值抑制</li>
+<li>双阈值检测</li>
+<li>边缘连接</li>
+</ul>
+<p>噪声抑制有：均值、中值、高斯、双边、引导滤波算法，这节我们讲高斯滤波</p>
+<h3 id="高斯滤波"><a href="#高斯滤波" class="headerlink" title="高斯滤波"></a>高斯滤波</h3><p>高斯滤波基于正态分布函数，它是一个二维的函数</p>
+<center>
+
+<p>$G(x,y) &#x3D; \frac{1}{2\pi\sigma^2}e^{-\frac{x^2+y^2}{2\sigma^2}}$</p>
+</center>
+
+<p>其中$\sigma^2$是方差，这样的运算也许有点复杂，如果它是下面这种形式就好了：</p>
+<center>
+
+<p>$G(x,y) &#x3D; G(x)*G(y) &#x3D; \cfrac{1}{2\pi\sigma^2}(e^{-x^2&#x2F;2\sigma^2} * e^{-y^2&#x2F;2\sigma^2})$</p>
+</center>
+
+<p>就好了，这意味着我们可以通过两次滤波来完成一次二维的高斯滤波，但这是可以的</p>
+<p><strong>proof:</strong></p>
+<center>
+
+<p>$G(x) * G(y) &#x3D; \begin{array}{ccc}<br>    \cfrac{1}{2\pi\sigma^2}e^{-(x^2&#x2F;2\sigma^2 + y^2&#x2F;2\sigma^2)} &amp; &#x3D; &amp; G(x,y)<br>\end{array}$</p>
+</center>
+
+<p>高斯模糊能起作用主要依赖于正态分布函数的标准差，在中心的周围1个标准差的距离是样本点最多的地方，2个标准差就开始减少，直到3个标准差，在大就没有意义了，因为3个标准差内包含99.7%的样本点。所以我们可以用这个特性加权。因此，我们可以如下的创建一个高斯模糊核，他用于和图片上的像素矩阵平均运算。离中心越远，则利用高斯曲线的特性快速下降权重，反之越靠近中心权重就越大，对结果影响也越大</p>
+<p>给定标准差$\sigma &#x3D; 1$，我们开始计算权重。给定一个$3\times 3$的矩阵$A &#x3D; {a_{ij}}<em>{3\times 3}$，和$\sigma &#x3D; 1$，矩阵的中心是$a</em>{22}$，以此为点$(0,0)$，则矩阵的第一个元素$a_{11}$相对于$a_{22}$是左上角，坐标为$(-1,1)$，右下角的是$(1,-1)$，右上角为$(1,1)$，左下角是$(-1,-1)$，我们只需要把坐标带入高斯函数，比如$G(a_{22}) &#x3D; G(0,0) &#x3D; 1&#x2F;(2\pi)e^{-1} \approx 0.1592 $，那么高斯核就是</p>
+<center>
+
+<p>$G &#x3D; \left(\begin{array}{ccc}<br>    0.0545 &amp; 0.0965 &amp; 0.0545\<br>    0.0965 &amp; 0.1592 &amp; 0.0965\<br>    0.0545 &amp; 0.0965 &amp; 0.0545<br>\end{array}\right)$</p>
+</center>
+
+<p>接着需要归一化，若矩阵中的元素加起来不是1，则直接除以总数即可。</p>
+<p>老套路，将高斯核$G$和图片的矩阵相乘即可得到平滑后的图片$G * A$，其中$A$是图片上提取的$3\times 3$像素。我们可以使用如下函数来调用高斯模糊</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line">blurred = cv2.GaussianBlur(img,(<span class="number">3</span>,<span class="number">3</span>),<span class="number">0</span>) <span class="comment">#第一个参数是图片，第二是高斯核大小，第三是sigma值，即标准差，设置为0则程序会自动计算合适的标准差值</span></span><br></pre></td></tr></table></figure>
+
+<p>接着和之前一样，使用sobel算子算出梯度强度和方向</p>
+<center>
+
+<p>$G &#x3D; \sqrt{G_x^2+G_y^2}$<br>和<br>$\theta &#x3D; \arctan(G_y&#x2F;G_x)$</p>
+</center>
+
+<p>最后一步，我们做范围的切割，$\theta \in [157.5,180] \cup [0,22.5]$的范围内，被定义为$0$。在$[22.5,67.5]$的范围内，$\theta$定义为$45$度，在$[67.5,112.5]$范围内被定义为$90$度。在$[112.5,157.5]$内被定义为$135$度</p>
+
+  </article>
+  <!-- tag -->
+  <div class="mt-12 pt-6 border-t border-gray-200">
+    
+      
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
+          <a href="/btest/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/">图形学</a>
+        </span>
+      
+    
+  </div>
+  <!-- prev and next -->
+  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
+    <div>
+      
+        <a href="/btest/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
+          合作式调度器
+        </a>
+      
+    </div>
+    <div>
+      
+        <a href="/btest/2025/07/27/matlab%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
+          matlab基础语法
+          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
+        </a>
+      
+    </div>
+  </div>
+  <!-- comment -->
+  <div class="article-comments mt-12">
+    
+
+  </div>
+</section>
+<!-- js inspect -->
+
+<script src="/btest/lib/clipboard.min.js"></script>
+
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+  $(document).ready(() => {
+    const maraidConfig = {
+      theme: "default",
+      logLevel: 3,
+      flowchart: { curve: "linear" },
+      gantt: { axisFormat: "%m/%d/%Y" },
+      sequence: { actorMargin: 50 },
+    };
+    mermaid.initialize(maraidConfig);
+  });
+</script>
+
+
+
+<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+    $('.post-content').each(function(i){
+      $(this).find('img').each(function(){
+        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
+        var alt = this.alt;
+        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
+        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
+      });
+      $(this).find('.fancybox').each(function(){
+        $(this).attr('rel', 'article' + i);
+      });
+    });
+
+    Fancybox.bind('[data-fancybox="gallery"]', {
+        // options
+    })
+  })
+</script>
+
+<!-- tocbot begin -->
+
+<script src="/btest/lib/tocbot/tocbot.min.js"></script>
+
+<script>
+  $(document).ready(() => {
+      tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.post-toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.post-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+    });
+  })
+</script>
+<!-- tocbot end -->
+
+
+  </main>
+  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
+  <!-- busuanzi -->
+  
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<!-- Busuanzi Analytics -->
+<div class="flex items-center gap-2">
+  <span>Visitors</span>
+  <span id="busuanzi_value_site_uv"></span>
+  <span>Page Views</span>
+  <span id="busuanzi_value_site_pv"></span>
+</div>
+<!-- End Busuanzi Analytics -->
+
+
+  <!-- copyright -->
+  <div class="flex items-center gap-2">
+    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
+    <span>© 2022</span>
+    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
+    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+  </div>
+  <!-- powered by -->
+  <div class="flex items-center gap-2">
+    <span>Powered by</span>
+    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
+    <span>&</span>
+    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  </div>
+
+</footer>
+
+  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
+    <span class="flex justify-center items-center text-sm">
+      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
+      <span id="scrollpercent"><span>0</span> %</span>
+    </span>
+  </div>
+  
+<script src="/btest/js/main.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      const mapleCount = "10";
+      const speed = "0.5";
+      const mapleEl = document.getElementById("maple");
+      const maples = Array.from({ length: mapleCount }).map(() => {
+        const maple = document.createElement("div");
+        const scale = Math.random() * 0.5 + 0.5;
+        const offset = Math.random() * 2 - 1;
+        const x = Math.random() * mapleEl.clientWidth;
+        const y = -Math.random() * mapleEl.clientHeight;
+        const duration = 10 / speed;
+        const delay = -duration;
+        maple.className = "maple";
+        maple.style.width = `${24 * scale}px`;
+        maple.style.height = `${24 * scale}px`;
+        maple.style.left = `${x}px`;
+        maple.style.top = `${y}px`;
+        maple.style.setProperty("--maple-fall-offset", offset);
+        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
+        maple.style.animation = `fall ${duration}s linear infinite`;
+        maple.style.animationDelay = `${delay}s`;
+        mapleEl.appendChild(maple)
+        return maple
+      })
+    });
+  </script>
+  
+
+
+  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+</body>
+
+</html>
