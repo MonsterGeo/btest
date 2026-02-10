@@ -1,298 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 <head>
-  <meta charset="UTF-8">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="这一章我们讲讲编码 首先思考一个问题，我们如何防止一个未经授权的人获取我们的信息？我们假设帕特问麦克要艾拉电话，但麦克回答的时候有一只狗在叫，由于这个噪声，帕特不确信他真的听到了电话号码，并一次要求麦克重复一遍。有可能的大多数情况下，在一次或者两次后的重复才能保证帕特听到艾拉的电话号码。但简单的重复一个信息可数次是不可行的，例如地球上的科学家查看来自火星或者木星的照片就是一个很好的例子。在2004">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Code">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2024/01/29/Code/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="这一章我们讲讲编码 首先思考一个问题，我们如何防止一个未经授权的人获取我们的信息？我们假设帕特问麦克要艾拉电话，但麦克回答的时候有一只狗在叫，由于这个噪声，帕特不确信他真的听到了电话号码，并一次要求麦克重复一遍。有可能的大多数情况下，在一次或者两次后的重复才能保证帕特听到艾拉的电话号码。但简单的重复一个信息可数次是不可行的，例如地球上的科学家查看来自火星或者木星的照片就是一个很好的例子。在2004">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.upmath.me/svg/%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C310)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20310%0A%0A%25Straight%20Lines%20%5Bid%3Ada20450973618657287%5D%20%0A%5Cdraw%20%20%20%20(164%2C139)%20--%20(236.82%2C139)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(238.82%2C139)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada22328292793349958%5D%20%0A%5Cdraw%20%20%20%20(271%2C169)%20--%20(271%2C229.82)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(271%2C231.82)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2294031727863617%5D%20%0A%5Cdraw%20%20%20%20(143%2C160)%20--%20(238.04%2C243.5)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(239.55%2C244.82)%7D%2C%20rotate%20%3D%20221.3%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(122%2C129.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(249%2C132.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%20%2FI%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(193%2C115.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Calpha%20%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(248%2C241.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%20%2FJ%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(296%2C185.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Cgamma%20%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(149%2C203.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Cbeta%20%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+<meta property="article:published_time" content="2024-01-29T14:47:33.000Z">
+<meta property="article:modified_time" content="2024-02-26T19:31:12.149Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.upmath.me/svg/%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C310)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20310%0A%0A%25Straight%20Lines%20%5Bid%3Ada20450973618657287%5D%20%0A%5Cdraw%20%20%20%20(164%2C139)%20--%20(236.82%2C139)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(238.82%2C139)%7D%2C%20rotate%20%3D%20180%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada22328292793349958%5D%20%0A%5Cdraw%20%20%20%20(271%2C169)%20--%20(271%2C229.82)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(271%2C231.82)%7D%2C%20rotate%20%3D%20270%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada2294031727863617%5D%20%0A%5Cdraw%20%20%20%20(143%2C160)%20--%20(238.04%2C243.5)%20%3B%0A%5Cdraw%20%5Bshift%3D%7B(239.55%2C244.82)%7D%2C%20rotate%20%3D%20221.3%5D%20%5Bcolor%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%5D%5Bline%20width%3D0.75%5D%20%20%20%20(10.93%2C-3.29)%20..%20controls%20(6.95%2C-1.4)%20and%20(3.31%2C-0.3)%20..%20(0%2C0)%20..%20controls%20(3.31%2C0.3)%20and%20(6.95%2C1.4)%20..%20(10.93%2C3.29)%20%20%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(122%2C129.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(249%2C132.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%20%2FI%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(193%2C115.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Calpha%20%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(248%2C241.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24k%5B%20x%5D%20%2FJ%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(296%2C185.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Cgamma%20%24%7D%3B%0A%25%20Text%20Node%0A%5Cdraw%20(149%2C203.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5Cbeta%20%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/btest/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/btest/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/btest/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Code</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
 
+    <!-- Umami Analytics -->
 
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/btest/css/style.css">
 
-  <meta name="author" content="Marcus">
-
-
-  <meta name="subtitle" content="Hello">
-
-
-  <meta name="description" content="nop">
-
-
-
-<title>Code | Marcus&#39;s Blog</title>
-
-
-
-<link rel="icon" href="/btest/favicon.png">
-
-
-
-<link rel="stylesheet" href="/btest/css/main.css">
-
-
-<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
-
-
-
-<script src="/btest/lib/jquery.min.js"></script>
-
-
-<script src="/btest/lib/iconify-icon.min.js"></script>
-
-
-<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-<script>
-  tailwind.config = {
-    darkMode: "class",
-  };
-</script>
-
-
-<script src="/btest/lib/nprogress/nprogress.js"></script>
-
-<script>
-  $(document).ready(() => {
-    NProgress.configure({
-      showSpinner: false,
-    });
-    NProgress.start();
-    $("#nprogress .bar").css({
-      background: "#de7441",
-    });
-    $("#nprogress .peg").css({
-      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
-    });
-    $("#nprogress .spinner-icon").css({
-      "border-top-color": "#de7441",
-      "border-left-color": "#de7441",
-    });
-    setTimeout(function () {
-      NProgress.done();
-      $(".fade").removeClass("out");
-    }, 800);
-  });
-</script>
-
-<script>
-  (function () {
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-    if (setting === "dark" || (prefersDark && setting !== "light"))
-      document.documentElement.classList.toggle("dark", true);
-    let isDark = document.documentElement.classList.contains("dark");
-  })();
-
-  $(document).ready(function () {
-    // init icon
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = document.documentElement.classList.contains("dark");
-    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-
-    function toggleGiscusTheme() {
-      const isDark = document.documentElement.classList.contains("dark");
-      const giscusFrame = document.querySelector("iframe.giscus-frame");
-      if (giscusFrame) {
-        giscusFrame.contentWindow.postMessage(
-          {
-            giscus: {
-              setConfig: {
-                theme: isDark ? "dark" : "light",
-              },
-            },
-          },
-          "https://giscus.app"
-        );
-      }
-    }
-
-    // toggle dark mode
-    function toggleDark() {
-      let isDark = document.documentElement.classList.contains("dark");
-      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-      isDark = !isDark;
-      document.documentElement.classList.toggle("dark", isDark);
-      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-      if (prefersDark === isDark) {
-        localStorage.setItem("hexo-color-scheme", "auto");
-      } else {
-        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
-      }
-      toggleGiscusTheme();
-    }
-
-    // listen dark mode change
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-        if (setting === "auto") {
-          document.documentElement.classList.toggle("dark", e.matches);
-          $("#theme-icon").attr(
-            "icon",
-            e.matches ? "ri:moon-line" : "ri:sun-line"
-          );
-          toggleGiscusTheme();
-        }
-      });
-
-    $("#toggle-dark").click((event) => {
-      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (!isAppearanceTransition) {
-        toggleDark()
-        return
-      }
-      const x = event.clientX
-      const y = event.clientY
-      const endRadius = Math.hypot(
-        Math.max(x, innerWidth - x),
-        Math.max(y, innerHeight - y),
-      )
-      const transition = document.startViewTransition(async () => {
-        toggleDark()
-      })
-
-      transition.ready
-        .then(() => {
-          const isDark = document.documentElement.classList.contains("dark")
-          const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ]
-          document.documentElement.animate(
-            {
-              clipPath: isDark
-                ? [...clipPath].reverse()
-                : clipPath,
-            },
-            {
-              duration: 400,
-              easing: 'ease-out',
-              pseudoElement: isDark
-                ? '::view-transition-old(root)'
-                : '::view-transition-new(root)',
-            },
-          )
-        })
-    });
-  });
-</script>
-
-
-
-
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 7.3.0"></head>
-<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
-  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
-  <div class="max-auto">
-    <nav class="flex items-center text-base">
-      <a href="/btest/" class="group">
-        <h2 class="font-medium tracking-tighterp text-l p-2">
-          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
-          Marcus&#39;s Blog
-        </h2>
-      </a>
-      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
-        Code
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/btest/2024/04/07/%E5%B0%BE%E5%A3%B0/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/btest/2023/11/26/ocr/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2024/01/29/Code/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2024/01/29/Code/&text=Code"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2024/01/29/Code/&is_video=false&description=Code"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Code&body=Check out this article: https://monstergeo.github.io/btest/2024/01/29/Code/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2024/01/29/Code/&name=Code&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2024/01/29/Code/&t=Code"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">分组码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">2.</span> <span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%89%E9%87%8D%E9%87%8D%E5%A4%8D-12-4-%E7%A0%81"><span class="toc-number">2.2.</span> <span class="toc-text">二、三重重复$[12,4]$码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%A6%E9%87%8F"><span class="toc-number"></span> <span class="toc-text">度量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B-1-%E5%87%BA%E7%A7%9F%E8%BD%A6%E5%BA%A6%E9%87%8F"><span class="toc-number">0.1.</span> <span class="toc-text">例 1-出租车度量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B4-p-%E8%BF%9B%E5%88%B6%E5%BA%A6%E9%87%8F"><span class="toc-number">0.2.</span> <span class="toc-text">例4-$p$进制度量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.</span> <span class="toc-text">定义：汉明距离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">命题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%9C%80%E5%B0%8F%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.2.</span> <span class="toc-text">定义：最小距离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%9C%80%E9%9D%A0%E8%BF%91%E7%A0%81%E5%AD%97"><span class="toc-number">1.4.</span> <span class="toc-text">定义：最靠近码字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%BA%A0%E9%94%99"><span class="toc-number">1.5.</span> <span class="toc-text">定义：纠错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%981"><span class="toc-number">1.6.</span> <span class="toc-text">命题1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-1"><span class="toc-number">1.6.1.</span> <span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E4%BF%A1%E6%81%AF%E7%8E%87"><span class="toc-number">1.7.</span> <span class="toc-text">定义：信息率</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E7%A0%81"><span class="toc-number"></span> <span class="toc-text">线性码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%BA%BF%E6%80%A7%E7%A0%81"><span class="toc-number">0.1.</span> <span class="toc-text">定义：线性码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%94%AF%E6%92%91"><span class="toc-number">0.2.</span> <span class="toc-text">定义：支撑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%982"><span class="toc-number">0.3.</span> <span class="toc-text">命题2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%AE%E6%8D%A2%E7%AD%89%E4%BB%B7"><span class="toc-number">0.4.</span> <span class="toc-text">置换等价</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%983"><span class="toc-number">0.5.</span> <span class="toc-text">命题3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%94%9F%E6%88%90%E7%9F%A9%E9%98%B5"><span class="toc-number">0.6.</span> <span class="toc-text">定义：生成矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1"><span class="toc-number">0.7.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2"><span class="toc-number">0.8.</span> <span class="toc-text">例2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%984"><span class="toc-number">0.9.</span> <span class="toc-text">命题4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E7%9F%A9%E9%98%B5"><span class="toc-number">0.10.</span> <span class="toc-text">定义：奇偶校验矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="toc-number">0.11.</span> <span class="toc-text">定义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA1"><span class="toc-number">0.12.</span> <span class="toc-text">推论1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%BE%AA%E7%8E%AF%E7%A0%81"><span class="toc-number">0.13.</span> <span class="toc-text">定义：循环码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%985"><span class="toc-number">0.14.</span> <span class="toc-text">命题5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%9A%E9%A1%B9%E5%BC%8F"><span class="toc-number">0.15.</span> <span class="toc-text">定义：生成多项式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%861"><span class="toc-number">0.16.</span> <span class="toc-text">引理1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%862"><span class="toc-number">0.17.</span> <span class="toc-text">引理2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%861-Bose-Chaudhuri-Hoequenghem"><span class="toc-number">0.18.</span> <span class="toc-text">定理1 Bose-Chaudhuri-Hoequenghem</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9ABCH-code"><span class="toc-number">0.19.</span> <span class="toc-text">定义：BCH-code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%863"><span class="toc-number">0.20.</span> <span class="toc-text">引理3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%864"><span class="toc-number">0.21.</span> <span class="toc-text">引理4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-2"><span class="toc-number">0.22.</span> <span class="toc-text">例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%87%8C%E5%BE%B7-%E6%89%80%E7%BD%97%E9%97%A8%E7%A0%81"><span class="toc-number">0.23.</span> <span class="toc-text">定义：里德-所罗门码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA2"><span class="toc-number">0.24.</span> <span class="toc-text">推论2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-3"><span class="toc-number">0.25.</span> <span class="toc-text">例子</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%91%E7%A0%81"><span class="toc-number"></span> <span class="toc-text">译码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%90%91%E9%87%8F"><span class="toc-number">0.1.</span> <span class="toc-text">定义：错误向量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%99%AA%E9%9B%86%E7%9A%84%E5%A4%B4%E5%AD%97"><span class="toc-number">0.2.</span> <span class="toc-text">定义：陪集的头字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%92%8C%E5%A3%B0"><span class="toc-number">0.3.</span> <span class="toc-text">定义：和声</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%987%EF%BC%9A"><span class="toc-number">0.4.</span> <span class="toc-text">命题7：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%AE%9A%E4%BD%8D%E5%90%91%E9%87%8F"><span class="toc-number">0.5.</span> <span class="toc-text">定义：错误定位向量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%865"><span class="toc-number">0.6.</span> <span class="toc-text">引理5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%AE%9A%E4%BD%8D%E5%A4%9A%E9%A1%B9%E5%BC%8F"><span class="toc-number">0.7.</span> <span class="toc-text">定义：错误定位多项式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%866"><span class="toc-number">0.8.</span> <span class="toc-text">引理6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%92%8C%E5%A3%B0%E7%9F%A9%E9%98%B5"><span class="toc-number">0.9.</span> <span class="toc-text">定义：和声矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%988"><span class="toc-number">0.10.</span> <span class="toc-text">命题8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%861"><span class="toc-number">0.11.</span> <span class="toc-text">定理1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-4"><span class="toc-number">0.12.</span> <span class="toc-text">例子</span></a></li></ol></li></ol>
       </div>
-      <div class="flex-1"></div>
-      <div class="flex items-center gap-3">
-        
-          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
-        
-          <a class="hidden sm:flex" href="/btest/category">Categories</a>
-        
-          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
-        
-        
-          
-        
-        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
-        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
-          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
-        </a>
-      </div>
-      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
-        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
-          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
-        </span>
-        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
-          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
-        </span>
-      </div>
-    </nav>
-  </div>
-</header>
-<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
-  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
-    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
-        </li>
-      
-    </ul>
-  </div>
-  <div class="mask bg-black/20 absolute inset-0"></div>
+    
+  </span>
 </div>
 
-  <main class="pt-14">
-    <!-- css -->
-
-<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
-
-
-<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
-
-<!-- toc -->
-
-  <!-- tocbot -->
-<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
-
-
-<section class="px-6 max-w-prose mx-auto md:px-0">
-  <!-- header -->
-  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
-    <div class="pt-4 md:pt-6">
-      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
         Code
-      </h1>
-      <div>
-        <section class="flex items-center gap-3 text-sm">
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
-            <time>2024-02-27</time>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
-            <span>59 min</span>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
-            <span>13.1k words</span>
-          </span>
-          
-        </section>
-      </div>
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Marcus</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-01-29T14:47:33.000Z" class="dt-published" itemprop="datePublished">2024-01-29</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/btest/tags/math/" rel="tag">math</a>
+    </div>
+
+
     </div>
   </header>
-  <!-- content -->
-  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+  
+
+  <div class="content e-content" itemprop="articleBody">
     <p>这一章我们讲讲编码</p>
 <p>首先思考一个问题，我们如何防止一个未经授权的人获取我们的信息？我们假设帕特问麦克要艾拉电话，但麦克回答的时候有一只狗在叫，由于这个噪声，帕特不确信他真的听到了电话号码，并一次要求麦克重复一遍。有可能的大多数情况下，在一次或者两次后的重复才能保证帕特听到艾拉的电话号码。但简单的重复一个信息可数次是不可行的，例如地球上的科学家查看来自火星或者木星的照片就是一个很好的例子。在2004年，在这些星球上的机器人用照相机将每一个图片用下述的方式编码成二进制数字，一个图片会被分成1024 $\times$ 1024的格点$p_{ij}$，他一共存在$2^{10}\times 2^{10} &#x3D; 1<del>048</del>576$个格点。每一个格点都带有一个$12$位的二进制数$c_{ij}$，用于描述它的颜色，密度等等。而这个$2^{10}\times 2^{10}$矩阵$[c_{ij}]$被写为一个2进制数，从第一行到第二行直到第1024行。那么在这种情况下一个图片传达的信息大约有$12<del>000</del>000$节信息，但太空是“嘈杂的”，因为存在宇宙射线会干扰电磁信号。所以多次的重复依然有可能在收到的信息中是不存在一样的消息的。所以我们来寻找一些可行的信息编码的方式，使得我们在接受信息时，错误可被察觉，当然，我们希望能够修正。</p>
 <h2 id="分组码"><a href="#分组码" class="headerlink" title="分组码"></a>分组码</h2><p>将一个信息在一个嘈杂的渠道上传输涉及三步</p>
@@ -956,213 +839,151 @@ $\zeta^4+1 =(\zeta^2+1)^2= (\zeta^6)^2 = \zeta^{12} = \zeta^5$
 
 <p>被译为$E^{-1}(c)$，$E$是编码函数。</p>
 
-  </article>
-  <!-- tag -->
-  <div class="mt-12 pt-6 border-t border-gray-200">
-    
-      
-        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
-          <a href="/btest/tags/math/">math</a>
-        </span>
-      
-    
   </div>
-  <!-- prev and next -->
-  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
-    <div>
-      
-        <a href="/btest/2024/04/07/%E5%B0%BE%E5%A3%B0/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
-          迦罗瓦理论-尾声
-        </a>
-      
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/btest/">Home</a></li>
+        
+          <li><a href="/btest/tags/matlab/">matlab</a></li>
+        
+          <li><a href="/btest/tags/complex-analysis">复变分析</a></li>
+        
+          <li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li>
+        
+          <li><a href="/btest/tags/algorithms">算法原理</a></li>
+        
+          <li><a href="/btest/archives/">wirtes</a></li>
+        
+      </ul>
     </div>
-    <div>
-      
-        <a href="/btest/2023/11/26/ocr/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          ocr
-          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
-        </a>
-      
-    </div>
-  </div>
-  <!-- comment -->
-  <div class="article-comments mt-12">
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E7%A0%81"><span class="toc-number">1.</span> <span class="toc-text">分组码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-number">2.</span> <span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80"><span class="toc-number">2.1.</span> <span class="toc-text">一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%89%E9%87%8D%E9%87%8D%E5%A4%8D-12-4-%E7%A0%81"><span class="toc-number">2.2.</span> <span class="toc-text">二、三重重复$[12,4]$码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%BA%A6%E9%87%8F"><span class="toc-number"></span> <span class="toc-text">度量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B-1-%E5%87%BA%E7%A7%9F%E8%BD%A6%E5%BA%A6%E9%87%8F"><span class="toc-number">0.1.</span> <span class="toc-text">例 1-出租车度量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B4-p-%E8%BF%9B%E5%88%B6%E5%BA%A6%E9%87%8F"><span class="toc-number">0.2.</span> <span class="toc-text">例4-$p$进制度量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%B1%89%E6%98%8E%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.</span> <span class="toc-text">定义：汉明距离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%98"><span class="toc-number">1.1.</span> <span class="toc-text">命题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%9C%80%E5%B0%8F%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.2.</span> <span class="toc-text">定义：最小距离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%9C%80%E9%9D%A0%E8%BF%91%E7%A0%81%E5%AD%97"><span class="toc-number">1.4.</span> <span class="toc-text">定义：最靠近码字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%BA%A0%E9%94%99"><span class="toc-number">1.5.</span> <span class="toc-text">定义：纠错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%981"><span class="toc-number">1.6.</span> <span class="toc-text">命题1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-1"><span class="toc-number">1.6.1.</span> <span class="toc-text">例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E4%BF%A1%E6%81%AF%E7%8E%87"><span class="toc-number">1.7.</span> <span class="toc-text">定义：信息率</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E7%A0%81"><span class="toc-number"></span> <span class="toc-text">线性码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%BA%BF%E6%80%A7%E7%A0%81"><span class="toc-number">0.1.</span> <span class="toc-text">定义：线性码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E6%94%AF%E6%92%91"><span class="toc-number">0.2.</span> <span class="toc-text">定义：支撑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%982"><span class="toc-number">0.3.</span> <span class="toc-text">命题2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%AE%E6%8D%A2%E7%AD%89%E4%BB%B7"><span class="toc-number">0.4.</span> <span class="toc-text">置换等价</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%983"><span class="toc-number">0.5.</span> <span class="toc-text">命题3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%94%9F%E6%88%90%E7%9F%A9%E9%98%B5"><span class="toc-number">0.6.</span> <span class="toc-text">定义：生成矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B1"><span class="toc-number">0.7.</span> <span class="toc-text">例1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B2"><span class="toc-number">0.8.</span> <span class="toc-text">例2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%984"><span class="toc-number">0.9.</span> <span class="toc-text">命题4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E7%9F%A9%E9%98%B5"><span class="toc-number">0.10.</span> <span class="toc-text">定义：奇偶校验矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="toc-number">0.11.</span> <span class="toc-text">定义：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA1"><span class="toc-number">0.12.</span> <span class="toc-text">推论1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%BE%AA%E7%8E%AF%E7%A0%81"><span class="toc-number">0.13.</span> <span class="toc-text">定义：循环码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%985"><span class="toc-number">0.14.</span> <span class="toc-text">命题5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E7%94%9F%E6%88%90%E5%A4%9A%E9%A1%B9%E5%BC%8F"><span class="toc-number">0.15.</span> <span class="toc-text">定义：生成多项式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%861"><span class="toc-number">0.16.</span> <span class="toc-text">引理1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%862"><span class="toc-number">0.17.</span> <span class="toc-text">引理2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%861-Bose-Chaudhuri-Hoequenghem"><span class="toc-number">0.18.</span> <span class="toc-text">定理1 Bose-Chaudhuri-Hoequenghem</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9ABCH-code"><span class="toc-number">0.19.</span> <span class="toc-text">定义：BCH-code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%863"><span class="toc-number">0.20.</span> <span class="toc-text">引理3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%864"><span class="toc-number">0.21.</span> <span class="toc-text">引理4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-2"><span class="toc-number">0.22.</span> <span class="toc-text">例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%87%8C%E5%BE%B7-%E6%89%80%E7%BD%97%E9%97%A8%E7%A0%81"><span class="toc-number">0.23.</span> <span class="toc-text">定义：里德-所罗门码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA2"><span class="toc-number">0.24.</span> <span class="toc-text">推论2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-3"><span class="toc-number">0.25.</span> <span class="toc-text">例子</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%91%E7%A0%81"><span class="toc-number"></span> <span class="toc-text">译码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%90%91%E9%87%8F"><span class="toc-number">0.1.</span> <span class="toc-text">定义：错误向量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%99%AA%E9%9B%86%E7%9A%84%E5%A4%B4%E5%AD%97"><span class="toc-number">0.2.</span> <span class="toc-text">定义：陪集的头字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%92%8C%E5%A3%B0"><span class="toc-number">0.3.</span> <span class="toc-text">定义：和声</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%987%EF%BC%9A"><span class="toc-number">0.4.</span> <span class="toc-text">命题7：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%AE%9A%E4%BD%8D%E5%90%91%E9%87%8F"><span class="toc-number">0.5.</span> <span class="toc-text">定义：错误定位向量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%865"><span class="toc-number">0.6.</span> <span class="toc-text">引理5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E9%94%99%E8%AF%AF%E5%AE%9A%E4%BD%8D%E5%A4%9A%E9%A1%B9%E5%BC%8F"><span class="toc-number">0.7.</span> <span class="toc-text">定义：错误定位多项式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%90%866"><span class="toc-number">0.8.</span> <span class="toc-text">引理6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%EF%BC%9A%E5%92%8C%E5%A3%B0%E7%9F%A9%E9%98%B5"><span class="toc-number">0.9.</span> <span class="toc-text">定义：和声矩阵</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E9%A2%988"><span class="toc-number">0.10.</span> <span class="toc-text">命题8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%90%861"><span class="toc-number">0.11.</span> <span class="toc-text">定理1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90-4"><span class="toc-number">0.12.</span> <span class="toc-text">例子</span></a></li></ol></li></ol>
+      </div>
     
 
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2024/01/29/Code/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2024/01/29/Code/&text=Code"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2024/01/29/Code/&is_video=false&description=Code"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Code&body=Check out this article: https://monstergeo.github.io/btest/2024/01/29/Code/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2024/01/29/Code/&title=Code"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2024/01/29/Code/&name=Code&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2024/01/29/Code/&t=Code"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
   </div>
-</section>
-<!-- js inspect -->
-
-<script src="/btest/lib/clipboard.min.js"></script>
-
-
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    "HTML-CSS": {
-        preferredFont: "TeX",
-        availableFonts: ["STIX","TeX"],
-        linebreaks: { automatic:true },
-        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
-    },
-    tex2jax: {
-        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-        processEscapes: true,
-        ignoreClass: "tex2jax_ignore|dno",
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
-        Macros: { href: "{}" }
-    },
-    messageStyle: "none"
-  });
-</script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-  });
-</script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script>
-  $(document).ready(() => {
-    const maraidConfig = {
-      theme: "default",
-      logLevel: 3,
-      flowchart: { curve: "linear" },
-      gantt: { axisFormat: "%m/%d/%Y" },
-      sequence: { actorMargin: 50 },
-    };
-    mermaid.initialize(maraidConfig);
-  });
-</script>
-
-
-
-<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-    $('.post-content').each(function(i){
-      $(this).find('img').each(function(){
-        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
-        var alt = this.alt;
-        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
-        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
-      });
-      $(this).find('.fancybox').each(function(){
-        $(this).attr('rel', 'article' + i);
-      });
-    });
-
-    Fancybox.bind('[data-fancybox="gallery"]', {
-        // options
-    })
-  })
-</script>
-
-<!-- tocbot begin -->
-
-<script src="/btest/lib/tocbot/tocbot.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-      tocbot.init({
-        // Where to render the table of contents.
-        tocSelector: '.post-toc',
-        // Where to grab the headings to build the table of contents.
-        contentSelector: '.post-content',
-        // Which headings to grab inside of the contentSelector element.
-        headingSelector: 'h1, h2, h3',
-        // For headings inside relative or absolute positioned containers within content.
-        hasInnerContainers: true,
-    });
-  })
-</script>
-<!-- tocbot end -->
-
-
-  </main>
-  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
-  <!-- busuanzi -->
-  
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<!-- Busuanzi Analytics -->
-<div class="flex items-center gap-2">
-  <span>Visitors</span>
-  <span id="busuanzi_value_site_uv"></span>
-  <span>Page Views</span>
-  <span id="busuanzi_value_site_pv"></span>
 </div>
-<!-- End Busuanzi Analytics -->
 
-
-  <!-- copyright -->
-  <div class="flex items-center gap-2">
-    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
-    <span>© 2022</span>
-    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
-    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2026
+    Marcus
   </div>
-  <!-- powered by -->
-  <div class="flex items-center gap-2">
-    <span>Powered by</span>
-    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
-    <span>&</span>
-    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </nav>
   </div>
-
 </footer>
 
-  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
-    <span class="flex justify-center items-center text-sm">
-      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
-      <span id="scrollpercent"><span>0</span> %</span>
-    </span>
-  </div>
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
 <script src="/btest/js/main.js"></script>
 
+<!-- search -->
 
-  <script>
-    $(document).ready(function () {
-      const mapleCount = "10";
-      const speed = "0.5";
-      const mapleEl = document.getElementById("maple");
-      const maples = Array.from({ length: mapleCount }).map(() => {
-        const maple = document.createElement("div");
-        const scale = Math.random() * 0.5 + 0.5;
-        const offset = Math.random() * 2 - 1;
-        const x = Math.random() * mapleEl.clientWidth;
-        const y = -Math.random() * mapleEl.clientHeight;
-        const duration = 10 / speed;
-        const delay = -duration;
-        maple.className = "maple";
-        maple.style.width = `${24 * scale}px`;
-        maple.style.height = `${24 * scale}px`;
-        maple.style.left = `${x}px`;
-        maple.style.top = `${y}px`;
-        maple.style.setProperty("--maple-fall-offset", offset);
-        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
-        maple.style.animation = `fall ${duration}s linear infinite`;
-        maple.style.animationDelay = `${delay}s`;
-        mapleEl.appendChild(maple)
-        return maple
-      })
-    });
-  </script>
-  
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
-  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
 </body>
-
 </html>

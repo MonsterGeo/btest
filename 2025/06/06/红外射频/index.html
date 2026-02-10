@@ -1,298 +1,179 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 <head>
-  <meta charset="UTF-8">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="IR-NEC简单解析红外射频+代码写入 IR-NEC射频解析NEC协议简介： NEC协议是一种用于红外遥控的通信标准，最早是日本电气株式会社（NEC）开发的。协议特点如下：  载波频率：38kHz（部分设备使用36kHz或者40kHz） 调制方式：使用PWM或者相位调制（部分变种） 信号传输：1、发送：红外LED以38kHz载波闪烁，数据通过脉冲间隔编码2、接收：使用红外接收头解调载波，输出数字信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="红外射频">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="IR-NEC简单解析红外射频+代码写入 IR-NEC射频解析NEC协议简介： NEC协议是一种用于红外遥控的通信标准，最早是日本电气株式会社（NEC）开发的。协议特点如下：  载波频率：38kHz（部分设备使用36kHz或者40kHz） 调制方式：使用PWM或者相位调制（部分变种） 信号传输：1、发送：红外LED以38kHz载波闪烁，数据通过脉冲间隔编码2、接收：使用红外接收头解调载波，输出数字信">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-06-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-06T13:44:25.979Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="Stm32">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/btest/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/btest/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/btest/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>红外射频</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
 
+    <!-- Umami Analytics -->
 
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/btest/css/style.css">
 
-  <meta name="author" content="Marcus">
-
-
-  <meta name="subtitle" content="Hello">
-
-
-  <meta name="description" content="nop">
-
-
-
-<title>红外射频 | Marcus&#39;s Blog</title>
-
-
-
-<link rel="icon" href="/btest/favicon.png">
-
-
-
-<link rel="stylesheet" href="/btest/css/main.css">
-
-
-<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
-
-
-
-<script src="/btest/lib/jquery.min.js"></script>
-
-
-<script src="/btest/lib/iconify-icon.min.js"></script>
-
-
-<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-<script>
-  tailwind.config = {
-    darkMode: "class",
-  };
-</script>
-
-
-<script src="/btest/lib/nprogress/nprogress.js"></script>
-
-<script>
-  $(document).ready(() => {
-    NProgress.configure({
-      showSpinner: false,
-    });
-    NProgress.start();
-    $("#nprogress .bar").css({
-      background: "#de7441",
-    });
-    $("#nprogress .peg").css({
-      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
-    });
-    $("#nprogress .spinner-icon").css({
-      "border-top-color": "#de7441",
-      "border-left-color": "#de7441",
-    });
-    setTimeout(function () {
-      NProgress.done();
-      $(".fade").removeClass("out");
-    }, 800);
-  });
-</script>
-
-<script>
-  (function () {
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-    if (setting === "dark" || (prefersDark && setting !== "light"))
-      document.documentElement.classList.toggle("dark", true);
-    let isDark = document.documentElement.classList.contains("dark");
-  })();
-
-  $(document).ready(function () {
-    // init icon
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = document.documentElement.classList.contains("dark");
-    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-
-    function toggleGiscusTheme() {
-      const isDark = document.documentElement.classList.contains("dark");
-      const giscusFrame = document.querySelector("iframe.giscus-frame");
-      if (giscusFrame) {
-        giscusFrame.contentWindow.postMessage(
-          {
-            giscus: {
-              setConfig: {
-                theme: isDark ? "dark" : "light",
-              },
-            },
-          },
-          "https://giscus.app"
-        );
-      }
-    }
-
-    // toggle dark mode
-    function toggleDark() {
-      let isDark = document.documentElement.classList.contains("dark");
-      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-      isDark = !isDark;
-      document.documentElement.classList.toggle("dark", isDark);
-      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-      if (prefersDark === isDark) {
-        localStorage.setItem("hexo-color-scheme", "auto");
-      } else {
-        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
-      }
-      toggleGiscusTheme();
-    }
-
-    // listen dark mode change
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-        if (setting === "auto") {
-          document.documentElement.classList.toggle("dark", e.matches);
-          $("#theme-icon").attr(
-            "icon",
-            e.matches ? "ri:moon-line" : "ri:sun-line"
-          );
-          toggleGiscusTheme();
-        }
-      });
-
-    $("#toggle-dark").click((event) => {
-      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (!isAppearanceTransition) {
-        toggleDark()
-        return
-      }
-      const x = event.clientX
-      const y = event.clientY
-      const endRadius = Math.hypot(
-        Math.max(x, innerWidth - x),
-        Math.max(y, innerHeight - y),
-      )
-      const transition = document.startViewTransition(async () => {
-        toggleDark()
-      })
-
-      transition.ready
-        .then(() => {
-          const isDark = document.documentElement.classList.contains("dark")
-          const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ]
-          document.documentElement.animate(
-            {
-              clipPath: isDark
-                ? [...clipPath].reverse()
-                : clipPath,
-            },
-            {
-              duration: 400,
-              easing: 'ease-out',
-              pseudoElement: isDark
-                ? '::view-transition-old(root)'
-                : '::view-transition-new(root)',
-            },
-          )
-        })
-    });
-  });
-</script>
-
-
-
-
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 7.3.0"></head>
-<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
-  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
-  <div class="max-auto">
-    <nav class="flex items-center text-base">
-      <a href="/btest/" class="group">
-        <h2 class="font-medium tracking-tighterp text-l p-2">
-          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
-          Marcus&#39;s Blog
-        </h2>
-      </a>
-      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
-        红外射频
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/btest/2025/07/27/matlab%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/btest/2025/06/01/Rk3566%E6%9D%BF%E5%AD%90%E4%B8%8A%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&text=红外射频"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&is_video=false&description=红外射频"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=红外射频&body=Check out this article: https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&name=红外射频&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&t=红外射频"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IR-NEC"><span class="toc-number">1.</span> <span class="toc-text">IR-NEC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IR-NEC%E5%B0%84%E9%A2%91%E8%A7%A3%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">IR-NEC射频解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NEC%E6%95%B0%E6%8D%AE%E5%B8%A7%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">NEC数据帧结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">代码解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E6%80%9D%E8%B7%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">1.4.</span> <span class="toc-text">完整思路代码</span></a></li></ol></li></ol>
       </div>
-      <div class="flex-1"></div>
-      <div class="flex items-center gap-3">
-        
-          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
-        
-          <a class="hidden sm:flex" href="/btest/category">Categories</a>
-        
-          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
-        
-        
-          
-        
-        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
-        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
-          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
-        </a>
-      </div>
-      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
-        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
-          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
-        </span>
-        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
-          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
-        </span>
-      </div>
-    </nav>
-  </div>
-</header>
-<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
-  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
-    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
-        </li>
-      
-    </ul>
-  </div>
-  <div class="mask bg-black/20 absolute inset-0"></div>
+    
+  </span>
 </div>
 
-  <main class="pt-14">
-    <!-- css -->
-
-<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
-
-
-<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
-
-<!-- toc -->
-
-  <!-- tocbot -->
-<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
-
-
-<section class="px-6 max-w-prose mx-auto md:px-0">
-  <!-- header -->
-  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
-    <div class="pt-4 md:pt-6">
-      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
         红外射频
-      </h1>
-      <div>
-        <section class="flex items-center gap-3 text-sm">
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
-            <time>2025-06-06</time>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
-            <span>6 min</span>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
-            <span>1.6k words</span>
-          </span>
-          
-        </section>
-      </div>
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Marcus</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2025-06-05T16:00:00.000Z" class="dt-published" itemprop="datePublished">2025-06-06</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/btest/tags/Stm32/" rel="tag">Stm32</a>
+    </div>
+
+
     </div>
   </header>
-  <!-- content -->
-  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+  
+
+  <div class="content e-content" itemprop="articleBody">
     <h1 id="IR-NEC"><a href="#IR-NEC" class="headerlink" title="IR-NEC"></a>IR-NEC</h1><p>简单解析红外射频+代码写入</p>
 <h2 id="IR-NEC射频解析"><a href="#IR-NEC射频解析" class="headerlink" title="IR-NEC射频解析"></a>IR-NEC射频解析</h2><p>NEC协议简介：</p>
 <p>NEC协议是一种用于红外遥控的通信标准，最早是日本电气株式会社（NEC）开发的。协议特点如下：</p>
@@ -389,213 +270,151 @@
 
 <p>该函数从第4行开始就是处理接收数据包了，若低电平有效时间在500us左右，进入处理高电平的逻辑，因为数据包是低电平有效，先左移一位数据，若检测高电平。接着检测高电平持续时间是否有3倍低电平的长度，20是因为加了误差。如果有，则说明该数据位是1，将Data的最后一位或上1，为0则不处理。在接收完全部32位数据之后，做一个校验和，没有问题则说明接收数据成功。否则说明接收数据失败，清空包头标志位让其重新接收。最后清空电平有效计数器防止出现异常。</p>
 <h2 id="完整思路代码"><a href="#完整思路代码" class="headerlink" title="完整思路代码"></a>完整思路代码</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">void IR_Receive()&#123;</span><br><span class="line">    if(Pin_IR == 1)&#123;</span><br><span class="line">        Flag_Fail_edge = 1; //下降沿标志位，1保持不变，0表示下降沿来到</span><br><span class="line">        if(R_Time_H &lt; 500)&#123;</span><br><span class="line">            R_Time_H++; //高电平有效，自增</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        if(Flag_Fali_edge)&#123;</span><br><span class="line">            Flag_Fali_edge = 0;</span><br><span class="line">            if(Flag_IR_Head == 0)&#123;</span><br><span class="line">                if((R_Time_L &gt; 140 &amp;&amp; R_Time_L &lt;230) &amp;&amp; R_Time_H &gt; 60)&#123;</span><br><span class="line">                    Flag_IR_Head = 1;//头码验证通过，接收完毕</span><br><span class="line">                    //开始初始化数据包相关变量</span><br><span class="line">                    Data = 0;//接收用引脚数据</span><br><span class="line">                    IR_Num = 0;//一位一位接收数据，该变量用来计算接收了多少 位数据</span><br><span class="line">                    IR_Data = 0;//最终数据保存</span><br><span class="line">                &#125;</span><br><span class="line">                    //清零有效高低电平计数开始接收数据</span><br><span class="line">    			    R_Time_L = 0;</span><br><span class="line">    			    R_Time_H = 0;            </span><br><span class="line">                &#125;</span><br><span class="line">                else&#123;</span><br><span class="line">                if(R_Time_L &lt; 15 &amp;&amp; R_Time_L &gt; 5)&#123;</span><br><span class="line">                    Data&lt;&lt; = 1</span><br><span class="line">                    if(R_Time_H &gt; 20)&#123;</span><br><span class="line">                    Data |= (0x01 &lt;&lt; 0); //若检测到500us低电平+ 1500us高电平则将数据置1</span><br><span class="line">                    &#125;</span><br><span class="line">                    IR_Num++; //接收完一位数据自增</span><br><span class="line">                    if(IR_Num &gt;= 32)&#123; //一帧数据有32位</span><br><span class="line">                        IR_Num = 0;</span><br><span class="line">                        IR_Data[0] = Data &amp; 0xff; //相当于将除了头8位数据   之外的 数字置0</span><br><span class="line">                        IR_Data[1] = Data &gt;&gt; 8 &amp; 0xff;//左移8位将4-8位数据  保存</span><br><span class="line">                        IR_Data[2] = Data &gt;&gt; 16 &amp; 0xff; //左移16位保存数据</span><br><span class="line">                        IR_Data[3] = Data &gt;&gt; 24 &amp; 0xff;</span><br><span class="line">                        CheckSum = ~IR_Data[1];//校验</span><br><span class="line">                    &#125;</span><br><span class="line">                    if(CheckSum == IR_Data[0])&#123;</span><br><span class="line">                        //接收完毕 串口输出到命令行</span><br><span class="line">                        Usart.Send(IR_Data);</span><br><span class="line">                    &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            else&#123; //不是数据包则清空包头接收变量</span><br><span class="line">                Flag_IR_Head = 0</span><br><span class="line">            &#125;</span><br><span class="line">            //清空有效电平计数器</span><br><span class="line">            R_Time_L = 0;</span><br><span class="line">            R_Time_H = 0;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else&#123;</span><br><span class="line">            if(R_Time_L &lt; 500)&#123;</span><br><span class="line">                R_Time_L++; //低电平有效</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-  </article>
-  <!-- tag -->
-  <div class="mt-12 pt-6 border-t border-gray-200">
-    
-      
-        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
-          <a href="/btest/tags/Stm32/">Stm32</a>
-        </span>
-      
-    
   </div>
-  <!-- prev and next -->
-  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
-    <div>
-      
-        <a href="/btest/2025/07/27/matlab%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
-          matlab基础语法
-        </a>
-      
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/btest/">Home</a></li>
+        
+          <li><a href="/btest/tags/matlab/">matlab</a></li>
+        
+          <li><a href="/btest/tags/complex-analysis">复变分析</a></li>
+        
+          <li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li>
+        
+          <li><a href="/btest/tags/algorithms">算法原理</a></li>
+        
+          <li><a href="/btest/archives/">wirtes</a></li>
+        
+      </ul>
     </div>
-    <div>
-      
-        <a href="/btest/2025/06/01/Rk3566%E6%9D%BF%E5%AD%90%E4%B8%8A%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          泰山派内核更新
-          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
-        </a>
-      
-    </div>
-  </div>
-  <!-- comment -->
-  <div class="article-comments mt-12">
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#IR-NEC"><span class="toc-number">1.</span> <span class="toc-text">IR-NEC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IR-NEC%E5%B0%84%E9%A2%91%E8%A7%A3%E6%9E%90"><span class="toc-number">1.1.</span> <span class="toc-text">IR-NEC射频解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NEC%E6%95%B0%E6%8D%AE%E5%B8%A7%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">NEC数据帧结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">代码解析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E6%80%9D%E8%B7%AF%E4%BB%A3%E7%A0%81"><span class="toc-number">1.4.</span> <span class="toc-text">完整思路代码</span></a></li></ol></li></ol>
+      </div>
     
 
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&text=红外射频"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&is_video=false&description=红外射频"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=红外射频&body=Check out this article: https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&title=红外射频"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&name=红外射频&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/&t=红外射频"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
   </div>
-</section>
-<!-- js inspect -->
-
-<script src="/btest/lib/clipboard.min.js"></script>
-
-
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    "HTML-CSS": {
-        preferredFont: "TeX",
-        availableFonts: ["STIX","TeX"],
-        linebreaks: { automatic:true },
-        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
-    },
-    tex2jax: {
-        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-        processEscapes: true,
-        ignoreClass: "tex2jax_ignore|dno",
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
-        Macros: { href: "{}" }
-    },
-    messageStyle: "none"
-  });
-</script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-  });
-</script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script>
-  $(document).ready(() => {
-    const maraidConfig = {
-      theme: "default",
-      logLevel: 3,
-      flowchart: { curve: "linear" },
-      gantt: { axisFormat: "%m/%d/%Y" },
-      sequence: { actorMargin: 50 },
-    };
-    mermaid.initialize(maraidConfig);
-  });
-</script>
-
-
-
-<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-    $('.post-content').each(function(i){
-      $(this).find('img').each(function(){
-        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
-        var alt = this.alt;
-        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
-        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
-      });
-      $(this).find('.fancybox').each(function(){
-        $(this).attr('rel', 'article' + i);
-      });
-    });
-
-    Fancybox.bind('[data-fancybox="gallery"]', {
-        // options
-    })
-  })
-</script>
-
-<!-- tocbot begin -->
-
-<script src="/btest/lib/tocbot/tocbot.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-      tocbot.init({
-        // Where to render the table of contents.
-        tocSelector: '.post-toc',
-        // Where to grab the headings to build the table of contents.
-        contentSelector: '.post-content',
-        // Which headings to grab inside of the contentSelector element.
-        headingSelector: 'h1, h2, h3',
-        // For headings inside relative or absolute positioned containers within content.
-        hasInnerContainers: true,
-    });
-  })
-</script>
-<!-- tocbot end -->
-
-
-  </main>
-  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
-  <!-- busuanzi -->
-  
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<!-- Busuanzi Analytics -->
-<div class="flex items-center gap-2">
-  <span>Visitors</span>
-  <span id="busuanzi_value_site_uv"></span>
-  <span>Page Views</span>
-  <span id="busuanzi_value_site_pv"></span>
 </div>
-<!-- End Busuanzi Analytics -->
 
-
-  <!-- copyright -->
-  <div class="flex items-center gap-2">
-    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
-    <span>© 2022</span>
-    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
-    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2026
+    Marcus
   </div>
-  <!-- powered by -->
-  <div class="flex items-center gap-2">
-    <span>Powered by</span>
-    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
-    <span>&</span>
-    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </nav>
   </div>
-
 </footer>
 
-  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
-    <span class="flex justify-center items-center text-sm">
-      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
-      <span id="scrollpercent"><span>0</span> %</span>
-    </span>
-  </div>
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
 <script src="/btest/js/main.js"></script>
 
+<!-- search -->
 
-  <script>
-    $(document).ready(function () {
-      const mapleCount = "10";
-      const speed = "0.5";
-      const mapleEl = document.getElementById("maple");
-      const maples = Array.from({ length: mapleCount }).map(() => {
-        const maple = document.createElement("div");
-        const scale = Math.random() * 0.5 + 0.5;
-        const offset = Math.random() * 2 - 1;
-        const x = Math.random() * mapleEl.clientWidth;
-        const y = -Math.random() * mapleEl.clientHeight;
-        const duration = 10 / speed;
-        const delay = -duration;
-        maple.className = "maple";
-        maple.style.width = `${24 * scale}px`;
-        maple.style.height = `${24 * scale}px`;
-        maple.style.left = `${x}px`;
-        maple.style.top = `${y}px`;
-        maple.style.setProperty("--maple-fall-offset", offset);
-        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
-        maple.style.animation = `fall ${duration}s linear infinite`;
-        maple.style.animationDelay = `${delay}s`;
-        mapleEl.appendChild(maple)
-        return maple
-      })
-    });
-  </script>
-  
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
-  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
 </body>
-
 </html>

@@ -1,298 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang=en>
 <head>
-  <meta charset="UTF-8">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="整函数的柯西积分和泰勒展开若$f$是整的且   $\begin{aligned}    g(z) &#x3D;\begin{cases}     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\     f’(a)&amp; z &#x3D; a    \end{cases}\end{aligned}$   那么积分定理和闭曲线定理不仅仅适用于函数$f$，对$g$也是适用的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整函数的性质">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="整函数的柯西积分和泰勒展开若$f$是整的且   $\begin{aligned}    g(z) &#x3D;\begin{cases}     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\     f’(a)&amp; z &#x3D; a    \end{cases}\end{aligned}$   那么积分定理和闭曲线定理不仅仅适用于函数$f$，对$g$也是适用的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp3810055316004568%5D%20%0A%5Cdraw%20%20%20(100%2C104)%20--%20(447%2C104)%20--%20(447%2C404)%20--%20(100%2C404)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada1831134870992659%5D%20%0A%5Cdraw%20%20%20%20(100%2C160)%20--%20(447%2C160)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4680163136944939%5D%20%0A%5Cdraw%20%20%20%20(101%2C211)%20--%20(448%2C211)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada31702856471572294%5D%20%0A%5Cdraw%20%20%20%20(176%2C104)%20--%20(176%2C403)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada503465088473952%5D%20%0A%5Cdraw%20%20%20%20(216%2C105)%20--%20(216%2C401)%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp23496772462402982%5D%20%0A%5Cdraw%20%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cfill%20opacity%3D1%20%5D%20(182%2C176)%20..%20controls%20(182%2C174.34)%20and%20(183.34%2C173)%20..%20(185%2C173)%20..%20controls%20(186.66%2C173)%20and%20(188%2C174.34)%20..%20(188%2C176)%20..%20controls%20(188%2C177.66)%20and%20(186.66%2C179)%20..%20(185%2C179)%20..%20controls%20(183.34%2C179)%20and%20(182%2C177.66)%20..%20(182%2C176)%20--%20cycle%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(190%2C179.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24a%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+<meta property="article:published_time" content="2024-07-09T13:28:58.000Z">
+<meta property="article:modified_time" content="2024-07-10T15:39:24.637Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="complex_analysis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp3810055316004568%5D%20%0A%5Cdraw%20%20%20(100%2C104)%20--%20(447%2C104)%20--%20(447%2C404)%20--%20(100%2C404)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada1831134870992659%5D%20%0A%5Cdraw%20%20%20%20(100%2C160)%20--%20(447%2C160)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4680163136944939%5D%20%0A%5Cdraw%20%20%20%20(101%2C211)%20--%20(448%2C211)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada31702856471572294%5D%20%0A%5Cdraw%20%20%20%20(176%2C104)%20--%20(176%2C403)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada503465088473952%5D%20%0A%5Cdraw%20%20%20%20(216%2C105)%20--%20(216%2C401)%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp23496772462402982%5D%20%0A%5Cdraw%20%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cfill%20opacity%3D1%20%5D%20(182%2C176)%20..%20controls%20(182%2C174.34)%20and%20(183.34%2C173)%20..%20(185%2C173)%20..%20controls%20(186.66%2C173)%20and%20(188%2C174.34)%20..%20(188%2C176)%20..%20controls%20(188%2C177.66)%20and%20(186.66%2C179)%20..%20(185%2C179)%20..%20controls%20(183.34%2C179)%20and%20(182%2C177.66)%20..%20(182%2C176)%20--%20cycle%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(190%2C179.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24a%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/btest/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/btest/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/btest/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>整函数的性质</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
 
 
+    <!-- Umami Analytics -->
 
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/btest/css/style.css">
 
-  <meta name="author" content="Marcus">
-
-
-  <meta name="subtitle" content="Hello">
-
-
-  <meta name="description" content="nop">
-
-
-
-<title>整函数的性质 | Marcus&#39;s Blog</title>
-
-
-
-<link rel="icon" href="/btest/favicon.png">
-
-
-
-<link rel="stylesheet" href="/btest/css/main.css">
-
-
-<link rel="stylesheet" href="/btest/lib/nprogress/nprogress.css">
-
-
-
-<script src="/btest/lib/jquery.min.js"></script>
-
-
-<script src="/btest/lib/iconify-icon.min.js"></script>
-
-
-<script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-<script>
-  tailwind.config = {
-    darkMode: "class",
-  };
-</script>
-
-
-<script src="/btest/lib/nprogress/nprogress.js"></script>
-
-<script>
-  $(document).ready(() => {
-    NProgress.configure({
-      showSpinner: false,
-    });
-    NProgress.start();
-    $("#nprogress .bar").css({
-      background: "#de7441",
-    });
-    $("#nprogress .peg").css({
-      "box-shadow": "0 0 2px #de7441, 0 0 4px #de7441",
-    });
-    $("#nprogress .spinner-icon").css({
-      "border-top-color": "#de7441",
-      "border-left-color": "#de7441",
-    });
-    setTimeout(function () {
-      NProgress.done();
-      $(".fade").removeClass("out");
-    }, 800);
-  });
-</script>
-
-<script>
-  (function () {
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-    if (setting === "dark" || (prefersDark && setting !== "light"))
-      document.documentElement.classList.toggle("dark", true);
-    let isDark = document.documentElement.classList.contains("dark");
-  })();
-
-  $(document).ready(function () {
-    // init icon
-    const prefersDark =
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = document.documentElement.classList.contains("dark");
-    $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-
-    function toggleGiscusTheme() {
-      const isDark = document.documentElement.classList.contains("dark");
-      const giscusFrame = document.querySelector("iframe.giscus-frame");
-      if (giscusFrame) {
-        giscusFrame.contentWindow.postMessage(
-          {
-            giscus: {
-              setConfig: {
-                theme: isDark ? "dark" : "light",
-              },
-            },
-          },
-          "https://giscus.app"
-        );
-      }
-    }
-
-    // toggle dark mode
-    function toggleDark() {
-      let isDark = document.documentElement.classList.contains("dark");
-      const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-      isDark = !isDark;
-      document.documentElement.classList.toggle("dark", isDark);
-      $("#theme-icon").attr("icon", isDark ? "ri:moon-line" : "ri:sun-line");
-      if (prefersDark === isDark) {
-        localStorage.setItem("hexo-color-scheme", "auto");
-      } else {
-        localStorage.setItem("hexo-color-scheme", isDark ? "dark" : "light");
-      }
-      toggleGiscusTheme();
-    }
-
-    // listen dark mode change
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        const setting = localStorage.getItem("hexo-color-scheme") || "auto";
-        if (setting === "auto") {
-          document.documentElement.classList.toggle("dark", e.matches);
-          $("#theme-icon").attr(
-            "icon",
-            e.matches ? "ri:moon-line" : "ri:sun-line"
-          );
-          toggleGiscusTheme();
-        }
-      });
-
-    $("#toggle-dark").click((event) => {
-      const isAppearanceTransition = document.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      if (!isAppearanceTransition) {
-        toggleDark()
-        return
-      }
-      const x = event.clientX
-      const y = event.clientY
-      const endRadius = Math.hypot(
-        Math.max(x, innerWidth - x),
-        Math.max(y, innerHeight - y),
-      )
-      const transition = document.startViewTransition(async () => {
-        toggleDark()
-      })
-
-      transition.ready
-        .then(() => {
-          const isDark = document.documentElement.classList.contains("dark")
-          const clipPath = [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${endRadius}px at ${x}px ${y}px)`,
-          ]
-          document.documentElement.animate(
-            {
-              clipPath: isDark
-                ? [...clipPath].reverse()
-                : clipPath,
-            },
-            {
-              duration: 400,
-              easing: 'ease-out',
-              pseudoElement: isDark
-                ? '::view-transition-old(root)'
-                : '::view-transition-new(root)',
-            },
-          )
-        })
-    });
-  });
-</script>
-
-
-
-
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+		<script type="text/x-mathjax-config">
+		  MathJax.Hub.Config({
+			tex2jax: {
+			  skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+			  inlineMath: [['$','$']]
+			}
+		  });
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+	
 <meta name="generator" content="Hexo 7.3.0"></head>
-<body class="font-sans bg-white dark:bg-zinc-900 text-gray-700 dark:text-gray-200 relative">
-  <header class="fixed w-full px-5 py-1 z-10 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5">
-  <div class="max-auto">
-    <nav class="flex items-center text-base">
-      <a href="/btest/" class="group">
-        <h2 class="font-medium tracking-tighterp text-l p-2">
-          <img class="w-5 mr-2 inline-block transition-transform group-hover:rotate-[30deg]" id="logo" src="/images/logo.svg" alt="Marcus's Blog" />
-          Marcus&#39;s Blog
-        </h2>
-      </a>
-      <div id="header-title" class="opacity-0 md:ml-2 md:mt-[0.1rem] text-xs font-medium whitespace-nowrap overflow-hidden overflow-ellipsis">
-        整函数的性质
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/btest/2024/07/24/%E5%88%98%E7%BB%B4%E5%B0%94%E5%92%8C%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/btest/2024/07/05/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E9%97%AD%E6%9B%B2%E7%BA%BF%E5%AE%9A%E7%90%86/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&text=整函数的性质"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&is_video=false&description=整函数的性质"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=整函数的性质&body=Check out this article: https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&name=整函数的性质&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&t=整函数的性质"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%9F%AF%E8%A5%BF%E7%A7%AF%E5%88%86%E5%92%8C%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="toc-number">1.</span> <span class="toc-text">整函数的柯西积分和泰勒展开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA"><span class="toc-number">2.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%AF%E8%A5%BF%E7%A7%AF%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">柯西积分方程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%95%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">引理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="toc-number">5.</span> <span class="toc-text">整函数的泰勒展开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-1"><span class="toc-number">6.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-2"><span class="toc-number">7.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E9%A2%98"><span class="toc-number">8.</span> <span class="toc-text">命题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-3"><span class="toc-number">9.</span> <span class="toc-text">推论</span></a></li></ol>
       </div>
-      <div class="flex-1"></div>
-      <div class="flex items-center gap-3">
-        
-          <a class="hidden sm:flex" href="/btest/archives">Posts</a>
-        
-          <a class="hidden sm:flex" href="/btest/category">Categories</a>
-        
-          <a class="hidden sm:flex" href="/btest/tag">Tags</a>
-        
-        
-          
-        
-        <a class="w-5 h-5 hidden sm:flex" title="" href="rss2.xml">
-          <iconify-icon width="20" icon="ri:rss-line"></iconify-icon>
-        </a>
-        <a class="w-5 h-5" title="toggle theme" id="toggle-dark">
-          <iconify-icon width="20" icon="" id="theme-icon"></iconify-icon>
-        </a>
-      </div>
-      <div class="flex items-center justify-center gap-3 ml-3 sm:hidden">
-        <span class="w-5 h-5" aria-hidden="true" role="img" id="open-menu">
-          <iconify-icon width="20" icon="carbon:menu" ></iconify-icon>
-        </span>
-        <span class="w-5 h-5 hidden" aria-hidden="true" role="img" id="close-menu">
-          <iconify-icon  width="20" icon="carbon:close" ></iconify-icon>
-        </span>
-      </div>
-    </nav>
-  </div>
-</header>
-<div id="menu-panel" class="h-0 overflow-hidden sm:hidden fixed left-0 right-0 top-12 bottom-0 z-10">
-  <div id="menu-content" class="relative z-20 bg-white/80 px-6 sm:px-8 py-2 backdrop-blur-xl -translate-y-full transition-transform duration-300">
-    <ul class="nav flex flex-col sm:flex-row text-sm font-medium">
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/archives" class="flex h-12 sm:h-auto items-center">Posts</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/category" class="flex h-12 sm:h-auto items-center">Categories</a>
-        </li>
-      
-        <li class="nav-portfolio sm:mx-2 border-b sm:border-0 border-black/5 last:border-0 hover:text-main">
-          <a href="/btest/tag" class="flex h-12 sm:h-auto items-center">Tags</a>
-        </li>
-      
-    </ul>
-  </div>
-  <div class="mask bg-black/20 absolute inset-0"></div>
+    
+  </span>
 </div>
 
-  <main class="pt-14">
-    <!-- css -->
-
-<link rel="stylesheet" href="/btest/lib/fancybox/fancybox.min.css">
-
-
-<link rel="stylesheet" href="/btest/lib/tocbot/tocbot.min.css">
-
-<!-- toc -->
-
-  <!-- tocbot -->
-<nav class="post-toc toc text-sm w-48 relative top-32 right-0 opacity-70 hidden lg:block" style="position: fixed !important;"></nav>
-
-
-<section class="px-6 max-w-prose mx-auto md:px-0">
-  <!-- header -->
-  <header class="overflow-hidden pt-6 pb-6 md:pt-12">
-    <div class="pt-4 md:pt-6">
-      <h1 id="article-title" class="text-[2rem] font-bold leading-snug mb-4 md:mb-6 md:text-[2.6rem]">
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
         整函数的性质
-      </h1>
-      <div>
-        <section class="flex items-center gap-3 text-sm">
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="carbon-calendar" ></iconify-icon>
-            <time>2024-07-10</time>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="ic:round-access-alarm" ></iconify-icon>
-            <span>13 min</span>
-          </span>
-          <span class="text-gray-400">·</span>
-          <span class="flex items-center gap-1">
-            <iconify-icon width="18" icon="icon-park-outline:font-search" ></iconify-icon>
-            <span>2.6k words</span>
-          </span>
-          
-        </section>
-      </div>
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Marcus</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-07-09T13:28:58.000Z" class="dt-published" itemprop="datePublished">2024-07-09</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/btest/tags/complex-analysis/" rel="tag">complex_analysis</a>
+    </div>
+
+
     </div>
   </header>
-  <!-- content -->
-  <article class="post-content prose m-auto slide-enter-content dark:prose-invert">
+  
+
+  <div class="content e-content" itemprop="articleBody">
     <h4 id="整函数的柯西积分和泰勒展开"><a href="#整函数的柯西积分和泰勒展开" class="headerlink" title="整函数的柯西积分和泰勒展开"></a>整函数的柯西积分和泰勒展开</h4><p>若$f$是整的且</p>
 <center>
 
@@ -542,213 +425,151 @@
 
 <p>设$f_{k_1}$是纯的，则当$z\to z_k$的时候存在一个极限，它是$f’<em>k(a</em>{k+1})$，所以若我们定义$z\to a_k$的时候$f_k(a_{k+1})$的极限是这个，那么$g(z)$就是整函数。</p>
 
-  </article>
-  <!-- tag -->
-  <div class="mt-12 pt-6 border-t border-gray-200">
-    
-      
-        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 m-1 text-sm rounded-md transition-colors hover:bg-gray-200">
-          <a href="/btest/tags/complex-analysis/">complex_analysis</a>
-        </span>
-      
-    
   </div>
-  <!-- prev and next -->
-  <div class="flex justify-between mt-12 pt-6 border-t border-gray-200">
-    <div>
-      
-        <a href="/btest/2024/07/24/%E5%88%98%E7%BB%B4%E5%B0%94%E5%92%8C%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          <iconify-icon width="20" icon="ri:arrow-left-s-line" data-inline="false"></iconify-icon>
-          刘维尔和代数基本定理
-        </a>
-      
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/btest/">Home</a></li>
+        
+          <li><a href="/btest/tags/matlab/">matlab</a></li>
+        
+          <li><a href="/btest/tags/complex-analysis">复变分析</a></li>
+        
+          <li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li>
+        
+          <li><a href="/btest/tags/algorithms">算法原理</a></li>
+        
+          <li><a href="/btest/archives/">wirtes</a></li>
+        
+      </ul>
     </div>
-    <div>
-      
-        <a href="/btest/2024/07/05/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E9%97%AD%E6%9B%B2%E7%BA%BF%E5%AE%9A%E7%90%86/" class="text-sm text-gray-400 hover:text-gray-500 flex justify-center">
-          整函数的闭曲线定理
-          <iconify-icon width="20" icon="ri:arrow-right-s-line" data-inline="false"></iconify-icon>
-        </a>
-      
-    </div>
-  </div>
-  <!-- comment -->
-  <div class="article-comments mt-12">
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%9F%AF%E8%A5%BF%E7%A7%AF%E5%88%86%E5%92%8C%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="toc-number">1.</span> <span class="toc-text">整函数的柯西积分和泰勒展开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA"><span class="toc-number">2.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%AF%E8%A5%BF%E7%A7%AF%E5%88%86%E6%96%B9%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">柯西积分方程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%95%E7%90%86"><span class="toc-number">4.</span> <span class="toc-text">引理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80"><span class="toc-number">5.</span> <span class="toc-text">整函数的泰勒展开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-1"><span class="toc-number">6.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-2"><span class="toc-number">7.</span> <span class="toc-text">推论</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E9%A2%98"><span class="toc-number">8.</span> <span class="toc-text">命题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A8%E8%AE%BA-3"><span class="toc-number">9.</span> <span class="toc-text">推论</span></a></li></ol>
+      </div>
     
 
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&text=整函数的性质"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&is_video=false&description=整函数的性质"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=整函数的性质&body=Check out this article: https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&title=整函数的性质"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&name=整函数的性质&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/&t=整函数的性质"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
   </div>
-</section>
-<!-- js inspect -->
-
-<script src="/btest/lib/clipboard.min.js"></script>
-
-
-<script async src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    "HTML-CSS": {
-        preferredFont: "TeX",
-        availableFonts: ["STIX","TeX"],
-        linebreaks: { automatic:true },
-        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
-    },
-    tex2jax: {
-        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-        processEscapes: true,
-        ignoreClass: "tex2jax_ignore|dno",
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
-        Macros: { href: "{}" }
-    },
-    messageStyle: "none"
-  });
-</script>
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Queue(function() {
-      var all = MathJax.Hub.getAllJax(), i;
-      for (i=0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-      }
-  });
-</script>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-<script>
-  $(document).ready(() => {
-    const maraidConfig = {
-      theme: "default",
-      logLevel: 3,
-      flowchart: { curve: "linear" },
-      gantt: { axisFormat: "%m/%d/%Y" },
-      sequence: { actorMargin: 50 },
-    };
-    mermaid.initialize(maraidConfig);
-  });
-</script>
-
-
-
-<script src="/btest/lib/fancybox/fancybox.umd.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-    $('.post-content').each(function(i){
-      $(this).find('img').each(function(){
-        if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
-        var alt = this.alt;
-        if (alt) $(this).after('<span class="fancybox-alt">' + alt + '</span>');
-        $(this).wrap('<a class="fancybox-img" href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
-      });
-      $(this).find('.fancybox').each(function(){
-        $(this).attr('rel', 'article' + i);
-      });
-    });
-
-    Fancybox.bind('[data-fancybox="gallery"]', {
-        // options
-    })
-  })
-</script>
-
-<!-- tocbot begin -->
-
-<script src="/btest/lib/tocbot/tocbot.min.js"></script>
-
-<script>
-  $(document).ready(() => {
-      tocbot.init({
-        // Where to render the table of contents.
-        tocSelector: '.post-toc',
-        // Where to grab the headings to build the table of contents.
-        contentSelector: '.post-content',
-        // Which headings to grab inside of the contentSelector element.
-        headingSelector: 'h1, h2, h3',
-        // For headings inside relative or absolute positioned containers within content.
-        hasInnerContainers: true,
-    });
-  })
-</script>
-<!-- tocbot end -->
-
-
-  </main>
-  <footer class="flex flex-col h-40 items-center justify-center text-gray-400 text-sm">
-  <!-- busuanzi -->
-  
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<!-- Busuanzi Analytics -->
-<div class="flex items-center gap-2">
-  <span>Visitors</span>
-  <span id="busuanzi_value_site_uv"></span>
-  <span>Page Views</span>
-  <span id="busuanzi_value_site_pv"></span>
 </div>
-<!-- End Busuanzi Analytics -->
 
-
-  <!-- copyright -->
-  <div class="flex items-center gap-2">
-    <a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit;">CC BY-NC-SA 4.0</a>
-    <span>© 2022</span>
-    <iconify-icon width="18" icon="emojione-monotone:maple-leaf" ></iconify-icon>
-    <a href="https://github.com/xbmlz" target="_blank" rel="noopener noreferrer">xbmlz</a>
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2026
+    Marcus
   </div>
-  <!-- powered by -->
-  <div class="flex items-center gap-2">
-    <span>Powered by</span>
-    <a href="https://hexo.io/" target="_blank" rel="noopener noreferrer">Hexo</a>
-    <span>&</span>
-    <a href="https://github.com/xbmlz/hexo-theme-maple" target="_blank" rel="noopener noreferrer">Maple</a>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/btest/">Home</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/matlab/">matlab</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/complex-analysis">复变分析</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学</a></li><!--
+     --><!--
+       --><li><a href="/btest/tags/algorithms">算法原理</a></li><!--
+     --><!--
+       --><li><a href="/btest/archives/">wirtes</a></li><!--
+     -->
+      </ul>
+    </nav>
   </div>
-
 </footer>
 
-  <div class="back-to-top box-border fixed right-6 z-1024 -bottom-20 rounded py-1 px-1 bg-slate-900 opacity-60 text-white cursor-pointer text-center dark:bg-slate-600">
-    <span class="flex justify-center items-center text-sm">
-      <iconify-icon width="18" icon="ion:arrow-up-c" id="go-top"></iconify-icon>
-      <span id="scrollpercent"><span>0</span> %</span>
-    </span>
-  </div>
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
 <script src="/btest/js/main.js"></script>
 
+<!-- search -->
 
-  <script>
-    $(document).ready(function () {
-      const mapleCount = "10";
-      const speed = "0.5";
-      const mapleEl = document.getElementById("maple");
-      const maples = Array.from({ length: mapleCount }).map(() => {
-        const maple = document.createElement("div");
-        const scale = Math.random() * 0.5 + 0.5;
-        const offset = Math.random() * 2 - 1;
-        const x = Math.random() * mapleEl.clientWidth;
-        const y = -Math.random() * mapleEl.clientHeight;
-        const duration = 10 / speed;
-        const delay = -duration;
-        maple.className = "maple";
-        maple.style.width = `${24 * scale}px`;
-        maple.style.height = `${24 * scale}px`;
-        maple.style.left = `${x}px`;
-        maple.style.top = `${y}px`;
-        maple.style.setProperty("--maple-fall-offset", offset);
-        maple.style.setProperty("--maple-fall-height", `${Math.abs(y) + mapleEl.clientHeight}px`);
-        maple.style.animation = `fall ${duration}s linear infinite`;
-        maple.style.animationDelay = `${delay}s`;
-        mapleEl.appendChild(maple)
-        return maple
-      })
-    });
-  </script>
-  
+<!-- Baidu Analytics -->
 
+<!-- Cloudflare Analytics -->
 
-  <div class="fixed top-0 bottom-0 left-0 right-0 pointer-events-none print:hidden" id="maple"></div>
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
 </body>
-
 </html>
