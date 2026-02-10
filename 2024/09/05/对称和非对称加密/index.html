@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>对称和非对称加密 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="这一张我们讲什么是对称和非对称密码。为了了解什么是对称加(解)密，我们假设有这么一个场景，鲍勃给艾米共享自己的密钥$k$，使用密钥$k$，则他们可以同时加解密信息。所以为了完成这个动作，鲍勃和艾米必须具备相同的知识和能力，即同时拥有密钥。基于此共识，此类型的密码称为对称密码。 从数学上看，对称加密就是用一个可能的密钥空间$K$中选择一个密钥$k$来加密一个可能的消息空间$M$中的信息$m$，而加密">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对称和非对称加密">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2024/09/05/%E5%AF%B9%E7%A7%B0%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="这一张我们讲什么是对称和非对称密码。为了了解什么是对称加(解)密，我们假设有这么一个场景，鲍勃给艾米共享自己的密钥$k$，使用密钥$k$，则他们可以同时加解密信息。所以为了完成这个动作，鲍勃和艾米必须具备相同的知识和能力，即同时拥有密钥。基于此共识，此类型的密码称为对称密码。 从数学上看，对称加密就是用一个可能的密钥空间$K$中选择一个密钥$k$来加密一个可能的消息空间$M$中的信息$m$，而加密">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-09-05T09:26:54.000Z">
+<meta property="article:modified_time" content="2024-09-05T17:34:44.575Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-对称和非对称加密" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/09/05/%E5%AF%B9%E7%A7%B0%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" class="article-date">
+  <time class="dt-published" datetime="2024-09-05T09:26:54.000Z" itemprop="datePublished">2024-09-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      对称和非对称加密
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>这一张我们讲什么是对称和非对称密码。为了了解什么是对称加(解)密，我们假设有这么一个场景，鲍勃给艾米共享自己的密钥$k$，使用密钥$k$，则他们可以同时加解密信息。所以为了完成这个动作，鲍勃和艾米必须具备相同的知识和能力，即同时拥有密钥。基于此共识，此类型的密码称为对称密码。</p>
+<p>从数学上看，对称加密就是用一个可能的密钥空间$K$中选择一个密钥$k$来加密一个可能的消息空间$M$中的信息$m$，而加密的结果是密文空间$C$中的密文$c$。</p>
+<p>所以，我们可以把加密的过程看成是一个函数：</p>
+<center>
+
+<p>$\begin{aligned}<br>    e:K\times M\to C<br>\end{aligned}$</p>
+</center>
+
+<p>其中$K\times C$是$K,C$的笛卡尔积，表示用的密钥和文段，其范围是$C$。类似的，解密也是一个函数</p>
+<center>
+
+<p>$\begin{aligned}<br>    d:K\times C\to M<br>\end{aligned}$</p>
+</center>
+
+<p>因此，我们希望这个函数是具备“反函数”的，即我们能够还原密文，否则就没任何意义了。可以表示为：</p>
+<center>
+
+<p>$\begin{aligned}<br>    d(k,e(k,m)) &#x3D; m 对所有 k\in K和m\in M成立<br>\end{aligned}$</p>
+</center>
+
+<p>其次，由于密钥$k$是选定的，则我们可以用下标来代替笛卡尔积。</p>
+<center>
+
+<p>$\begin{aligned}<br>    e_k:M\to C 和 d_k :C\to M<br>\end{aligned}$</p>
+</center>
+
+<p>并且满足 $d_k(e_k(m)) &#x3D; m$对所有$m\in M$成立。</p>
+<p>对于艾米和鲍勃来讲，最安全的做法是，即使第三人伊娃知道加密方法，即知道$e,d$函数，而不知道密钥$k$，则伊娃不能得到信息。这是现代密码学的一个基本前提，即$Kerckhoff$原理，该原理认为密码系统的安全新应该仅取决于密钥的保密性，而不是加密算法本身的保密性。</p>
+<p>基于此，若$(K,M,C,e,d)$是一个完整的密码，那么他必须具备下列要求：</p>
+<ul>
+<li><p>对任意密钥$k\in K$和信息$m\in M$，计算密文$e_k(m)$的时候必须是较简单的</p>
+</li>
+<li><p>对任意和密钥$k\in K$和密文$c\in C$，在计算明文的时候必须是简单的。</p>
+</li>
+<li><p>给定使用密钥$k$加密的一个或多个密文$c_1,c_2,\cdots,c_n\in C$，如若不知道$k$，则计算相应的明文$d_k(c_1)\cdots,d(c_n)$是困难的。</p>
+</li>
+<li><p>该条一个理想属性，尽管它实现是不简单的：给定一对或者多对明文和他们对应的密文$(m_1,c_1),(m_2,c_2),\cdots,(m_n,c_n)$，则必须很难解密任何不在给定表中的密文$c$，这被称为针对选择明文攻击的安全性。</p>
+</li>
+</ul>
+<p>而现在，我们并不简单的说容易和困难究竟是何语义，非正式的来说，在没给定义之前，我们简单的认为，一个密码“简单”是指在计算机不超过一秒就能得到的，而困难指的是要计算几年才能完成破解。</p>
+<p>接下来，我们基于编码块来使用对称加密</p>
+<h3 id="编码块的对称加密"><a href="#编码块的对称加密" class="headerlink" title="编码块的对称加密"></a>编码块的对称加密</h3><p>为了方便，我们将明文空间$M$的元素看做是由长度为$B$的二进制串。即用$B$个$1$或$0$填充的字符串，我们将$B$称为密码快的大小。若明文以少于密码块长度的位结尾，则我们在里面继续填充0。</p>
+<p>由于加解密都是针对一个块，因此我们只需要研究一个块即可，而明文块是一串长度为$B$的二进制字符串。 即，明文$M$将转为满足$0 \leq m &lt; 2^B$的整数集$M$，它如下所示：</p>
+<center>
+
+<p>$\begin{aligned}<br>    \overbrace{m_{B-1}m_{B-2}\cdots m_{2}m_{1}m_{0}}^{\text{list of }B\text{ bits of }m}\longleftrightarrow\overbrace{m_{B-1}\cdot2^{B-1}+\cdots+m_{2}\cdot2^{2}+m_{1}\cdot2+m_{0}}^{\text{integer between }0\text{ and }2^{B}-1}.<br>\end{aligned}$</p>
+</center>
+
+<p>其中$m_0 ,\cdots,m_{B-1}$是一些$0$或者$1$。</p>
+<p>类似的，我们也可以将密钥空间$K$和密文空间$C$用一组与特定的块大小表示。为了表示方便，我们用$B_k,B_m,B_c$表示密钥，明文和密文的大小。此前我们已经用正整数确定了集合$K,M,C$（用ASCII码）</p>
+<center>
+
+<p>$\begin{aligned}<br>K &#x3D;&amp; {k\in \mathrm{Z}: 0\leq k &lt; 2^{B_k}}\<br>M &#x3D;&amp; {m\in \mathrm{Z}: 0\leq m &lt; 2^{B_m}}\<br>C &#x3D;&amp; {c\in \mathrm{Z}: 0\leq c &lt; 2^{B_c}}<br>\end{aligned}$</p>
+</center>
+
+<p>那么这将引发另一个问题，我们需要选择多大的密钥块，若密钥块较小，则伊娃可以通过遍历密钥来破解密码。</p>
+<p>这种攻击叫暴力破解，若空间至少存在$280$个元素，则暴力破解基本上是不可能的，因此鲍勃和艾米至少该选择$B_k \geq 80$的密钥。</p>
+<h3 id="对称加密的例子"><a href="#对称加密的例子" class="headerlink" title="对称加密的例子"></a>对称加密的例子</h3><p>在继续深入理论和符号的扭曲中，我们先暂停一下，看看这些基本对称密码的数学描述。</p>
+<p>令$p$是较大的素数，设$2^{159} &lt; p &lt; 2^{160}$。而艾米和鲍勃令密钥空间$K$、明文空间$M$和密文空间$C$三者为同一个空间，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    K &#x3D; M &#x3D; C &#x3D;{1,2,3,\cdots,p-1}<br>\end{aligned}$</p>
+</center>
+
+<p>更进一步的，我们令这个空间是$F^*_p$，即$p$个元素的域。</p>
+<p>那么艾米和鲍勃随机选择一个密钥$k\in K$，即选择一个$1\leq k &lt; p$的整数$k$。而他们选择的加密函数$e_k$定义如下：</p>
+<center>
+
+<p>$\begin{aligned}<br>    e_k(c) \equiv k\cdot m \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>这里的意思是，通过模运算，我们可以将文字映射到$1$到$p$之间的正整数。该整数可以由$k\cdot m\mod p$所替换。而对应的解密函数$d_k$是</p>
+<center>
+
+<p>$\begin{aligned}<br>    d_k(m) \equiv k’\cdot c \mod p<br>\end{aligned}$</p>
+</center>
+
+<p>其中密钥$k’$是$k$的逆，尽管$p$是非常大的，但拓展的欧几里得算法可以允许我们在$2\log_2 p+2$步的复杂度内计算出$k$。</p>
+<p>在这种情况下显然伊娃难以解决$k$，因为我们选择的$p$在$2^{160}$下而$k$大约也是$2^{160}$种可能。反之，若知道密文是什么，也是很难破解的。注意加密函数</p>
+<center>
+
+<p>$\begin{aligned}<br>    e_k:M\to C<br>\end{aligned}$</p>
+</center>
+
+<p>选择任意的一个密钥$k$，在这种情况下函数是一个满射，这意味着对每个$c\in C$和$k\in K$都存在一个$m\in M$使得$e_k(m) &#x3D;c$，那么对于密钥，我们有</p>
+<center>
+
+<p>$\begin{aligned}<br>    k \equiv m^{-1}\cdot c\mod p<br>\end{aligned}$</p>
+</center>
+
+<p>这表明我们鲍勃和艾米设计的这个密码是具有在刚才列出的前三点属性，即知道密钥的人可以轻松解密和加密，但若不知道$k$则很难得到这一步。但这密码不具备第四个属性，若知道一个明文&#x2F;密文对$(m,c)$，则可以利用上面$k$的公式轻松得到密钥。</p>
+<p>接下来我们分析一下，若不进行模$p$操作，则上述函数$e_k$变成简单的乘法，这时候具备条件1，2而不存在3、4，即不知道$k$也可以简单的破解到明文。更进一步的，若存在多个密文$c_1,\cdots,c_n$，则一个好的选择是</p>
+<center>
+
+<p>$\begin{aligned}<br>    \gcd (c_1,\cdots,c_n) &#x3D; \gcd(k\cdot m_1,\cdots , k\cdot m_n) &#x3D; k\cdot \gcd(m_1,\cdots,m_n)<br>\end{aligned}$</p>
+</center>
+
+<p>即$k$本身或者是小点的倍数。而计算这种东西也是简单的。</p>
+<p>在上面的分析之后，一个显然的事实是，若我们采用模运算，则模运算具有很奇妙的混合效果，可以破坏可分等属性。但这不是我们最后的解决方案，改密码对明文攻击还是较脆弱的。如果伊娃可以同时获得密文c和对应的明文m，他依然可以计算轻松得到密钥。$k &#x3D; m^{-1}\cdot c\mod p$，所以即使只有一对，也足以破解密钥。</p>
+<h3 id="随机比特序列和对称密码"><a href="#随机比特序列和对称密码" class="headerlink" title="随机比特序列和对称密码"></a>随机比特序列和对称密码</h3><p>在饶了一大圈之后，我们回到最基本的问题，是否可以用单个相对较短的密钥$k$来安全高效的发送任意长的信息？我们给出一个构造：</p>
+<center>
+
+<p>$\begin{aligned}<br>    R:K\times \mathrm{Z}\to {0,1}<br>\end{aligned}$</p>
+</center>
+
+<p>它具备一下属性：</p>
+<ol>
+<li>对所有$k\in K$和所有$j\in \mathrm{Z}$，它容易计算$R(k,j)$。</li>
+<li>给定任意长度的整数序列$j_1,\cdots,j_n$和给定所有的值$R(k,j_1),\cdots,R(k,j_n)$，但$k$是难以计算的。</li>
+<li>给定正整数列$j_1,\cdots,j_n$和给定值。</li>
+</ol>
+<center>
+
+<p>$\begin{aligned}<br>    R(k,j_1),\cdots,R(k,j_n)<br>\end{aligned}$</p>
+</center>
+
+<p>对于列表中没出现的$j_i$和其对应的值，猜到密码的概率不超过$1&#x2F;2$</p>
+<p>若我们能找到一个函数$R$，它满足上述3点，则我们可以用它将密钥$k$转换为一个比特列</p>
+<center>
+
+<p>$\begin{aligned}<br>    R(k,j_1),\cdots,R(k,j_n)<br>\end{aligned}$</p>
+</center>
+
+<p>并且我们可以用该序列作为一次性的密钥。</p>
+<p>该方法一个问题是，$R$是一个伪随机生成器，而不是真随机的。但，直到现在还是没有人证明伪随机数生成器的存在。但有一些经得住考验的方案，以下是构造上述$R$的两种方法：</p>
+<p>第一种方法是重复的应用一些特别的混合操作，这些混合操作适用于高效的计算，并且非常难解开。这种方法是大多数实际对称密码的基础，包括数据加密标准DES和高级加密标准AES。目前使用广泛的两个系统就是这些了。</p>
+<p>第二种方法是用一个函数构造$R$，该函数的逆是一个我们认为非常难的数学问题。而这个方法提供了让我们省心的理论基础。但不好的一点在于，该类型的已知构造都不如一些特殊构造有效，对实际应用程序没什么吸引力。</p>
+<h3 id="非对称密码的首次出现"><a href="#非对称密码的首次出现" class="headerlink" title="非对称密码的首次出现"></a>非对称密码的首次出现</h3><p>对称密码基于艾米和鲍勃两人知道密钥。但是如何传达密钥是个问题。在每一次交流都被伊娃监控的情况下，还有机会交换一个密钥吗？大多数人的第一反应是这不可能，因为伊娃看到了鲍勃和艾米的每次交流。但Diffie 和 Hellman的绝妙见解下是可能的，这个问题的有效解决方案的搜索称为公钥（非对称）密码学，这是我们要研究的主要部分。</p>
+<p>回到正题，我们继续假设，艾米和鲍勃要如何在伊娃监视下传送信息。现在，艾米买了一个顶部带有窄槽的保险箱，并将保险箱放在广场上，世界上的每个人都可以随便的检查保险箱，看看它是否安全。鲍勃将他给艾米的信写在纸上，并将他塞在保险箱顶部的孔里，而现在只有一个拥有保险箱钥匙的人能打开，也就是说只有艾米能看到保险箱里面的东西。在这个场景中，我们说保险箱是公钥，加密算法是将信息放入插槽的过程，解密算法是用密钥大概保险箱的过程。这样密码系统和实际公钥系统共享的一个特性是，艾米只需要在公共位置放个保险箱，然后世界上每个人都可以通过保险箱给艾米发送加密信息。艾米也不需要给每个人提供保险箱，也不需要阅后即焚。</p>
+<p>现在我们给出一般数学定义。</p>
+<p>一般的，我们还是给出密钥空间$K$，明文空间$M$和密文空间$C$。无论如何，密钥空间的元素$k$实际上是一对密码：</p>
+<center>
+
+<p>$\begin{aligned}<br>    k &#x3D; (k_{priv},k_{pub})<br>\end{aligned}$</p>
+</center>
+
+<p>它们分别称为私钥(private key)和公钥(public key)。对每个公钥$k_{pub}$，都有对应的加密功能：</p>
+<center>
+
+<p>$\begin{aligned}<br>    e_{k_{pub}}:M\to C<br>\end{aligned}$</p>
+</center>
+
+<p>对于每个私钥，都有对应的解密函数：</p>
+<center>
+
+<p>$\begin{aligned}<br>    d_{k_{priv}}:C\to M<br>\end{aligned}$</p>
+</center>
+
+<p>若这对密钥$(k_{priv},k_{pub})$都在密钥空间$K$内，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    d_{k_{priv}}(e_{k_{pub}}(m)) &#x3D; m，对所有m成立<br>\end{aligned}$</p>
+</center>
+
+<p>若非对称密码是安全的，则伊娃是很难计算私钥$k_{priv}$，即使她拥有公钥，在这个假设下，艾米可以使用不安全的信道向鲍勃发送公钥$k_{pub}$而不必担心被解密。为了解密则必须使用私钥，在我们的假设下，艾米是唯一有私钥的人，该私钥也被称为艾米的 <strong>陷门</strong>。作用根后门差不多但不一样。因为该私钥的反函数提供了一个捷径（陷门）。因为加密和解密是不一样的事实，所以我们称该密码是非对称密码。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2024/09/05/%E5%AF%B9%E7%A7%B0%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" data-id="cmlgqwxtf00142ohx5a8h9puh" data-title="对称和非对称加密" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/09/08/%E7%A6%BB%E6%95%A3%E5%AF%B9%E6%95%B0%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          离散对数问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/09/03/%E5%9F%BA%E4%BA%8E%E6%95%B4%E6%95%B0%E7%8E%AF%E7%9A%84%E5%AF%86%E7%A0%81%E5%AD%A6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">基于整数环的密码学</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

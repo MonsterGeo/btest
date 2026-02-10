@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>泰山派内核更新 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="[toc] 今天我们来给泰山派的板子更新内核 编译准备 &amp;&amp; 编译环境本次采用了一台8G内存+200GB存储的ubuntu22.04 LTS 虚拟机，架构为amd64。 内核版本：5.10.0-1012.12 （适配了rockchip内核） 内核的github地址：https:&#x2F;&#x2F;github.com&#x2F;Joshua-Riek&#x2F;linux-rockchip&#x2F;tree&#x2F;jammy 接着">
+<meta property="og:type" content="article">
+<meta property="og:title" content="泰山派内核更新">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2025/06/01/Rk3566%E6%9D%BF%E5%AD%90%E4%B8%8A%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="[toc] 今天我们来给泰山派的板子更新内核 编译准备 &amp;&amp; 编译环境本次采用了一台8G内存+200GB存储的ubuntu22.04 LTS 虚拟机，架构为amd64。 内核版本：5.10.0-1012.12 （适配了rockchip内核） 内核的github地址：https:&#x2F;&#x2F;github.com&#x2F;Joshua-Riek&#x2F;linux-rockchip&#x2F;tree&#x2F;jammy 接着">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-05-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-01T11:37:58.854Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Rk3566板子上更新内核" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/06/01/Rk3566%E6%9D%BF%E5%AD%90%E4%B8%8A%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8/" class="article-date">
+  <time class="dt-published" datetime="2025-05-31T16:00:00.000Z" itemprop="datePublished">2025-06-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      泰山派内核更新
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>[toc]</p>
+<p>今天我们来给泰山派的板子更新内核</p>
+<h2 id="编译准备-编译环境"><a href="#编译准备-编译环境" class="headerlink" title="编译准备 &amp;&amp; 编译环境"></a>编译准备 &amp;&amp; 编译环境</h2><p>本次采用了一台8G内存+200GB存储的ubuntu22.04 LTS 虚拟机，架构为amd64。</p>
+<p>内核版本：5.10.0-1012.12 （适配了rockchip内核）</p>
+<p>内核的github地址：<a target="_blank" rel="noopener" href="https://github.com/Joshua-Riek/linux-rockchip/tree/jammy">https://github.com/Joshua-Riek/linux-rockchip/tree/jammy</a></p>
+<p>接着我们需要一份rk3566的SDK，没有SDK我们则无法编译板子的内核。本次选择是泰山派定制的SDK，地址为：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1HtnpytCBBqBOqZi8mfV4VQ?pwd=qcxx">https://pan.baidu.com/s/1HtnpytCBBqBOqZi8mfV4VQ?pwd=qcxx</a><br>提取码：qcxx</p>
+<p>在第五章的文件夹内，linux子文件内，有一个tspi_linux_sdk_repo_20240131.tar.gz文件，下载这个。并且下载Tspi_Linux_config.cfg这个配置文件。</p>
+<p>注：内核是不变的，若使用的是其他的板子，则之后的编译环节需要用厂商提供的编译脚本编译，本文的编译命令仅供参考。</p>
+<h2 id="更改配置文件-配置内核"><a href="#更改配置文件-配置内核" class="headerlink" title="更改配置文件 &amp;&amp; 配置内核"></a>更改配置文件 &amp;&amp; 配置内核</h2><p>注意：默认在普通用户下进行各种操作</p>
+<p>在安装完Ubuntu22.04之后，我们吧tspi_linux_sdk_repo_20240131.tar.gz移动到 Linux下的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> tspi <span class="comment">#创建一个tspi文件夹</span></span><br><span class="line">tar -zxvf tspi_linux_sdk_repo_20240131.tar.gz -C tspi/ <span class="comment">#-C 参数将压缩包内的文件解压到tspi文件</span></span><br></pre></td></tr></table></figure>
+<p>解压完毕之后文件目录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> .repo/</span><br><span class="line"><span class="built_in">ls</span> </span><br><span class="line"></span><br><span class="line">copy-link-files.json   manifests      manifest.xml  project-objects  repo</span><br><span class="line">internal-fs-layout.md  manifests.git  project.list  projects</span><br></pre></td></tr></table></figure>
+
+<p>接着，我们安装一些必要的工具，执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get update</span><br><span class="line"><span class="built_in">sudo</span> apt-get install git -y <span class="comment">#安装git</span></span><br><span class="line"><span class="built_in">sudo</span> apt install repo -y <span class="comment">#安装repo</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install python2.7 <span class="comment">#安装python2</span></span><br><span class="line"><span class="built_in">sudo</span> apt-get install python3 <span class="comment">#安装python3</span></span><br></pre></td></tr></table></figure>
+
+<p>安装完毕之后开始把sdk同步出来，注意同步之前必须退到.repo文件的上一级。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> tspi/ <span class="comment">#进入tspi文件，理论上现在打ls -all只有一个.repo文件</span></span><br><span class="line">.repo/repo/repo <span class="built_in">sync</span> -l -j4 <span class="comment">#解压完之后.repo文件，必须把sdk的文件全部同步出来</span></span><br></pre></td></tr></table></figure>
+
+<p>同步完毕的文件目录如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app        build.sh  device  envsetup.sh  kernel    mkfirmware.sh  rkbin       tools   yocto</span><br><span class="line">buildroot  debian    docs    external     Makefile  prebuilts      rkflash.sh  u-boot</span><br></pre></td></tr></table></figure>
+
+<p>现在我们就有了所有关于sdk的文件了。</p>
+<p>由于我们需要更换内核，因此首先要做的事情是将sdk中的内核替换成我们比较新的版本。执行mv文件，将kernel文件更改名字为kernel_old</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> tspi/ <span class="comment">#进入tspi文件</span></span><br><span class="line"><span class="built_in">mv</span> kernel kernel_old </span><br></pre></td></tr></table></figure>
+
+<p>然后，用git把内核拉下来</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Joshua-Riek/linux-rockchip.git</span><br></pre></td></tr></table></figure>
+
+<p>下载完之后有一个linux-rockchip的文件夹，这是新的内核文件，我们需要把他移植到tspi文件中并替换原有的Kernel文件，只需要用mv命令即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mv</span> linux-rockchip ../tspi/kernel</span><br></pre></td></tr></table></figure>
+
+<p>最后，我们将kernel_old中的设备树文件移植到新的kernel文件下即可完成新内核的移植。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> ~/tspi/kernel_old/arch/arm64/boot/dts/rockchip/tspi* ~/tspi/kernel/arch/arm64/boot/dts/rockchip</span><br></pre></td></tr></table></figure>
+
+<p>然后编辑设备树目录下的Makefile文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vim tspi/kernel/arch/arm64/boot/dts/rockchip/Makefile</span><br></pre></td></tr></table></figure>
+
+<p>添加一行代码，编译的时候加上泰山派的用户的设备树文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dtb-$(CONFIG_ARCH_ROCKCHIP) += tspi-rk3566-user-v10-linux.dtb</span><br></pre></td></tr></table></figure>
+
+<p>接着保存退出即可。</p>
+<p>最后，我们需要安装gcc交叉编译工具。</p>
+<p>地址：<a target="_blank" rel="noopener" href="https://developer.arm.com/downloads/-/gnu-a/10-2-2020-11">https://developer.arm.com/downloads/-/gnu-a/10-2-2020-11</a> </p>
+<p>下载gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz文件</p>
+<p>把下载完的文件解压到&#x2F;home&#x2F;用户(填自己的)文件下。如何配置环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>加入下面三行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ARCH=arm64</span><br><span class="line"><span class="built_in">export</span> CROSS_COMPILE=aarch64-none-linux-gnu-</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/home/用户/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin</span><br></pre></td></tr></table></figure>
+<p>上述命令里面的用户改成自己的即可。然后保存退出，打</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>使环境变量生效，然后输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aarch64-none-linux-gnu-gcc -v</span><br></pre></td></tr></table></figure>
+<p>若能打印版本信息则说明安装成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Using built-in specs.</span><br><span class="line">COLLECT_GCC=aarch64-none-linux-gnu-gcc</span><br><span class="line">COLLECT_LTO_WRAPPER=/home/test/aarch64-gcc/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/../libexec/gcc/aarch64-none-linux-gnu/10.2.1/lto-wrapper</span><br><span class="line">Target: aarch64-none-linux-gnu</span><br><span class="line">Configured with: /tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/src/gcc/configure --target=aarch64-none-linux-gnu --prefix= --with-sysroot=/aarch64-none-linux-gnu/libc --with-build-sysroot=/tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/build-aarch64-none-linux-gnu/install//aarch64-none-linux-gnu/libc --with-bugurl=https://bugs.linaro.org/ --enable-gnu-indirect-function --enable-shared --disable-libssp --disable-libmudflap --enable-checking=release --enable-languages=c,c++,fortran --with-gmp=/tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/build-aarch64-none-linux-gnu/host-tools --with-mpfr=/tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/build-aarch64-none-linux-gnu/host-tools --with-mpc=/tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/build-aarch64-none-linux-gnu/host-tools --with-isl=/tmp/dgboter/bbs/build04--cen7x86_64/buildbot/cen7x86_64--aarch64-none-linux-gnu/build/build-aarch64-none-linux-gnu/host-tools --enable-fix-cortex-a53-843419 --with-pkgversion=<span class="string">&#x27;GNU Toolchain for the A-profile Architecture 10.2-2020.11 (arm-10.16)&#x27;</span></span><br><span class="line">Thread model: posix</span><br><span class="line">Supported LTO compression algorithms: zlib</span><br><span class="line">gcc version 10.2.1 20201103 (GNU Toolchain <span class="keyword">for</span> the A-profile Architecture 10.2-2020.11 (arm-10.16)) </span><br></pre></td></tr></table></figure>
+
+<p>最后退出到tspi文件下，执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build.sh kernel</span><br></pre></td></tr></table></figure>
+<p>若编译出现exit code 2的问题，请尝试挂梯子并开启Tun模式。</p>
+<p>编译内核即可。该内核没有配置任何的设备，所以直接编译完更新是不能上网和干其他事情的。</p>
+<p>编译成功后，可以在&#x2F;tspi&#x2F;rockdev文件夹下找到一个boot.img的文件，这个就是我们编译完的内核。</p>
+<h2 id="烧录内核"><a href="#烧录内核" class="headerlink" title="烧录内核"></a>烧录内核</h2><p>官方烧录方法：<a target="_blank" rel="noopener" href="https://wiki.lckfb.com/zh-hans/tspi-rk3566/sdk-compilation/linux-compilation.html#%E4%B8%8B%E8%BD%BD">https://wiki.lckfb.com/zh-hans/tspi-rk3566/sdk-compilation/linux-compilation.html#%E4%B8%8B%E8%BD%BD</a></p>
+<p>在官方提供的瑞芯微开发工具中点击 下载镜像-&gt;鼠标右键导入配置-&gt;选择Tspi_Linux_config.cfg配置文件即可。kernel位置在下载镜像-&gt;第五个选项的boot中，我们需要将编译完成的内核文件boot.img从ubuntu22.04虚拟机中上传到windows。接着接入板子，按住rec，按一下rst等待烧录工具发现Loader设备即可松开按键。需要的时间有点久。接着上传boot.img镜像到第五个选项中，把全部的钩取消，只留下boot那栏的，点击强制按地址写，然后点击执行等待内核烧录完成即可。</p>
+<p>最后启动开发板，选择串口调试，在命令行输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">uname</span> -r</span><br></pre></td></tr></table></figure>
+<p>即可查看内核版本是否正确。若烧录无误，将打印</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">6.1.75-ge21cf49ee9a4</span><br></pre></td></tr></table></figure>
+
+<p>即为更新成功。</p>
+<p>下一章我们将配置wifi等各种外设，并打包烧录ubuntu22.04-arm64版本到开发板上</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2025/06/01/Rk3566%E6%9D%BF%E5%AD%90%E4%B8%8A%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8/" data-id="cmlgqwxst000b2ohx2mxh2611" data-title="泰山派内核更新" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/06/06/%E7%BA%A2%E5%A4%96%E5%B0%84%E9%A2%91/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          红外射频
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/03/05/Josephus%E9%97%AE%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">热土豆问题</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

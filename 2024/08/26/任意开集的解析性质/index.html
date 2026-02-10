@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>任意开集的解析性质 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在前几篇文章中介绍的方法并不能在任意开集上求一个给定的幂级数。虽然在一般的情况下这种方法也不存在。例如，给定一个复平面上的正方形，并给定正方形内点$a$，在我们尝试寻找一个绕着点$a$和正方形中心$\alpha$的轮廓$C$，使得   $\begin{aligned}   \left| \frac{a-\alpha}{\omega -\alpha}\right|  &lt; 1 对所有\omega">
+<meta property="og:type" content="article">
+<meta property="og:title" content="任意开集的解析性质">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2024/08/26/%E4%BB%BB%E6%84%8F%E5%BC%80%E9%9B%86%E7%9A%84%E8%A7%A3%E6%9E%90%E6%80%A7%E8%B4%A8/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="在前几篇文章中介绍的方法并不能在任意开集上求一个给定的幂级数。虽然在一般的情况下这种方法也不存在。例如，给定一个复平面上的正方形，并给定正方形内点$a$，在我们尝试寻找一个绕着点$a$和正方形中心$\alpha$的轮廓$C$，使得   $\begin{aligned}   \left| \frac{a-\alpha}{\omega -\alpha}\right|  &lt; 1 对所有\omega">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-08-26T05:41:02.000Z">
+<meta property="article:modified_time" content="2024-08-28T18:39:34.659Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="complex_analysis">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-任意开集的解析性质" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/08/26/%E4%BB%BB%E6%84%8F%E5%BC%80%E9%9B%86%E7%9A%84%E8%A7%A3%E6%9E%90%E6%80%A7%E8%B4%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-08-26T05:41:02.000Z" itemprop="datePublished">2024-08-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      任意开集的解析性质
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在前几篇文章中介绍的方法并不能在任意开集上求一个给定的幂级数。虽然在一般的情况下这种方法也不存在。例如，给定一个复平面上的正方形，并给定正方形内点$a$，在我们尝试寻找一个绕着点$a$和正方形中心$\alpha$的轮廓$C$，使得</p>
+<center>
+
+<p>$<br>\begin{aligned}<br>   \left| \frac{a-\alpha}{\omega -\alpha}\right|  &lt; 1 对所有\omega\in C 成立<br>\end{aligned}<br>$</p>
+</center>
+
+<p>会出现矛盾。</p>
+<p>这不仅仅是技术上的困难，总的来说这反应了一个事情，就是不存在任意的幂级数。不过我们可以用以前得到的结果来构造一个一般的定理。</p>
+<h3 id="定理1"><a href="#定理1" class="headerlink" title="定理1"></a>定理1</h3><p>若$f$在任意的开域$D$上解析，则对每个$\alpha\in D$，这里存在常数$C_k$使得</p>
+<center>
+
+<p>$\begin{aligned}<br>    f\left( z \right) \ &#x3D;\ \sum_{k&#x3D;0}^{\infty}{C_k\left( z-\alpha \right) ^k}<br>\end{aligned}$</p>
+</center>
+
+<p>对以$\alpha$作为圆心包含在$D$内的最大圆盘的所有点$z$成立。</p>
+<p><strong>证明：</strong></p>
+<p>这实际上就是我们之前证明过的圆盘内幂级数定理的证明</p>
+<p>使用柯西积分定理，当满足$\mid z-\alpha\mid &lt; \mid a-\alpha\mid$的时候，有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z) &#x3D; \frac{1}{2\pi i}\int_{C_p}{\frac{f\left( \omega \right)}{\omega -z}d\omega}<br>\end{aligned}$</p>
+</center>
+
+<p>然后我们对函数$\frac{1}{\omega-z}$展开有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \frac{1}{\omega -\alpha}+\frac{z-\alpha}{\left( \omega -\alpha \right) ^2}+\frac{\left( z-\alpha \right) ^2}{\left( \omega -\alpha \right) ^3}+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>带回然后令系数$C_k &#x3D;  C_k(\rho) &#x3D; \frac{1}{2\pi i}\int_{C_p}\frac{f(\omega)}{(\omega-a)^{k+1}}d\omega$即可证明完毕。</p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>$f(z) &#x3D; 1&#x2F;(z-1)$在$z&#x3D;2$处解析的，其中收敛域是以$z&#x3D;2$为中心，$r &#x3D;1$的圆。那么我们就可以在圆盘中将他展开成下列级数：</li>
+</ul>
+<center>
+
+<p>$\begin{aligned}<br>    \frac{1}{z-1}\ &#x3D;\ \frac{1}{1+\left( z-2 \right)}\ &#x3D;\ 1-\left( z-2 \right) +\left( z-2 \right) ^3+\cdots -\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>注意当且$\mid z-2\mid &lt;1$收敛。</p>
+<p>虽然函数在$\mid z-2\mid&gt;1 $的其他地方上也是解析的，但是级数展开式在此之外发散，因此无意义。</p>
+<ul>
+<li>我们来求$f(z) &#x3D; 1&#x2F;z^2$在$z&#x3D;3$的幂级数。令</li>
+</ul>
+<center>
+
+<p>$\begin{aligned}<br>    \frac{1}{z^2}\ &#x3D;&amp;\ \left[ \frac{1}{3+\left( z-3 \right)} \right] ^2\ &#x3D;\ \frac{1}{9}\left[ \frac{1}{1+\left( z-3 \right) &#x2F;3} \right] ^2\<br>    &#x3D;&amp; \sum_{k&#x3D;0}^{\infty}{\frac{\left( -1 \right) ^k}{9}\frac{\left( k+1 \right)}{3^k}\left( z-3 \right) ^k}<br>\end{aligned}$</p>
+</center>
+
+<p>它的收敛域就是 $1&#x2F;\lim \mid C_k\mid ^{1&#x2F;k} &#x3D; \lim_{n\to\infty}\left(\frac{9\cdot 3^k}{k+1}\right)^{1&#x2F;k} &#x3D;3$</p>
+<h2 id="唯一性、中值、最大模原理；临界点和鞍点"><a href="#唯一性、中值、最大模原理；临界点和鞍点" class="headerlink" title="唯一性、中值、最大模原理；临界点和鞍点"></a>唯一性、中值、最大模原理；临界点和鞍点</h2><p>我们现在来考虑一些定理1中的幂级数表示的影响。</p>
+<p>我们从下述定理开始</p>
+<h4 id="定理2"><a href="#定理2" class="headerlink" title="定理2"></a>定理2</h4><p>若$f$在$\alpha$处是解析的，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z) &#x3D; \left{ \begin{array}{l}<br>    \frac{f\left( z \right) -f\left( \alpha \right)}{z-\alpha} &amp; z \neq \alpha\<br>    f’\left( \alpha \right) &amp; z &#x3D; \alpha\<br>\end{array} \right.<br>\end{aligned}$</p>
+</center>
+
+<p>也在点$\alpha$可解析</p>
+<p>我们已经用了十分多的篇幅来描写这个函数的性质了。不管是他的导数，幂级数，还是极限也好。现在我们来证明一下。</p>
+<p><strong>证明：</strong> 我们选择一些$\alpha$的邻域，那么$f(z)$有如下的表达式：</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z) &#x3D; f\left( \alpha \right) +\ f’\left( \alpha \right) \left( z-\alpha \right) +\frac{f’’\left( \alpha \right)}{2!}\left( z-\alpha \right) ^2+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>因此，$g$在相同的邻域上也有级数表达式</p>
+<center>
+
+<p>$\begin{aligned}<br>    g\left( z \right) ,,&#x3D;,,f’\left( \alpha \right) +\frac{f’’\left( \alpha \right)}{2!}\left( z-\alpha \right) +\frac{f^{\left( 3 \right)}\left( \alpha \right)}{3!}\left( z-\alpha \right) ^2+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>并且$g$也在$\alpha$上解析。</p>
+<h4 id="定理3"><a href="#定理3" class="headerlink" title="定理3"></a>定理3</h4><p>若$f$在$z$上解析，则$f$在$z$上是无限可微的。</p>
+<p><strong>证明：</strong>根据定义，若$f$在点$z$上是可解析的，那么$f$在$z$的某个邻域内可以被表示为幂级数，因此$f(z)$是无限可微的。</p>
+<h4 id="唯一性定理。"><a href="#唯一性定理。" class="headerlink" title="唯一性定理。"></a>唯一性定理。</h4><p>设$f$在域$D$上解析且$f(z_n)&#x3D;0$对所有$n&#x3D;1,2\cdots,$成立，其中${z_n}$是不同点$z_n\to z_0\in D$的序列，则在$D$上，$f\equiv 0$</p>
+<p><strong>证明：</strong>由于$f$在$z_0$周围有幂级数表达式，而且这种表示是唯一的。那么$f&#x3D;0$穿过包含$z_0$的某个圆。为了$f \equiv 0$在整个域$D$上成立，我们将$D$分割为两个域：</p>
+<center>
+
+<p>$\begin{aligned}<br>    A &#x3D;&amp; {z\in D: \lim_{z\to z_0} f(z) &#x3D; 0}\<br>    B &#x3D;&amp; {z\in D: z\notin A}<br>\end{aligned}$</p>
+</center>
+
+<p>由定义可得$A\cap B &#x3D; 0$，而$A$可由幂级数的唯一性定理证明：若$z$是$f&#x3D;0$的零点极限，那么对于整个绕$z$的圆盘上的函数$f\equiv 0$，并且圆盘被$A$包含。其次，$B$是开的，因为对每个$z\in B$都存在某个$\delta &gt; 0$使得$f(\omega)\neq 0$对$ 0 &lt;\mid z-\omega\mid &lt;\delta $成立。那么圆$D(z:\delta)$就被$B$包含。因为$D$是连通的，这意味着$A$或者$B$必须有一个是空集。由假设，$z_0\in A$，因此$B$是空的，并且对每个$z\in D$都是$f$上的零极限，由$f$的连续性，则$f\equiv 0\in D$</p>
+<h4 id="推论"><a href="#推论" class="headerlink" title="推论"></a>推论</h4><p>若存在两个函数$f,g$且都在域$D$上解析，并且$f,g$在$D$上的一组具有聚点的点上是相等的，则在$D$上有$f\equiv g$</p>
+<p><strong>证明：</strong> 我们首先考虑$f-g$，利用唯一性定理，则$f,g$在$D$上始终有$f &#x3D; g$，因此$f-g \equiv0 $在$D$上始终成立，所以$f\equiv g$</p>
+<h4 id="定理4"><a href="#定理4" class="headerlink" title="定理4"></a>定理4</h4><p>若$f$全纯且若$f(z)\to \infty$当$z\to\infty$成立，则$f$是多项式。</p>
+<p><strong>证明：</strong> 由题设，那么这里存在数$M&gt;0$使得$\mid z\mid &gt; M$有$\mid f(z)\mid &gt; 1$。那么这里至多只能有有限个零点，则$0$集合将在$D(0;M)$中有聚点，否则由唯一性原理，$f$是恒等于零的，这与我们最开始的假设矛盾。为此，我们去除$f$的零点，构造函数</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z) &#x3D; \frac{f\left( z \right)}{\left( z-a_1 \right) \cdots \left( z-a_n \right)}<br>\end{aligned}$</p>
+</center>
+
+<p>其中$a_1,\cdots,a_n$为零点，并且函数是全纯的。因此</p>
+<center>
+
+<p>$\begin{aligned}<br>    h(z) &#x3D; \frac{1}{g(z)} &#x3D; \frac{\left( z-a_1 \right) \cdots \left( z-a_n \right)}{f\left( z \right)}<br>\end{aligned}$</p>
+</center>
+
+<p>也是纯的，由于当$z\to\infty$有$f\to\infty$，利用拓展的刘维尔定理，存在常数$A$使得$h(z) \leq A+\mid z\mid ^n$并且$h$是多项式。但$h &#x3D; 1&#x2F;g \neq 0$，由代数基本定理，$h$拥有一个常数$k$，因此</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z) &#x3D; \frac{1}{k}\left( z-a_1 \right) \cdots \left( z-a_n \right)<br>\end{aligned}$</p>
+</center>
+
+<h4 id="中值定理"><a href="#中值定理" class="headerlink" title="中值定理"></a>中值定理</h4><p>若$f$在$D$上是解析的且$\alpha \in D$。则$f(\alpha)$等于$f$取在$D$上以$\alpha$为中心的任意圆周的中值，因此，当$D(\alpha;r)\subset D$有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(\alpha)  &#x3D; \frac{1}{2\pi}\int^{2\pi}_0 f(\alpha+re^{i\theta})d\theta<br>\end{aligned}$</p>
+</center>
+
+<p><strong>证明：</strong> 由柯西积分定理，我们取$a &#x3D; \alpha$，有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(\alpha) &#x3D; \frac{1}{2\pi i}\int_{C_r}\frac{f(z)}{z-\alpha}dz<br>\end{aligned}$</p>
+</center>
+
+<p>接着我们引入参数化变量$z &#x3D; \alpha+re^{i\theta}$，做简单的换元即可得到</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(\alpha)  &#x3D; \frac{1}{2\pi}\int^{2\pi}_0 f(\alpha+re^{i\theta})d\theta<br>\end{aligned}$</p>
+</center>
+
+<hr>
+<p>当我们说一个点$z$是$f$的最大值时，我们指的是对$f$的任意点$\omega$，存在$\mid f(z)\mid \geq \mid f(\omega)\mid $</p>
+<h4 id="最大模定理"><a href="#最大模定理" class="headerlink" title="最大模定理"></a>最大模定理</h4><p>在域$D$上的非零解析函数不存在局部最大值点：对每个$z\in D$和$\delta &gt; 0$，这里存在一些$\omega\in D(z;\delta)\cap D$使得$\mid f(\omega)\mid &gt; \mid f(z)\mid $</p>
+<p><strong>证明：</strong> 之前我们已经讲过一个刘维尔定理，刘维尔定理告诉我们，在有限的区间上，有界全纯函数是常数。而最大模定理告诉我们另一个事实，即若$f$是全纯且非常数，则它的模$\mid f\mid$在定义域内没有局部最大值。</p>
+<p>利用中值定理，对点$z$的邻域上的点$\omega$，我们有$\mid f(\omega)\mid \geq \mid f(z)\mid $</p>
+<p>由中值定理，因为$r &gt;0$，就有圆盘$D(z;r)\subset D$，我们有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z) &#x3D; \frac{1}{2\pi}\int^{2\pi}_0 f(z+re^{i\theta})d\theta<br>\end{aligned}$</p>
+</center>
+
+<p>那么我们可以得到一个不等式</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}|f(z)|\leq\frac{1}{2\pi}\int_{0}^{2\pi}|f(z+re^{i\theta})|d\theta\leq\max_{\theta}|f(z+re^{i\theta})|.\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>类似的，对某个$\omega\in D(z;r)$我们可以推出$\mid f(\omega)\mid &gt; \mid f(z)\mid $，如果要使得上述不等式中的等号成立，则要求$\mid f\mid$必须是常数，并且对任意小的$r&gt;0$成立。即在圆盘内保持不变。由于$\mid f\mid$在$D$上始终为常数，再利用唯一性定理，则$f\equiv C$在$D$上成立。其中$C$是常数。</p>
+<h4 id="最小模定理"><a href="#最小模定理" class="headerlink" title="最小模定理"></a>最小模定理</h4><p>若$f$在$D$上是非常数解析函数，除非$f(z) &#x3D; 0$，否则没有相对的最小值。</p>
+<p><strong>证明：</strong> 我们设$f(z)\neq 0$并考虑$g &#x3D; 1&#x2F;f$。若$z$是$f$的最小值。则它是$g$上的最大值。因此，利用最大模定理，它要么没有最大值要么是常数，所以$g$在$D$上是常数，这与我们假设的$f$矛盾。</p>
+<h4 id="定理5"><a href="#定理5" class="headerlink" title="定理5"></a>定理5</h4><p>设$f$是在闭圆$D$上的非常数解析函数，再设它的最大模在边界点$z_0$取到。则$f’(z_0)\neq 0$</p>
+<p><strong>证明：</strong> 我们设$f’(z_0) &#x3D; 0$，对任意模足够小的复数$\xi$，我们有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z_0+\xi)&#x3D;f(z_0)+\frac{f^{(k)}(z_0)}{k!}\xi^k+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>其中$k$是使得$f^{(k)}(z_0)$不为0的最小整数。被我们省略的项均是比$\xi^k$高的高阶项。</p>
+<p>接下来我们在上述等式乘上其一个共轭，得到</p>
+<center>
+
+<p>$\begin{aligned}<br>\mid f(z_0+\xi)\mid^2 &#x3D;&amp; f(z_0+\xi)\overline{f(z_0+\xi)}\<br>&#x3D;&amp; |f(z_0)|^2+\frac{2}{k!}\mathrm{Re}\left(\overline{f(z_0)}f^{(k)}(z_0)\xi^k\right)+\cdots<br>\end{aligned}$</p>
+</center>
+
+
+<p>由于$\mid f(z_0)\mid &#x3D; \max_{z\in D}\mid f(z)\mid $，$\mid f(z_0)\mid \neq 0$，我们记$\overline{f(z_{0})}f^{(k)}(z_{0}) &#x3D; Ae^{i\alpha}$，其中$A &gt; 0$，再令$e^{i\theta} &#x3D; \xi&#x2F;\mid \xi\mid $，这是标准化流程，我们通过除以模来得到标准化的向量。</p>
+<p>那么有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \left|f(z_0+\xi)\right|^2&#x3D;\left|f(z_0)\right|^2+\frac{2A}{k!}\left|\xi\right|^k\cos(k\theta+\alpha)+\cdots,<br>\end{aligned}$</p>
+</center>
+
+<p>对模足够小的$\xi$，可知$\mid f(z_0+\xi)\mid - |f(z_0)|$具有与$\cos(k\theta+\alpha)$相同的符号。</p>
+<p>若$z$位于形如</p>
+<center>
+
+<p>$\begin{aligned}<br>    \left{z_0+r_\theta e^{i\theta}:\theta\in\left(\frac{-\pi+4\pi j-2\alpha}{2k},\frac{\pi+4\pi j-2\alpha}{2k}\right) 且~~ r_\theta\in(0,\varepsilon_\theta)\right}<br>\end{aligned}$</p>
+</center>
+
+<p>的$k$个楔形区域中的任意一个，其中对每个整数$\epsilon_\theta$和$j &#x3D; 0,1,\cdots,k-1$成立。那么可以推出$\mid f(z)\mid &gt; \mid f(z_0)\mid $。</p>
+<p>由于$f’(z_0) &#x3D; 0$，$k\geq 2$，则上述说的楔形中至少有一个与$D$相交，因此$\mid f(z_0)\mid $不可能是$D$上$|f|$的极大值</p>
+<h4 id="定义：鞍点"><a href="#定义：鞍点" class="headerlink" title="定义：鞍点"></a>定义：鞍点</h4><p>$z_0$是解析函数$f$的鞍点若其也是实函数$g &#x3D; \mid f\mid$的鞍点，因此，若$g$在$z_0$处可微，且有$g_x(z_0) &#x3D;g_y(z_0)&#x3D;0$，但$z_0$既不是局部最大值也不是局部最小值。</p>
+<h4 id="定理6"><a href="#定理6" class="headerlink" title="定理6"></a>定理6</h4><p>$z_0$是解析函数$f$的鞍点当且仅当$f’(z_0) &#x3D;0$且$f(z_0)\neq 0$</p>
+<p><strong>证明：</strong> 令$f &#x3D; u+iv$，其中$u$和$v$均为实数，再令$g&#x3D;\mid f\mid $</p>
+<p>首先，设$z_0$是$f$的鞍点。则$g&#x3D;\mid f\mid$在$z_0$处可微。那么$g(z_0)\neq 0$，有</p>
+<center>
+
+<p>$\begin{aligned}<br>    g_{x}&#x3D;\frac{(uu_{x}+vv_{x})}{g},\quad g_{y}&#x3D;\frac{(uu_{y}+vv_{y})}{g}.<br>\end{aligned}$</p>
+</center>
+
+<p>由假设，则$g_x(z_0) &#x3D; g_y(z_0) &#x3D;0$，那么</p>
+<center>
+
+<p>$\begin{aligned}<br>    u(z_{0})u_{x}(z_{0})+v(z_{0})v_{x}(z_{0})&#x3D;0,\u(z_{0})u_{y}(z_{0})+v(z_{0})v_{y}(z_{0})&#x3D;0.<br>\end{aligned}$</p>
+</center>
+
+<p>但$u(z_0),v(z_0)$不完全为0，因此，为了证明导数为0，由于$u,v$不同时为0，这说明存在非零解，因而$u_x,v_x$的关系如下：</p>
+<center>
+
+<p>$\begin{aligned}<br>    \det\begin{pmatrix}u_x\left(z_0\right)&amp; v_x\left(z_0\right)\u_y\left(z_0\right) &amp;v_y\left(z_0\right)\end{pmatrix}&#x3D;0.<br>\end{aligned}$</p>
+</center>
+
+<p>由柯西-黎曼等式，可知解析函数$f$有$u^2_x(z_0)+v^2_x(z_0) &#x3D;0$，因此$f’(z_0) &#x3D; 0$确实成立。</p>
+<p>反之，若$f’(z_0) &#x3D;0$，$f(z_0)\neq 0$，则$u_x(z_0)$和$v_x(z_0)$都是0，利用柯西-黎曼定理，则$g_x &#x3D; g_y&#x3D;0$在$z-0$处同样成立。那么带入到$g$的微分中可得$g_x&#x3D;g_y&#x3D;0$在$z_0$处成立。利用定理5和最小模原理，$z_0$不是极大值和极小值。因此它是鞍点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2024/08/26/%E4%BB%BB%E6%84%8F%E5%BC%80%E9%9B%86%E7%9A%84%E8%A7%A3%E6%9E%90%E6%80%A7%E8%B4%A8/" data-id="cmlgqwxt8000t2ohx4v27cgzk" data-title="任意开集的解析性质" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/09/03/%E5%9F%BA%E4%BA%8E%E6%95%B4%E6%95%B0%E7%8E%AF%E7%9A%84%E5%AF%86%E7%A0%81%E5%AD%A6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          基于整数环的密码学
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/08/16/%E8%A7%A3%E6%9E%90%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">解析函数的性质</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>海涅-博雷尔定理 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="海涅-博雷尔定理上一章已经讲了集合的紧性，这一章主要是为了延续上章的内容——找出紧集。海涅-博雷尔定理指的是：$R^k$的子集是紧集当且仅当它既是闭集又是有界集。为此，我们利用的主要是关于该定理的反向关系。定理只描述$R^k$的结论，但有许多其他的度量空间都并非有该结论。例如$(-\pi,\pi)\cap Q$在$Q$中是闭集，且有界，但不是紧集。 但对于反例，不妨考虑无穷维的欧几里得空间$R^\">
+<meta property="og:type" content="article">
+<meta property="og:title" content="海涅-博雷尔定理">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2026/02/10/bqj/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="海涅-博雷尔定理上一章已经讲了集合的紧性，这一章主要是为了延续上章的内容——找出紧集。海涅-博雷尔定理指的是：$R^k$的子集是紧集当且仅当它既是闭集又是有界集。为此，我们利用的主要是关于该定理的反向关系。定理只描述$R^k$的结论，但有许多其他的度量空间都并非有该结论。例如$(-\pi,\pi)\cap Q$在$Q$中是闭集，且有界，但不是紧集。 但对于反例，不妨考虑无穷维的欧几里得空间$R^\">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-02-10T14:38:55.708Z">
+<meta property="article:modified_time" content="2023-07-29T13:39:23.502Z">
+<meta property="article:author" content="Marcus">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-bqj" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/10/bqj/" class="article-date">
+  <time class="dt-published" datetime="2026-02-10T14:38:55.708Z" itemprop="datePublished">2026-02-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/analyze/">analyze</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      海涅-博雷尔定理
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="海涅-博雷尔定理"><a href="#海涅-博雷尔定理" class="headerlink" title="海涅-博雷尔定理"></a>海涅-博雷尔定理</h1><p>上一章已经讲了集合的紧性，这一章主要是为了延续上章的内容——找出紧集。海涅-博雷尔定理指的是：$R^k$的子集是紧集当且仅当它既是闭集又是有界集。为此，我们利用的主要是关于该定理的反向关系。定理只描述$R^k$的结论，但有许多其他的度量空间都并非有该结论。例如$(-\pi,\pi)\cap Q$在$Q$中是闭集，且有界，但不是紧集。</p>
+<p>但对于反例，不妨考虑无穷维的欧几里得空间$R^\infty$，有限维的描述就是我们的海涅-博雷尔定理。对于无限维，我们已经说了要非常的小心，在无穷维中有许多奇怪的性质，海涅-博雷尔定理在上面就出问题了。简单描述一下：考虑一个无穷维的单位闭球，利用上一节的”紧集的开子集具有至少一个极限点”，但该闭球不存在极限点，闭球中的序列每个距离都为$\sqrt{2}$，因此不收敛。所以不是闭集。</p>
+<h2 id="闭区间套性质"><a href="#闭区间套性质" class="headerlink" title="闭区间套性质"></a>闭区间套性质</h2><p><strong>设${I_n}$是$R$中的一族闭区间，且对任意$n\in N$都有$I_n\supset I_{n+1}$，那么$\bigcap^\infty_{n&#x3D;1} I_n \neq\emptyset$</strong></p>
+<p>在上一章紧集中我们已经提到，如果度量空间$X$中的一族紧集中任意有限个集和的交非空，那么其全部的交非空。我们需要的就是这个性质，这个性质告诉我们这个交至少包含着一个元素。</p>
+<p>证明：<br>我们设每个区间形如$I &#x3D; [a_n,b_n]$，我们想找到一个数$x$，使得对所有的$n\in N$都有$x\in [a_n,b_n]$。<br>如果满足性质，我们大概知道，$\bigcap^\infty_{n&#x3D;1}I_n\supset {x}$，为此，$x$是全体$a_n$的一个上界，且是$b_n$的一个下界。因为对于任意$n\in N$都有$x\geq a_n$和$x\leq b_n$。</p>
+<p>现在，构造集合$E &#x3D; {a_n|n\in N}$，我们想知道如果定理不成立的结果是什么样的，如果存在$n,m\in N$使得$a_n &gt; b_m$，那么就存在矛盾，有$I_n\cap I_m &#x3D; \emptyset$不存在包含的关系了，这与我们的定理矛盾。为此$E$只能是$R$的一个具有上界的非空子集，且由实数的最小上界性可知其上界是$x$。</p>
+<p>因为$x$为$E$的上界，则对于任意$n\in N$有$x\leq a_n$，此外，由于$b_n$都是$E$的上界，那么$x\leq b_n$，所以$x\in [a_n,b_n]$，这说明无限个存在包含关系的集合的交一定是非空的。至少有一个元素。</p>
+<h2 id="k维格子"><a href="#k维格子" class="headerlink" title="k维格子"></a>k维格子</h2><p><strong>对于$1$到$k$之间的每个$j$，均有$a_j &lt;b_j$那么向量集</strong></p>
+<center>
+
+<p>${x &#x3D; (x_1,\cdots x_n)| x_j\in[a_j,b_j], \forall 1\leq j \leq k}$</p>
+</center>
+
+<p><strong>称为$k$维格子</strong></p>
+<p>令$k&#x3D;1$，那么就是一个闭区间，$k&#x3D;2$是一个矩形。$k&#x3D;3$为一个立方体。</p>
+<h2 id="k维格子的嵌套性质"><a href="#k维格子的嵌套性质" class="headerlink" title="k维格子的嵌套性质"></a>k维格子的嵌套性质</h2><p><strong>设${I_n}$为$R^k$中的一族$k$维格子，并且对于任意$n\in N$均有$I_n\supset I_{n+1}$，那么$\bigcap^\infty_{n&#x3D;1}I_n \neq \emptyset$</strong></p>
+<p>证明：这里需要用到我们的闭区间套，看起来很简单，只需要在每个$K$维格子的每个维度上使用闭区间套就行。这里的难点实际上就是对维数的讨论和讨论什么$k$维格子。</p>
+<p>我们设一个$k$维格子$I_n$满足下列条件的点$x &#x3D; (x_1,x_2,\cdots,x_k)$的集合。对于$1$到$k$的每个维数$j$均有$a_{n_j}\leq x_j\leq b_{n_j}$，那么$I_n$就是第$j$个坐标落在闭区间$I_{n_j} &#x3D; [a_{n_j},b_{n_j}]$上向量的集合。由于每个$k$维格子都包含在前一个$k$维格子中，即对于任意的$n\in N$，和介于$1$到$k$中的每个维数$j$均有$I_{n_j}\subset I_{(n+1)_j}$。</p>
+<p>现在我们想利用闭区间套性质<br>，那么就是在证明存在一个属于所有$I_n$的向量$x &#x3D; (x_1,x_2,\cdots,x_k)$，$n\in N$均有$x_1\in I_{n_1}$对于$x_2 \in I_{n_2},\cdots x_k\in I_{n_k}$。</p>
+<p>现在由定理$1.1$可知交集$\cap^\infty_{n&#x3D;1}I_{n_1}\neq \emptyset$，我们称为$x^*<em>1$，类似的，对$1$到$k$使用定理可得$x^*<em>2\in \cap^\infty</em>{n&#x3D;1}I</em>{n_2}$，那么就有向量$x^* &#x3D; (x_1^*,x_2^*,\cdots,x^*<em>n)\in \cap^\infty</em>{n&#x3D;1}I_n$，即$x$存在每个$n\in N$的区间内。证毕</p>
+<p>上述定理其实也蕴含了，$k$维格子是紧的。但可惜的是，我们并不能直接反推紧集的定理。</p>
+<h2 id="k维格子是紧集"><a href="#k维格子是紧集" class="headerlink" title="k维格子是紧集"></a>k维格子是紧集</h2><p><strong>对于任意$k\in N$，每个$k$维格子都是紧集。</strong></p>
+<p>证明稍微麻烦一点，我们要做的事情比较多</p>
+<p>我们假设$k$维格子$I$不是紧集，那么就存在某个开覆盖${G_a}$不存在有限子覆盖<a href="%E6%B3%A8%E6%84%8F%E7%9A%84%E6%98%AF%EF%BC%9A%E8%BF%99%E9%87%8C%E4%B8%8D%E8%83%BD%E5%88%A9%E7%94%A8%E7%B4%A7%E9%9B%86%E6%98%AF%E9%97%AD%E9%9B%86%E7%9A%84%E5%AE%9A%E7%90%86%E7%9B%B4%E6%8E%A5%E8%AF%81%E6%98%8E%EF%BC%8C%E5%9B%A0%E4%B8%BA%E6%88%91%E4%BB%AC%E8%BF%98%E4%B8%8D%E7%9F%A5%E9%81%93%E6%A0%BC%E5%AD%90%E6%98%AF%E5%90%A6%E5%AF%B9%E4%BB%BB%E6%84%8F%E5%BC%80%E8%A6%86%E7%9B%96%E5%AD%98%E5%9C%A8%E6%9C%89%E9%99%90%E5%AD%90%E8%A6%86%E7%9B%96%E3%80%82%E8%80%8C%E5%85%B3%E4%BA%8E%E7%B4%A7%E9%9B%86%E6%98%AF%E9%97%AD%E9%9B%86%E7%9A%84%E8%AF%81%E6%98%8E%E4%BE%9D%E8%B5%96%E4%BA%8E%E5%AD%98%E5%9C%A8%E6%9C%89%E9%99%90%E5%AD%90%E8%A6%86%E7%9B%96%E7%9A%84%E4%BA%8B%E5%AE%9E%E3%80%82">^1</a>,把$I$分成更小的$k$维格子，同样的，细分到最后存在一个子格子不背有限覆盖。从而得到一族嵌套的子格子，每个都不能被有限覆盖。</p>
+<p>由定理$1.3$可知。每个交集都至少存在一个元素$x^*$。既然$x^*\in I$，那么${G_a}$中存在包含$x^*$的覆盖$G_1$，而$G_1$ 为开集，所以$x^*$的每个邻域都被包含在$G_1$内。但是由于$k$维格子都包含每个更小的$k$维格子，所以无论怎么找都可以找到一个覆盖，覆盖住更小的格子，即任意小的格子被包含在$x^*$的邻域内。那么我们就找到了一个$k$维格子被$G_1$覆盖，即存在一个有限子覆盖${G_a}$。与假设矛盾。</p>
+<p>在论述下一步之前，我们还要思考的一个问题就是，格子要多大，那种任意小的格子真的存在吗？<br>由于每个$k$维格子是每个维度上的区间给定，(在二维空间中，我们把$I$分为$2^2 &#x3D;  4$份，三维中为$2^3 &#x3D; 8$份。k维一共有$2^k$个子格子)<br>那么$n$次划分后我们可以知道每个子格子的体积是原来的格子$I$的</p>
+<p>$\left(\frac{1}{2^k}\right)\cdots\left(\frac{1}{2^k}\right) &#x3D; 2^{-nk}$倍。那么$I$多大的计算会比较简单一点，我们考虑对应点之间最短的距离，也就是对角线的长度为多少。也就是说对角线决定格子的大小。那么我们把对角线的两个顶点记作$\alpha&#x3D; (a_1,\cdots,a_n)$和$\beta&#x3D; (b_1,\cdots,b_n)$得到$I$对的角线为</p>
+<center> 
+
+<p>$\delta &#x3D; |b-a| &#x3D; \left(\sum^k_{i&#x3D;1}(b_j-a_j)^2\right)^{1&#x2F;2}$ </center></p>
+<p>那么每个$n$次分割后的子格子对角线长度是$2^{-n}\delta$，这意味着第$n$次分割后$k$维格子任意两点长度都小于等于$2^{-n}\delta$，那么我们第一步的最后一小步实际上就是在证明找到一个小到足够容纳在$G_1$中$x^*$邻域内的子$k$维格子，因此，对于$N_r(x^*)\subset G_1$，若我们可以证明$r &gt; 2^{-n}\delta$，那么$x^*$和第$n$次划分后的子格子的任意一点之间的距离都小于$r$，这意味着我们寻找的任意小格子都包含在$N_r(x^*)$中，从而也一定包含在$G_1$中。为此我们希望$\delta &lt; 2^nr$，有</p>
+<center>
+
+<p>$n &gt; \frac{\ln(\frac{\delta}{r})}{\ln(2)}$</center></p>
+<p>这里$\delta&gt;0 , r&gt;0$，那么有$\ln(\frac{\delta}{r})\in R$，为此由阿基米德性质可知，这样子的$n\in N$存在，所以等式是成立的。也就是说确实是能找到这个子格子有$2^{-n}\delta &lt; r$</p>
+<p>接下来我们论述第二步</p>
+<p>第二步：固定一个维数$k$，我们设$I$为一个$k$维子格子，则有</p>
+<center> 
+
+<p>$I &#x3D; {x &#x3D; (x_1,\cdots,x_n)| a_j\leq x_j\leq b_j,\forall 1\leq j \leq k}$</center></p>
+<p>再令 </p>
+<center> 
+
+<p>$\delta &#x3D; \left(\sum^k_{i&#x3D;1}(b_j-a_j)^2\right)^{1&#x2F;2}$</center></p>
+<p>那么对于任意$x,y\in I$存在$|x-y|\leq \delta$</p>
+<p>我们假设$I$不是紧集，那么选取$I$的一个没有有限子覆盖的开覆盖${G_a}$，分解区间$[a_j,b_j]$有</p>
+<center>
+
+<p>$\left[a_j, \frac{a_j+b_j}{2}\right] \text { 和 }\left[\frac{a_j+b_j}{2}, b_j\right]$</center></p>
+<p>那么按照刚才的分析，我们已经把区间$I$分为$2^k$个子格子了，记作$Q_i$，有$\bigcup^{2^k}_{i&#x3D;1}Q_i &#x3D; I$。其中至少存在一个集合$I_1\in {Q_i|1\leq i\leq 2^k}$不能被${G_a}$覆盖然后我们可以利用格子的性质继续划分$I_1$，$I\subset I_1\subset\cdots\subset I_n\cdots$的k维格子${I_n}$。其中每个$I_n$不能被有限覆盖。</p>
+<p>现在根据定理$1.3$可知一定存在某个$x^*\in I_n,n&#x3D;1,2,\cdots$。此外，又有$x^*\in I$，所以一定存在某个$G_1\in{G_a}$有$x^*\in G_1$。由于$G_1$为开集，那么就有$r&gt;0$使得$N_r(x^*)\subset G_1$，由阿基米德性质，就存在有$n\in N$使得$n&gt;n&gt;\frac{\log \left(\frac{\delta}{r}\right)}{\log (2)}$使得$2^{-n}\delta &lt; r$，对于任意$y\in I_n$存在$|x^*-y|\leq 2^{-n}\delta &lt; r$就有$I_n\subset N_r(x^*) \subset G_1$，可知$I_n$被${G_a}$中有限多个集合覆盖，与假设矛盾，所以$I$为紧集。</p>
+<h2 id="R-k-中的有界集"><a href="#R-k-中的有界集" class="headerlink" title="$R^k$ 中的有界集"></a>$R^k$ 中的有界集</h2><p><strong>如果$R^k$中的子集$E$有界，那么他就包含在某个$k$维格子中</strong></p>
+<p>现在我们有充足的工具描述海涅-博雷尔定理了，不妨回想一下定理是什么，海涅-博雷尔定理告诉我们：在有限维$R^k$中，哪些集合是紧集。</p>
+<p>如果$E$的每个点与点$q\in R^k$的距离小于$M$，那么我们可以以界$M,q$为界构造一个$k$维格子。可以描述为，每个圆都可以内接在一个正方形中。为此我们可以以最大半径的圆构造一个立方体。立方体包含很多的圆</p>
+<p>如果$E$是有界的，那么存在某个$q\in R^k$和$M\in R$使得$E$的每点$p$均有$|p-q|\leq M$，记$p &#x3D; (p_1,p_2,\cdots,p_k)$和$q &#x3D; (q_1,q_2,\cdots,q_k)$。那么有</p>
+<center>
+
+
+<p>$\left(\sum_{j&#x3D;1}^{k}(p_j-q_j)^2\right)^{1&#x2F;2}$</center></p>
+<p>对于每个$1$和$k$之间的$j$，都存在有</p>
+<center>
+
+<p>$(p_j-q_j)^2 \leq \sum^k_{i&#x3D;1}(p_i-q_i)^2 \leq M^2$ </center></p>
+<p>我们可以得到$q_j-M  \leq p_j \leq q_j+M$对每个$p\in E$成立，为此我们只需要以该距离为基础建立一个格子就有</p>
+<center>
+
+<p>$I &#x3D; {x &#x3D; (x_1,\cdots,x_k)| x_j\in[q_j-M , q_j+M],\forall 1\leq j\leq k}$</center></p>
+<p>所以$I$就是一个格子，且$E\subset I$ </p>
+<p>然后，我们来开始描述海涅-博雷尔定理</p>
+<h2 id="海涅-博雷尔定理-1"><a href="#海涅-博雷尔定理-1" class="headerlink" title="海涅-博雷尔定理"></a>海涅-博雷尔定理</h2><p><strong>$R^k$的子集$E$是紧集当且仅当它既是闭集又是有界集。</strong></p>
+<p>在之前讲紧集的时候，我们就是以该定理为出发点找反例的，具体的反例就是无穷维的欧几里得空间中的单位闭球。<br>证明：我们现在只需要用定理就行了</p>
+<p>  如果$E$是紧集，由定理<strong>紧子集是闭集</strong>可知，$E$为$R^k$中的闭集，再由定理<strong>紧集是有界的</strong>。那么$E$就是$R^k$中的有界集。</p>
+<p>反过来</p>
+<p>我们假设$E$为有界闭集，因为$E$有界，那么由定理**$R^k$的子集有界，就会被包含在某个$k$维格子中<strong>可知，$E$在某个格子$I$中，且根据定理</strong>k维格子是紧集<strong>我们就证明了$E\subset I$且$E$是闭集，再由定理</strong>紧子集的闭子集是紧集**就得到了$E$是紧集。为此就证明完定理。</p>
+<h2 id="实紧集中的极限点"><a href="#实紧集中的极限点" class="headerlink" title="实紧集中的极限点"></a>实紧集中的极限点</h2><p><strong>$R^k$的一个子集$E$是紧集，当且仅当$E$的每个无限子集在$E$中都有一个极限点</strong></p>
+<p>分析：为了证明$R^k$的一个子集$E$的条件为$E$的每个无限子集都存在一个极限点。利用最熟悉的方法，既然$E$的每个子集在$E$中存在一个极限点，我们要证明$E$是紧集，利用海涅-博雷尔定理可知，$E$是紧的当且仅当是闭集且有界，那么我们证明其逆否命题：<strong>如果$E$不是有界集，那么$E$的某个无限子集在$E$中无极限点，另外如果$E$不是闭集，那么$E$的某个无限子集是不存在极限点的。</strong></p>
+<p>因为$E$不是有界集（根据紧集的定理可知$E$如果是紧集则是一个闭集。为此我们只能构造它的逆定理为无界集）我们就可以构造一个在$E$中无极限点的无限子集，对于$q&#x3D;0$和$M&#x3D;1,2,3,\cdots$都存在点$x_n\in E$有$|x_n-q|&gt; M$。那么对于每个$n\in N$，均存在$x_n\in E$有$|x_n| &gt; n$，那么$E$是无界的，我们构造其一个子集$S &#x3D; {x_n|n\in \mathbb{N}}$，那么$S\subset E$</p>
+<p>子集有了，现在的问题就是，怎么知道该子集能不能证明不存在极限点。</p>
+<p>对于$S$，$S$是一个无限集，如果其中包含有限多个点${x_1,\cdots,x_n}$，我们取</p>
+<center>
+
+<p>$n &#x3D; \lceil \max{|x_1|,|x_2|,\cdots,|x_n|}\rceil+1$</center></p>
+<p>加一是一个常用的方法，这样子可以保证所有的点都在区间内。那么我们得到$|x_n| &lt; n$，与我们刚才构造的方法矛盾。为此$S$是无限集。</p>
+<p>其次，对于每个$p\in R^k$都不是$S$的极限点，对于给定的任意一个$p\in R^k$，我们设$N\geq |p|$的一个最小自然数，那么对于任意一个大于$N$的自然数$n$，我们只需要有$n\leq N+1$即可。那么有</p>
+<center>
+
+<p>$\begin{aligned}<br>    |x_n-p|\geq&amp; |x_n|-|p|\<br>           &gt;&amp; n-p\<br>           \geq&amp; N+1 -|p|\<br>           \geq&amp; 1 (N\geq |p|)<br>\end{aligned}$</p>
+</center>
+
+<p>那么我们就有两种情况，如果$p\not\in S$，对于任意的$n\in\mathbb{N}$就有$p\neq x_n$，只需要取</p>
+<center>
+
+<p>$r &#x3D; \frac{1}{2}\min{|x_1-p|,|x_2-p|,\cdots,|x_N-p|,1}$</center></p>
+<p>对于任意$n\in\mathbb{N}$，如果$n\leq N$，那么任意$|x_n-p| &gt;r$，我们以$r$为半径构造邻域可知$N_r(p)\cap S &#x3D; \emptyset$，在这种情况下$S$显然没有极限点。</p>
+<p>另外,对于$p\in S$那么就存在$i\leq N$，使得$p&#x3D;x_i$（记住$N\geq |p|$）对于半径$r$，我们做如下选择</p>
+<center>
+
+<p>$r &#x3D; \frac{1}{2}\min{|x_1-p|,|x_2-p|,\cdots,|x_{i-1}-p|,|x_{i+1}-p,\cdots,x_{N-p},1}$</p>
+</center>
+
+<p>我们已经把$x_i&#x3D;p$的点给剔除，现在对于任意$n\in\mathbb{N}$，如果$n\leq N$，那么$|x_n-p| &gt;r$反过来，如果有$n&gt; \mathbb{N}$跟上面一样，因为$n&gt;N$，那么$r$就取$1$。有$|x_n-p|&gt; 1$<br>那么$N_r(p) \cap S &#x3D;{p}$不是一个极限点，因为在该邻域内不包含任何点（除了$p$本身）。</p>
+<p>为此，$p\in R^k$都不是$S$的极限点，又因为$E\subset R^k$，集合$S$在$E$中不存在极限点。</p>
+<p>对于第二个命题，我们首先假设$E$不是闭集，那么$E$存在一个极限点$x_0\in R^k$有$x_0\not\in E$，我们再次构造无限子集$S$，使得$x_0$是其唯一的极限点。这样子$S$在$E$中就没有极限点了。对于任意$r&gt;0$，存在点$x\in E$使得$|x-x_0| &lt;r$，对于每个$n\in\mathbb{N}$就存在某个$x_n\in E$使得$|x_n-x_0| &lt; \frac{1}{n}$，构造$S &#x3D; {x_n | n\in N}$，那么就有$S\subset E$</p>
+<p>同样的，$S$是个无限集，跟上面一样，如果$S$包含有限多个点，那么就存在一个$j$(介于$1,N$)之间，对于任意$n\leq N$使得$|x_j -x_0|&lt;\frac{1}{n}$这意味着$x_j &#x3D; x_0$否则，如果$|x_j-x_0|&gt;\frac{1}{n}$，这意味着存在不属于$E$的点。是个矛盾。</p>
+<p>所以，$x_0$是$S$的极限点，对于任意$r&gt;0$，由阿基米德性质可知，存在一个$n\in \mathbb{N}$，使得$nr &gt; 1$。于是</p>
+<center>
+
+<p>$|x_0-x_n| &lt; \frac{1}{n} &lt; r$</center></p>
+<p>为此至少存在一个$x_n$属于$N_r(x_0)\cap S$</p>
+<p>但，对于任意一个$y\neq x_0$的$y\in R^k$都有 </p>
+<center>
+
+<p>$\begin{aligned}<br>    |x_n-y|\geq&amp; |x_0-y|-|x_n-x_0|\<br>        &gt;&amp; |x_0-y|-\frac{1}{n}\<br>        &gt;&amp;\frac{1}{2}|x_0-y|<br>\end{aligned}$</p>
+</center>
+
+
+<p>这时候，当$r &#x3D; \frac{1}{2}|x_0-y|$的时候，如果有$\frac{1}{n}\leq \frac{1}{2}|x_0-y|$，那么每个$x_n$和$y$的距离至少为$r$，但问题也出来了，我们只能在$S$中找到有限个符合这种性质的点，令</p>
+<center>
+
+<p>$N_r(y)\cap S &#x3D; {x_n|\frac{1}{n}&gt;\frac{1}{2}|x_0-y|}$</center></p>
+<p>为此$S$在$y$的邻域只能是存在有限个点。因此，若$y$是极限点，那么它的邻域应该是包含无穷多个点的，但我们只得到有限个点的结果，所以$y$不可能是$S$的极限点，又因为$y$不是$x_0$，而$S$在$E$中就没有了极限点，为此$y$也不是$E$的极限点。</p>
+<p>因此，对于任意$E\subset R^k$我们得到的三个命题是等价的</p>
+<ol>
+<li><p>$E$是闭集又是有界集</p>
+</li>
+<li><p>$E$是紧集</p>
+</li>
+<li><p>$E$的每个无限子集在$E$中存在一个极限点</p>
+</li>
+</ol>
+<h2 id="魏尔斯特拉斯定理"><a href="#魏尔斯特拉斯定理" class="headerlink" title="魏尔斯特拉斯定理"></a>魏尔斯特拉斯定理</h2><p><strong>如果$R^k$的无限子集有界，那么$E$在$R^k$上存在一个极限点。</strong></p>
+<p>证明：根据定理$1.5$，就存在某个$k$维格子$I$，使得$E\subset I$，再由定理$1.4$可知$I$是一个紧集，所以根据紧集至少存在着在一个极限点可知，$E$在$I$中有一个极限点。又因为$I$是$R^k$的子集，所以$E$在$R^k$中存在一个极限点。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2026/02/10/bqj/" data-id="cmlgqwxsv000d2ohxflxhg7cl" data-title="海涅-博雷尔定理" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/02/10/liner_algebra/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          利用MATLAB计算矩阵
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/02/10/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hello World</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

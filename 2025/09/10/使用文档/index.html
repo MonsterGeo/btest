@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>合作式调度器 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="合作式调度器优缺点：  同一时间只有一个任务运行 容易调试，任务好管理缺点： 任务阻塞可能会饿死其他任务 只适合小型项目  代码解析：句柄数据结构： 12345678910#define SCH_MAX_TASKS 5typedef struct &#123;    uint8_t run; &#x2F;&#x2F;1调度，0挂起    uint16_t TimeCount; &#x2F;&#x2F;时间片周期    uint16_t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="合作式调度器">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="合作式调度器优缺点：  同一时间只有一个任务运行 容易调试，任务好管理缺点： 任务阻塞可能会饿死其他任务 只适合小型项目  代码解析：句柄数据结构： 12345678910#define SCH_MAX_TASKS 5typedef struct &#123;    uint8_t run; &#x2F;&#x2F;1调度，0挂起    uint16_t TimeCount; &#x2F;&#x2F;时间片周期    uint16_t">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-09-10T13:22:29.000Z">
+<meta property="article:modified_time" content="2025-09-10T14:44:50.649Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="Stm32">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-使用文档" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/" class="article-date">
+  <time class="dt-published" datetime="2025-09-10T13:22:29.000Z" itemprop="datePublished">2025-09-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      合作式调度器
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="合作式调度器"><a href="#合作式调度器" class="headerlink" title="合作式调度器"></a>合作式调度器</h2><p>优缺点：</p>
+<ul>
+<li>同一时间只有一个任务运行</li>
+<li>容易调试，任务好管理<br>缺点：</li>
+<li>任务阻塞可能会饿死其他任务</li>
+<li>只适合小型项目</li>
+</ul>
+<h2 id="代码解析："><a href="#代码解析：" class="headerlink" title="代码解析："></a>代码解析：</h2><p>句柄数据结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> SCH_MAX_TASKS 5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> </span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> run; <span class="comment">//1调度，0挂起</span></span><br><span class="line">    <span class="type">uint16_t</span> TimeCount; <span class="comment">//时间片周期</span></span><br><span class="line">    <span class="type">uint16_t</span> TimeRload; <span class="comment">//用于重载时间片</span></span><br><span class="line">    <span class="type">void</span> (*pTaskFunc)(<span class="type">void</span>); <span class="comment">//函数指针，保存任务函数地址</span></span><br><span class="line">&#125; TaskStruct_t;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>调度器：</p>
+<p>调度器本身是一个中断函数，先设定一定的时基，比如100us进一次中断，累计中断次数就知道过了多少时间了。然后判断TimeCount 是否为0，若为0则表示时间到开始运行任务，否则继续递减。TimeRload表示若任务需要隔一段时间运行，则该变量储存这段时间的具体值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SCH_inter</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">uint8_t</span> i = <span class="number">0</span>; i &lt; SCH_MAX_TASKS; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(TaskNum[i].TimeCount &gt; <span class="number">0</span>)  <span class="comment">// 仅处理时间片&gt;0的任务</span></span><br><span class="line">        &#123;</span><br><span class="line">            TaskNum[i].TimeCount--;   <span class="comment">// 先递减</span></span><br><span class="line">            <span class="keyword">if</span>(TaskNum[i].TimeCount == <span class="number">0</span>)  <span class="comment">// 递减后判断是否为0</span></span><br><span class="line">            &#123;</span><br><span class="line">                TaskNum[i].run = <span class="number">1</span>;   <span class="comment">// 置调度标志</span></span><br><span class="line">                <span class="keyword">if</span>(TaskNum[i].TimeRload &gt; <span class="number">0</span>)  <span class="comment">// 周期任务重载</span></span><br><span class="line">                &#123;</span><br><span class="line">                    TaskNum[i].TimeCount = TaskNum[i].TimeRload;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，在while(1)中循环的是管理器，它用来执行任务并准备好下一次的运行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SCH_update</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">uint8_t</span> i=<span class="number">0</span>;i&lt;SCH_MAX_TASKS;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(TaskNum[i].run == <span class="number">1</span>) <span class="comment">//若任务处于调度状态，开始调度</span></span><br><span class="line">        &#123;</span><br><span class="line">            TaskNum[i].run = <span class="number">0</span>; <span class="comment">//清标志位</span></span><br><span class="line">            TaskNum[i].pTaskFunc(); <span class="comment">//运行任务</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>最后是添加任务到消息队列，若对某个i，函数地址为空，则表示队列里面有空闲位置可以加入函数，只需要更改制定数据结构即可：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">SCH_addTask</span><span class="params">(<span class="type">void</span> (*pFunction)(<span class="type">void</span>), <span class="type">uint32_t</span> delay, <span class="type">uint32_t</span> period)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">uint8_t</span> i=<span class="number">0</span>;i&lt;SCH_MAX_TASKS;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(TaskNum[i].pTaskFunc == <span class="number">0</span>) <span class="comment">//找到空闲任务位</span></span><br><span class="line">        &#123;</span><br><span class="line">            TaskNum[i].pTaskFunc = pFunction; <span class="comment">//保存任务函数地址</span></span><br><span class="line">            TaskNum[i].TimeCount = delay; <span class="comment">//设置延时</span></span><br><span class="line">            TaskNum[i].TimeRload = period; <span class="comment">//设置周期</span></span><br><span class="line">            TaskNum[i].run = <span class="number">0</span>; <span class="comment">//清调度标志</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时，我把printf函数重定向到串口，只需要初始化（我给的是PA9和PA10）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//在uart.c文件中键入</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">fputc</span><span class="params">(<span class="type">int</span> ch, FILE *f)</span></span><br><span class="line">&#123;</span><br><span class="line">    send_data((<span class="type">uint8_t</span>)ch);</span><br><span class="line">    <span class="keyword">return</span> ch;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>即可在使用printf函数的时候自动输出到端口。</p>
+<h2 id="简单运用"><a href="#简单运用" class="headerlink" title="简单运用"></a>简单运用</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;stm32f10x.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timer.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;scheduler.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;uart.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">test_task</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">task_2s</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">	uart_init();</span><br><span class="line">	Timer_Init();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;A\r\n&quot;</span>);</span><br><span class="line">	SCH_addTask(test_task,<span class="number">10000</span>,<span class="number">10000</span>); <span class="comment">//1s</span></span><br><span class="line">	SCH_addTask(task_2s,<span class="number">20000</span>,<span class="number">20000</span>); <span class="comment">//2s</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">		SCH_update();</span><br><span class="line">	&#125;;		</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">TIM2_IRQHandler</span><span class="params">()</span> <span class="comment">//调度器,100us</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span>(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) <span class="comment">// 检查TIM2更新中断发生</span></span><br><span class="line">	&#123;</span><br><span class="line">		TIM_ClearITPendingBit(TIM2, TIM_IT_Update); <span class="comment">// 清除中断标志</span></span><br><span class="line">		<span class="comment">// 在这里添加你的中断处理代码</span></span><br><span class="line">		SCH_inter(); <span class="comment">//调用调度器</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">test_task</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;this is a time of 1s test task\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">task_2s</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;this is a time of 2s test task\r\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/" data-id="cmlgqwxtb000x2ohx8qtqhpuf" data-title="合作式调度器" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/02/10/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/08/31/ocrs/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">边缘识别</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

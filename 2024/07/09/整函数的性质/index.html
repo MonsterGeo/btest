@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>整函数的性质 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="整函数的柯西积分和泰勒展开若$f$是整的且   $\begin{aligned}    g(z) &#x3D;\begin{cases}     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\     f’(a)&amp; z &#x3D; a    \end{cases}\end{aligned}$   那么积分定理和闭曲线定理不仅仅适用于函数$f$，对$g$也是适用的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整函数的性质">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="整函数的柯西积分和泰勒展开若$f$是整的且   $\begin{aligned}    g(z) &#x3D;\begin{cases}     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\     f’(a)&amp; z &#x3D; a    \end{cases}\end{aligned}$   那么积分定理和闭曲线定理不仅仅适用于函数$f$，对$g$也是适用的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp3810055316004568%5D%20%0A%5Cdraw%20%20%20(100%2C104)%20--%20(447%2C104)%20--%20(447%2C404)%20--%20(100%2C404)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada1831134870992659%5D%20%0A%5Cdraw%20%20%20%20(100%2C160)%20--%20(447%2C160)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4680163136944939%5D%20%0A%5Cdraw%20%20%20%20(101%2C211)%20--%20(448%2C211)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada31702856471572294%5D%20%0A%5Cdraw%20%20%20%20(176%2C104)%20--%20(176%2C403)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada503465088473952%5D%20%0A%5Cdraw%20%20%20%20(216%2C105)%20--%20(216%2C401)%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp23496772462402982%5D%20%0A%5Cdraw%20%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cfill%20opacity%3D1%20%5D%20(182%2C176)%20..%20controls%20(182%2C174.34)%20and%20(183.34%2C173)%20..%20(185%2C173)%20..%20controls%20(186.66%2C173)%20and%20(188%2C174.34)%20..%20(188%2C176)%20..%20controls%20(188%2C177.66)%20and%20(186.66%2C179)%20..%20(185%2C179)%20..%20controls%20(183.34%2C179)%20and%20(182%2C177.66)%20..%20(182%2C176)%20--%20cycle%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(190%2C179.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24a%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+<meta property="article:published_time" content="2024-07-09T13:28:58.000Z">
+<meta property="article:modified_time" content="2024-07-10T15:39:24.637Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="complex_analysis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp3810055316004568%5D%20%0A%5Cdraw%20%20%20(100%2C104)%20--%20(447%2C104)%20--%20(447%2C404)%20--%20(100%2C404)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada1831134870992659%5D%20%0A%5Cdraw%20%20%20%20(100%2C160)%20--%20(447%2C160)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4680163136944939%5D%20%0A%5Cdraw%20%20%20%20(101%2C211)%20--%20(448%2C211)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada31702856471572294%5D%20%0A%5Cdraw%20%20%20%20(176%2C104)%20--%20(176%2C403)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada503465088473952%5D%20%0A%5Cdraw%20%20%20%20(216%2C105)%20--%20(216%2C401)%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp23496772462402982%5D%20%0A%5Cdraw%20%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cfill%20opacity%3D1%20%5D%20(182%2C176)%20..%20controls%20(182%2C174.34)%20and%20(183.34%2C173)%20..%20(185%2C173)%20..%20controls%20(186.66%2C173)%20and%20(188%2C174.34)%20..%20(188%2C176)%20..%20controls%20(188%2C177.66)%20and%20(186.66%2C179)%20..%20(185%2C179)%20..%20controls%20(183.34%2C179)%20and%20(182%2C177.66)%20..%20(182%2C176)%20--%20cycle%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(190%2C179.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24a%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-整函数的性质" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/" class="article-date">
+  <time class="dt-published" datetime="2024-07-09T13:28:58.000Z" itemprop="datePublished">2024-07-09</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      整函数的性质
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="整函数的柯西积分和泰勒展开"><a href="#整函数的柯西积分和泰勒展开" class="headerlink" title="整函数的柯西积分和泰勒展开"></a>整函数的柯西积分和泰勒展开</h4><p>若$f$是整的且</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z) &#x3D;\begin{cases}<br>     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\<br>     f’(a)&amp; z &#x3D; a<br>    \end{cases}<br>\end{aligned}$</p>
+</center>
+
+<p>那么积分定理和闭曲线定理不仅仅适用于函数$f$，对$g$也是适用的。</p>
+<p>这个证明要从矩形定理开始</p>
+<p>####矩形定理（二）</p>
+<p>若$f$是整的且</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z) &#x3D;\begin{cases}<br>     \frac{f(z)-f(a)}{z-a} &amp; z\neq a\<br>     f’(a) &amp;z &#x3D; a<br>    \end{cases}<br>\end{aligned}$</p>
+</center>
+
+<p>则$\int_\Gamma g(z)dz &#x3D; 0$，其中$\Gamma$是矩形$R$的边界。</p>
+<p><strong>证明：</strong> 我们考虑三种情况</p>
+<ul>
+<li>1、$a\in R$的外部</li>
+</ul>
+<p>第一种情况下，$g$在整个$R$上都是可解析的，那么这部分实际上就是我们之前学过的矩形定理。</p>
+<ul>
+<li>2、$a\in \Gamma$<br>我们将$R$分成6个子矩形</li>
+</ul>
+<center>
+
+<p>$\begin{aligned}<br>    \int_\Gamma &#x3D; \sum^6_{k&#x3D;1}\int_{\Gamma_k}g<br>\end{aligned}$</p>
+</center>
+
+<center>
+
+<p>&lt;img style&#x3D;”border-radius: 0.3125em;<br>                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);<br>                border: 10px solid transparent;<br>                margin-bottom: 20px”<br>        src&#x3D;”<a target="_blank" rel="noopener" href="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp41174460398637125%5D%20%0A%5Cdraw%20%20%20(158%2C101)%20--%20(581%2C101)%20--%20(581%2C353)%20--%20(158%2C353)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada03573383708985767%5D%20%0A%5Cdraw%20%20%20%20(158%2C213)%20--%20(580%2C213)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9084181294778653%5D%20%0A%5Cdraw%20%20%20%20(160%2C257)%20--%20(582%2C257)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada310245403851537%5D%20%0A%5Cdraw%20%20%20%20(478%2C103)%20--%20(478%2C353)%20%3B%0A%5Cdraw%20%20%20(254%2C112)%20--%20(233%2C101.5)%20--%20(254%2C91)%20%3B%0A%5Cdraw%20%20%20(548%2C112)%20--%20(527%2C101.5)%20--%20(548%2C91)%20%3B%0A%5Cdraw%20%20%20(359%2C223)%20--%20(338%2C212.5)%20--%20(359%2C202)%20%3B%0A%5Cdraw%20%20%20(362%2C267)%20--%20(341%2C256.5)%20--%20(362%2C246)%20%3B%0A%5Cdraw%20%20%20(551%2C223)%20--%20(530%2C212.5)%20--%20(551%2C202)%20%3B%0A%5Cdraw%20%20%20(551%2C267)%20--%20(530%2C256.5)%20--%20(551%2C246)%20%3B%0A%5Cdraw%20%20%20(226%2C363)%20--%20(247%2C352.5)%20--%20(226%2C342)%20%3B%0A%5Cdraw%20%20%20(534%2C363)%20--%20(555%2C352.5)%20--%20(534%2C342)%20%3B%0A%5Cdraw%20%20%20(277%2C223)%20--%20(298%2C212.5)%20--%20(277%2C202)%20%3B%0A%5Cdraw%20%20%20(277%2C268)%20--%20(298%2C257.5)%20--%20(277%2C247)%20%3B%0A%5Cdraw%20%20%20(500%2C224)%20--%20(521%2C213.5)%20--%20(500%2C203)%20%3B%0A%5Cdraw%20%20%20(500%2C267)%20--%20(521%2C256.5)%20--%20(500%2C246)%20%3B%0A%5Cdraw%20%20%20(572%2C156)%20--%20(581.5%2C137)%20--%20(591%2C156)%20%3B%0A%5Cdraw%20%20%20(572%2C249)%20--%20(581.5%2C230)%20--%20(591%2C249)%20%3B%0A%5Cdraw%20%20%20(571%2C326)%20--%20(580.5%2C307)%20--%20(590%2C326)%20%3B%0A%5Cdraw%20%20%20(468%2C156)%20--%20(477.5%2C137)%20--%20(487%2C156)%20%3B%0A%5Cdraw%20%20%20(469%2C244)%20--%20(478.5%2C225)%20--%20(488%2C244)%20%3B%0A%5Cdraw%20%20%20(469%2C323)%20--%20(478.5%2C304)%20--%20(488%2C323)%20%3B%0A%5Cdraw%20%20%20(167%2C120)%20--%20(157.5%2C139)%20--%20(148%2C120)%20%3B%0A%5Cdraw%20%20%20(168%2C224)%20--%20(158.5%2C243)%20--%20(149%2C224)%20%3B%0A%5Cdraw%20%20%20(167%2C297)%20--%20(157.5%2C316)%20--%20(148%2C297)%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(336%2C76.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5CGamma%20%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D">https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp41174460398637125%5D%20%0A%5Cdraw%20%20%20(158%2C101)%20--%20(581%2C101)%20--%20(581%2C353)%20--%20(158%2C353)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada03573383708985767%5D%20%0A%5Cdraw%20%20%20%20(158%2C213)%20--%20(580%2C213)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada9084181294778653%5D%20%0A%5Cdraw%20%20%20%20(160%2C257)%20--%20(582%2C257)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada310245403851537%5D%20%0A%5Cdraw%20%20%20%20(478%2C103)%20--%20(478%2C353)%20%3B%0A%5Cdraw%20%20%20(254%2C112)%20--%20(233%2C101.5)%20--%20(254%2C91)%20%3B%0A%5Cdraw%20%20%20(548%2C112)%20--%20(527%2C101.5)%20--%20(548%2C91)%20%3B%0A%5Cdraw%20%20%20(359%2C223)%20--%20(338%2C212.5)%20--%20(359%2C202)%20%3B%0A%5Cdraw%20%20%20(362%2C267)%20--%20(341%2C256.5)%20--%20(362%2C246)%20%3B%0A%5Cdraw%20%20%20(551%2C223)%20--%20(530%2C212.5)%20--%20(551%2C202)%20%3B%0A%5Cdraw%20%20%20(551%2C267)%20--%20(530%2C256.5)%20--%20(551%2C246)%20%3B%0A%5Cdraw%20%20%20(226%2C363)%20--%20(247%2C352.5)%20--%20(226%2C342)%20%3B%0A%5Cdraw%20%20%20(534%2C363)%20--%20(555%2C352.5)%20--%20(534%2C342)%20%3B%0A%5Cdraw%20%20%20(277%2C223)%20--%20(298%2C212.5)%20--%20(277%2C202)%20%3B%0A%5Cdraw%20%20%20(277%2C268)%20--%20(298%2C257.5)%20--%20(277%2C247)%20%3B%0A%5Cdraw%20%20%20(500%2C224)%20--%20(521%2C213.5)%20--%20(500%2C203)%20%3B%0A%5Cdraw%20%20%20(500%2C267)%20--%20(521%2C256.5)%20--%20(500%2C246)%20%3B%0A%5Cdraw%20%20%20(572%2C156)%20--%20(581.5%2C137)%20--%20(591%2C156)%20%3B%0A%5Cdraw%20%20%20(572%2C249)%20--%20(581.5%2C230)%20--%20(591%2C249)%20%3B%0A%5Cdraw%20%20%20(571%2C326)%20--%20(580.5%2C307)%20--%20(590%2C326)%20%3B%0A%5Cdraw%20%20%20(468%2C156)%20--%20(477.5%2C137)%20--%20(487%2C156)%20%3B%0A%5Cdraw%20%20%20(469%2C244)%20--%20(478.5%2C225)%20--%20(488%2C244)%20%3B%0A%5Cdraw%20%20%20(469%2C323)%20--%20(478.5%2C304)%20--%20(488%2C323)%20%3B%0A%5Cdraw%20%20%20(167%2C120)%20--%20(157.5%2C139)%20--%20(148%2C120)%20%3B%0A%5Cdraw%20%20%20(168%2C224)%20--%20(158.5%2C243)%20--%20(149%2C224)%20%3B%0A%5Cdraw%20%20%20(167%2C297)%20--%20(157.5%2C316)%20--%20(148%2C297)%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(336%2C76.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24%5CGamma%20%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D</a>“</p>
+<blockquote>
+</blockquote>
+</center>
+
+<p>其中每个$\Gamma_k$,$1\leq k\leq 6$表示子矩阵的边界，由于$g$在紧定义域中连续，对某个常数$M$，若我们取一个包含点$a$的矩形的边界，其长度小于$\epsilon$，那么我们利用$M-L$方程，就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{\Gamma_1} g \ll M\epsilon<br>\end{aligned}$</p>
+</center>
+
+
+<p>然而</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{\Gamma_k} g&#x3D;0, k\neq 1<br>\end{aligned}$</p>
+</center>
+
+<p>和情况一相同。</p>
+<p>所以</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_\Gamma g \ll M\epsilon<br>\end{aligned}$</p>
+</center>
+
+<p>利用$\epsilon&gt;0$的任意性就证明完毕了。</p>
+<ul>
+<li>3、$a\in R$的内部</li>
+</ul>
+<p>若$a\in R$的内部，</p>
+<center>
+
+<p><img style="border-radius: 0.3125em;
+                box-shadow: 0 2px 4px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08);
+                border: 10px solid transparent;
+                margin-bottom: 20px"
+        src="https://i.upmath.me/svg/%5Ctikzset%7Bevery%20picture%2F.style%3D%7Bline%20width%3D0.75pt%7D%7D%20%25set%20default%20line%20width%20to%200.75pt%20%20%20%20%20%20%20%20%0A%0A%5Cbegin%7Btikzpicture%7D%5Bx%3D0.75pt%2Cy%3D0.75pt%2Cyscale%3D-1%2Cxscale%3D1%5D%0A%25uncomment%20if%20require%3A%20%5Cpath%20(0%2C941)%3B%20%25set%20diagram%20left%20start%20at%200%2C%20and%20has%20height%20of%20941%0A%0A%25Shape%3A%20Rectangle%20%5Bid%3Adp3810055316004568%5D%20%0A%5Cdraw%20%20%20(100%2C104)%20--%20(447%2C104)%20--%20(447%2C404)%20--%20(100%2C404)%20--%20cycle%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada1831134870992659%5D%20%0A%5Cdraw%20%20%20%20(100%2C160)%20--%20(447%2C160)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada4680163136944939%5D%20%0A%5Cdraw%20%20%20%20(101%2C211)%20--%20(448%2C211)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada31702856471572294%5D%20%0A%5Cdraw%20%20%20%20(176%2C104)%20--%20(176%2C403)%20%3B%0A%25Straight%20Lines%20%5Bid%3Ada503465088473952%5D%20%0A%5Cdraw%20%20%20%20(216%2C105)%20--%20(216%2C401)%20%3B%0A%25Shape%3A%20Circle%20%5Bid%3Adp23496772462402982%5D%20%0A%5Cdraw%20%20%5Bfill%3D%7Brgb%2C%20255%3Ared%2C%200%3B%20green%2C%200%3B%20blue%2C%200%20%7D%20%20%2Cfill%20opacity%3D1%20%5D%20(182%2C176)%20..%20controls%20(182%2C174.34)%20and%20(183.34%2C173)%20..%20(185%2C173)%20..%20controls%20(186.66%2C173)%20and%20(188%2C174.34)%20..%20(188%2C176)%20..%20controls%20(188%2C177.66)%20and%20(186.66%2C179)%20..%20(185%2C179)%20..%20controls%20(183.34%2C179)%20and%20(182%2C177.66)%20..%20(182%2C176)%20--%20cycle%20%3B%0A%0A%25%20Text%20Node%0A%5Cdraw%20(190%2C179.4)%20node%20%5Banchor%3Dnorth%20west%5D%5Binner%20sep%3D0.75pt%5D%20%20%20%20%7B%24a%24%7D%3B%0A%0A%0A%5Cend%7Btikzpicture%7D"></p>
+</center>
+
+<p>由于$\int_{\Gamma_k} g &#x3D; 0$，结合前两种情况，我们知道做线性近似后，积分只剩下一个误差$\int_{\Gamma_n}\epsilon_n (z-a)dz$，其中$\epsilon&gt;0$是任意的，所以就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{\Gamma}g &#x3D; \sum^9_{k&#x3D;1}\int_{\Gamma_k}g &#x3D;0<br>\end{aligned}$</p>
+</center>
+
+<h4 id="推论"><a href="#推论" class="headerlink" title="推论"></a>推论</h4><p>所以，若$g$是连续的，则闭曲线定理同样适用于$g$。</p>
+<h4 id="柯西积分方程"><a href="#柯西积分方程" class="headerlink" title="柯西积分方程"></a>柯西积分方程</h4><p>设$f$是整的，$a$是一个复数且$C$是曲线满足</p>
+<center>
+
+<p>$\begin{aligned}<br>    C:Re^{i\theta},<del>&amp; 0\leq \theta\leq 2\pi ,</del> 使得R&gt; \mid a\mid<br>\end{aligned}$</p>
+</center>
+
+<p>则</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(a) &#x3D; \frac{1}{2\pi i}\int_C\frac{f(z)}{z-a}dz<br>\end{aligned}$</p>
+</center>
+
+<p><strong>证明：</strong></p>
+<p>利用闭曲线定理，设$g(x)$是上述的分段函数，$C$是曲线，那么就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_C \frac{f(z)-f(a)}{z-a}dz &#x3D; 0<br>\end{aligned}$</p>
+</center>
+
+<p>那么就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(a) \int_C \frac{dz}{z-a} &#x3D; \int_C\frac{f(z)}{z-a}dz<br>\end{aligned}$</p>
+</center>
+
+<p>为了完成这个证明，我们必须来证明$\int_C \frac{dz}{z-a} &#x3D; 2\pi i$</p>
+<p>为此我们引入引理：</p>
+<h4 id="引理"><a href="#引理" class="headerlink" title="引理"></a>引理</h4><p>设$a$是被圆$C_p$包含的点，因此$C_p$存在圆心$\alpha$，半径$\rho$和对$\mid a-\alpha\mid &lt; \rho$，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{C_p}\frac{dz}{z-a} &#x3D; 2\pi i<br>\end{aligned}$</p>
+</center>
+
+<p><strong>证明：</strong></p>
+<p>做极坐标变换，那么</p>
+<center>
+
+<p>$\begin{aligned}<br>    &amp;\int_{C_p}\frac{dz}{z-\alpha}  &#x3D; \int_{C_p}\frac{dt}{t} &amp;&amp; t &#x3D; z-\alpha\<br>    &amp;\int_{C_p}\frac{dt}{t} &#x3D; \int^{2\pi}_0 \frac{i\rho e^{i\theta}}{\rho e^{i\theta}}d\theta &amp;&amp; t &#x3D; \rho e^{i\theta},dt  &#x3D; i\rho e^{i\theta}\<br>    &#x3D;&amp; 2\pi i<br>\end{aligned}$</p>
+</center>
+
+<p>我们可以推导出</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{C_\rho}\frac{dz}{(z-\alpha)^{k+1}}&#x3D;0\quad\text{for}~~k&#x3D;1,2,3,\dots.<br>\end{aligned}$</p>
+</center>
+
+<p>注意</p>
+<center>
+
+<p>$\begin{aligned}<br>     \int_{C_\rho}\frac{dz}{(z-\alpha)^{k+1}} &#x3D; \frac{i}{\rho^k}\int_0^{2\pi} e^{-ik\theta}d\theta &#x3D;0<br>\end{aligned}$</p>
+</center>
+
+<p>并且，$1&#x2F;(z-\alpha)^{k+1}$实际上是$-1&#x2F;k(z-\alpha)^k$的解析函数，那么我们重新记</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}<br>\frac{1}{z-a}&amp; &#x3D;\frac{1}{(z-\alpha)-(a-\alpha)}&#x3D;\frac{1}{(z-\alpha)[1-(a-\alpha)&#x2F;(z-\alpha)]} \<br>&amp;&#x3D;\frac{1}{(z-\alpha)}\cdot\frac{1}{1-\omega}<br>\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>其中</p>
+<center>
+
+<p>$\begin{aligned}<br>    \omega &#x3D; \frac{a-\alpha}{z-\alpha} 在整个C_p中，模\frac{\mid a-\alpha\mid }{\rho} &lt; 1是固定的。<br>\end{aligned}$</p>
+</center>
+
+<p>现在我们将函数做展开，就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \frac{1}{z-a}&amp; &#x3D;\frac{1}{z-\alpha}\left[1+\frac{a-\alpha}{z-\alpha}+\frac{(a-\alpha)^{2}}{(z-\alpha)^{2}}+\cdots\right] \<br>&amp;&#x3D;\frac{1}{z-\alpha}+\frac{a-\alpha}{(z-\alpha)^{2}}+\frac{(a-\alpha)^{2}}{(z-\alpha)^{3}}+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>然后再两边同时积分，就有</p>
+<center>
+
+<p>$\begin{aligned}<br>    \int_{C_{\rho}}\frac{1}{z-a} dz&#x3D;\int_{C_{\rho}}\frac{1}{z-\alpha} dz+\sum_{k&#x3D;1}^{\infty}\int_{C_{\rho}}\frac{(a-\alpha)^{k}}{(z-\alpha)^{k+1}} dz&#x3D;2\pi i.<br>\end{aligned}$</p>
+</center>
+
+
+<p>该线性化后得到的级数我们已经证明了对每个$k&#x3D;1,2,\cdots$，结果都是0，带入就把整个柯西积分方程证明完毕了。</p>
+<h4 id="整函数的泰勒展开"><a href="#整函数的泰勒展开" class="headerlink" title="整函数的泰勒展开"></a>整函数的泰勒展开</h4><p>若$f$是整的，则它可以表示为幂级数的形式，实际上$f^{(k)}(0)$存在对每个$k&#x3D;1,2,\cdots,$和</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z)&#x3D;\sum_{k&#x3D;0}^\infty\frac{f^{(k)}(0)}{k!}z^k<br>\end{aligned}$</p>
+</center>
+
+<p>对所有$z$成立。</p>
+<p><strong>证明：</strong></p>
+<p>我们设$a\neq 0$，$R &#x3D; \mid a\mid +1$且令$C$是由$\mid \omega\mid &#x3D; R$决定的圆，由柯西积分方程我们有</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z)&#x3D;\frac{1}{2\pi i}\int_{C}\frac{f(\omega)}{w-z}d\omega<br>\end{aligned}$</p>
+</center>
+
+<p>对所有$z \ll a$</p>
+<p>那么我们做点变换</p>
+<p>令</p>
+<center>
+
+<p>$\begin{aligned}<br>\frac{1}{\omega-z}&#x3D;\frac{1}{\omega\left(1-\frac{z}{\omega}\right)}&#x3D;\frac{1}{\omega}+\frac{z}{\omega^{2}}+\frac{z^{2}}{\omega^{3}}+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>然后两边做柯西积分，</p>
+<center>
+
+<p>$\begin{aligned}<br>    \begin{aligned}<br>f(z)&amp; &#x3D;\frac{1}{2\pi i}\int_{C}f(\omega)\left[\frac{1}{\omega}+\frac{z}{\omega^{2}}+\frac{z^{2}}{\omega^{3}}+\cdots\right]d\omega  \<br>&amp;&#x3D;\frac{1}{2\pi i}\int_{C}\frac{f(\omega)}{\omega}d\omega+\left(\frac{1}{2\pi i}\int_{C}\frac{f(\omega)}{\omega^{2}}d\omega\right)z+\left(\frac{1}{2\pi i}\int_{C}\frac{f(\omega)}{\omega^{3}}d\omega\right)z^{2}+\cdots \<br>&amp;&#x3D;\sum_{k&#x3D;0}^{\infty}C_{k}z^{k}<br>\end{aligned}<br>\end{aligned}$</p>
+</center>
+
+<p>其中</p>
+<center>
+
+<p>$\begin{aligned}<br>    C_k &#x3D; \frac{1}{2\pi i}\int_C \frac{f(\omega)}{\omega^{k+1}}d\omega<br>\end{aligned}$</p>
+</center>
+
+
+<p>定理的第一部分完成得差不多了，但这里有一个问题，边界$C$以及幂级数的系数取决与$R$必须选择大于$\mid a\mid $的才能保证幂级数对$\frac{1}{(\omega-z)}$收敛。注意得满足$\mid z&#x2F;\omega\mid &lt; 1 $</p>
+<p>另一方面，我们设$a$是固定的，我们要证明存在系数$C_0(a),\cdots$使得</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z) &#x3D; \sum C_k(a)z^k<br>\end{aligned}$</p>
+</center>
+
+<p>由于系数是存在的，所以我们实际上已经证明完了，级数在半径内收敛就有$0 &lt; L &lt; \infty$，其中$L$是系数的极限。并且对每个$z$，级数最终会收敛到$f(z)$</p>
+<h4 id="推论-1"><a href="#推论-1" class="headerlink" title="推论"></a>推论</h4><p>整函数是无限可微的</p>
+<p><strong>证明：</strong> 由于每个整函数可以写成无穷幂级数的求和，所以它是无限可微的。</p>
+<h4 id="推论-2"><a href="#推论-2" class="headerlink" title="推论"></a>推论</h4><p>若$f$是整的且若$a$是任意复数，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(z)&#x3D;f(a)+f’(a)(z-a)+\frac{f’’(a)}{2!}(z-a)^2+\cdots\quad for <del>all</del> z.<br>\end{aligned}$</p>
+</center>
+
+<p><strong>证明：</strong>考虑$g(\zeta) &#x3D; f(\zeta+a)$也是整的，由泰勒展开，我们有</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(\zeta) &#x3D; g(0)+g’(0)\zeta + \frac{g’’(0)}{2!}\zeta^2+\cdots<br>\end{aligned}$</p>
+</center>
+
+<p>因此</p>
+<center>
+
+<p>$\begin{aligned}<br>    f(\zeta+a)&#x3D;f(a)+f’(a)\zeta+\frac{f’’(a)}{2!} \zeta^2+\cdots.<br>\end{aligned}$</p>
+</center>
+
+<p>做替换$\zeta  &#x3D; z-a$我们就证明完了</p>
+<h4 id="命题"><a href="#命题" class="headerlink" title="命题"></a>命题</h4><p>若$f$是整的且</p>
+<center>
+
+<p>$g(z) &#x3D; \begin{cases}<br>    \frac{f(z)-f(a)}{z-a} &amp; z\neq a\<br>    f’(a) &amp; z&#x3D; a<br>\end{cases}$</p>
+</center>
+
+<p>则$g$是整的</p>
+<p><strong>证明：</strong> 若$z\neq a$，则</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z)&#x3D;f’(a)+\frac{f’’(a)}{2!}(z-a)+\frac{f^{(3)}(a)}{3!}(z-a)^2+\cdots,<br>\end{aligned}$</p>
+</center>
+
+<p>由于$g$在$a$处的值是存在的，且$g$是处处收敛的幂级数，所以$g$是整的。</p>
+<h4 id="推论-3"><a href="#推论-3" class="headerlink" title="推论"></a>推论</h4><p>若$f$是整的且$a_1,\cdots,a_N$是其零点，若$g$被定义为：</p>
+<center>
+
+<p>$\begin{aligned}<br>    g(z)&#x3D;\frac{f(z)}{(z-a_1)(z-a_2)\ldots(z-a_N)} for ~z\neq a_k,<br>\end{aligned}$</p>
+</center>
+
+<p>极限$\lim_{z\to a_k}$对每个$k&#x3D;1,2,\cdots,N$存在且若$g(a_k)$被定义为其极限定义，则$g$是纯的</p>
+<p><strong>证明：</strong> </p>
+<p>令$f_0(z) &#x3D; f(z)$且令</p>
+<center>
+
+<p>$\begin{aligned}<br>    f_k(z)&#x3D;\frac{f_{k-1}(z)-f_{k-1}(a_k)}{z-a_k}&#x3D;\frac{f_{k-1}(z)}{z-a_k},\quad z\neq a_k.<br>\end{aligned}$</p>
+</center>
+
+<p>设$f_{k_1}$是纯的，则当$z\to z_k$的时候存在一个极限，它是$f’<em>k(a</em>{k+1})$，所以若我们定义$z\to a_k$的时候$f_k(a_{k+1})$的极限是这个，那么$g(z)$就是整函数。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2024/07/09/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E6%80%A7%E8%B4%A8/" data-id="cmlgqwxtl001f2ohxhx2e7q8t" data-title="整函数的性质" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2024/07/24/%E5%88%98%E7%BB%B4%E5%B0%94%E5%92%8C%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          刘维尔和代数基本定理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/07/05/%E6%95%B4%E5%87%BD%E6%95%B0%E7%9A%84%E9%97%AD%E6%9B%B2%E7%BA%BF%E5%AE%9A%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">整函数的闭曲线定理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>循环队列 | Marcus&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Ring_Buffer今天讲一种数据结构——循环队列，起初是我在想如何解决Stm32单片机串口粘包&#x2F;拆包的时候想到的，首先讲一下实现的原理 同余循环队列的空间排序基于模运算。我们首先来认识一些同于的定义和基本性质 定义：同余：给定整数$m\geq 0$，若对整数$a,b$满足$m\mid (a-b)$，则称$a,b$模$m$同余，记作   $$a\equiv b \mod m$$   例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="循环队列">
+<meta property="og:url" content="https://monstergeo.github.io/btest/2025/02/12/Ring_buffer/">
+<meta property="og:site_name" content="Marcus&#39;s Blog">
+<meta property="og:description" content="Ring_Buffer今天讲一种数据结构——循环队列，起初是我在想如何解决Stm32单片机串口粘包&#x2F;拆包的时候想到的，首先讲一下实现的原理 同余循环队列的空间排序基于模运算。我们首先来认识一些同于的定义和基本性质 定义：同余：给定整数$m\geq 0$，若对整数$a,b$满足$m\mid (a-b)$，则称$a,b$模$m$同余，记作   $$a\equiv b \mod m$$   例">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-02-11T19:45:04.000Z">
+<meta property="article:modified_time" content="2025-05-05T05:40:19.962Z">
+<meta property="article:author" content="Marcus">
+<meta property="article:tag" content="algorithms">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Marcus's Blog" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Marcus&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Hello</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://monstergeo.github.io/btest"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Ring_buffer" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/02/12/Ring_buffer/" class="article-date">
+  <time class="dt-published" datetime="2025-02-11T19:45:04.000Z" itemprop="datePublished">2025-02-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      循环队列
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Ring-Buffer"><a href="#Ring-Buffer" class="headerlink" title="Ring_Buffer"></a>Ring_Buffer</h1><p>今天讲一种数据结构——循环队列，起初是我在想如何解决Stm32单片机串口粘包&#x2F;拆包的时候想到的，首先讲一下实现的原理</p>
+<h2 id="同余"><a href="#同余" class="headerlink" title="同余"></a>同余</h2><p>循环队列的空间排序基于模运算。我们首先来认识一些同于的定义和基本性质</p>
+<p><strong>定义：同余</strong>：给定整数$m\geq 0$，若对整数$a,b$满足$m\mid (a-b)$，则称$a,b$模$m$同余，记作</p>
+<center>
+
+<p>$$<br>a\equiv b \mod m<br>$$</p>
+</center>
+
+<p>例子：$a\equiv b\mod 10$当且仅当存在相同的余数，例如$13$和$23$，有$13-23 &#x3D; 10$可以整除10.它们的余数是$3$. 当然，我们也把同余叫模运算。接着给出一些性质</p>
+<p><strong>命题1：</strong> </p>
+<ul>
+<li>若$a &#x3D; qm+r$，则$a\equiv r \mod m$</li>
+<li>若$0 \leq r’ &lt; r &lt;m$，则$r \not\equiv r’ \mod m$</li>
+<li>$a\equiv b\mod m$当且仅当$a,b$具备相同的余数</li>
+</ul>
+<p><strong>证明：</strong> $a-r &#x3D; qm$，$m\mid qm$由定义可知$a \equiv r \mod m$</p>
+<p>对命题2，$r\equiv r’ \mod m$当且仅当$(r-r’) &#x3D; qm$，$q\in\mathbb{Z}$。此时$r-r’ &gt; m$，和命题矛盾。</p>
+<p>对命题3，设$a &#x3D; qm+r$ 和 $b &#x3D; q’m+r’$，其中$0\leq r &lt; m$和$ 0\leq r’ &lt; m$。则$a-b &#x3D; (q-q’)m+(r-r’)$。那么 $a-b \equiv r- r’\mod m$，若$a\equiv b\mod m$，则$a-b\equiv 0 \mod m \Rightarrow r - r’ &#x3D; 0 \Rightarrow r &#x3D; r’$。反之易得。$a\equiv b \mod m \Rightarrow a-b\equiv 0\mod m \Rightarrow r &#x3D; r’\mod m$</p>
+<p><strong>推论1：</strong> 给定$m \geq 2$，则每个整数$a \mod m$和$0,1,\cdots,m-1$中的一个数同余。</p>
+<p><strong>证明：</strong> 利用长除法，则$a \equiv r \mod m$，其中$ 0\leq r &lt; m$，即$r\in {0,1,\cdots,m-1}$。中的某个。并且由命题1的2，$r$是唯一存在的。</p>
+<p>利用推论1，可知所有$\mod m$余数为1的都有$x\equiv 1 \mod m$。因此只需要根据余数就可以判断数据应该放在哪个位中。</p>
+<p>前期所需要的理论知识到这就足够了。</p>
+<p>我们讲讲循环队列</p>
+<h2 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h2><p>循环队列一般称为Circular Queue，它将一个队列的首位相连，克服假溢出的情况。循环队列将储存空间的最后一个元素的地址指向第一个元素的地址。形成逻辑上的闭环。和一般的队列不同，当头指针&#x3D;&#x3D; 尾指针的时候，无法判断是满的还是空的。因为这种情况下，空和满都满足头指针&#x3D;&#x3D;尾指针的情况。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">1-&gt;2-&gt;3-&gt;4-&gt;1 //</span><br><span class="line">和</span><br><span class="line">1-&gt;1 </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>所以，第一件事就是让尾指针和头指针之间一定间隔了一个字节，为此我们可以将头字节&#x3D;尾字节的情况等价于列表为空的状态。那么存在3种情况，一种是空，空队列直接返回即可。若数据的长度小于缓冲区剩余空间的长度，则直接写入数据，如果发生了数据长度 &gt; 剩余空间长度，则我们抛弃最开始的数据，并用现数据长度 - 剩余空间长度的数据去覆盖。</p>
+<p>代码如下：首先我们定义节点结构体，它包含3个参数，数据、头字节，还有尾字节，头字节用来标记数据地址的起点，而尾字节用来告诉程序数据在哪里结束。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> MAXSIZE 5 <span class="comment">//缓冲区长度，可以随便更改缓冲区大小</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span> <span class="comment">//创建一个循环队列节点</span></span><br><span class="line">    <span class="type">int</span> data[MAXSIZE]; <span class="comment">//数据长度</span></span><br><span class="line">    <span class="type">int</span> front; <span class="comment">//头节点位置</span></span><br><span class="line">    <span class="type">int</span> rear; <span class="comment">//尾节点位置</span></span><br><span class="line">&#125; Node;</span><br></pre></td></tr></table></figure>
+
+<p>我们用数组来定义队列。front表示第一个数据在哪，rear表示最后一个数据在哪。而data是一个预设好的用来储存数据的数组。</p>
+<p>接着是队列的初始化，一开始说了。空的节点中头节点位置&#x3D;&#x3D;尾节点位置，他的代码如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Node* <span class="title function_">InitQueue</span><span class="params">()</span>&#123;</span><br><span class="line">    Node* P = (Node*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node)); <span class="comment">//初始化头节点</span></span><br><span class="line">    P-&gt;front = P-&gt;rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> P;</span><br><span class="line">&#125;   </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>接着我们需要一些函数，它们用来帮助我们判断队列是否满了，还是说是空的数组，然后是操作数组的函数，入队还有出队。最后是打印整个队列的函数。</p>
+<p>首先是判断队列是空&#x2F;满的函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">isEmpty</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(P-&gt; front == P-&gt;rear)&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">isFull</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>((P-&gt;rear + <span class="number">1</span>) % MAXSIZE == P-&gt;front)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在isFull函数里面出现了 模运算（符号%）。该符号的出现等价于 x \equiv (P-&gt;rear + 1) \mod MAXSIZE。其中 x 待求和(P-&gt;rear + 1)模MAXSIZE同余的变量。通过x和推论1即可得到数据应该储存在哪个位中，例如，现在队列已经满了，但是想入队一个新元素，假设缓冲区长度为5，那么我们只能覆盖之前的数据，这个被覆盖的数据位置就是$ 6 &#x3D; 1 \times 5+1 $，余数为1，也就是第一个数据将被覆盖。其中6是满队列的位置加上新元素的位置。</p>
+<p>所以isFull里面的语句if((P-&gt;rear + 1) % MAXSIZE &#x3D;&#x3D; P-&gt;front)是一样的说法，若头节点位置在5，缓冲区长度为5，尾节点在1，则我们可以通过mod MAXSIZE立马知道有5+1 &#x2F;5 余1.也就有头节点&#x3D;&#x3D;尾节点。可知该队列满了。</p>
+<p>接下来，我们写一个入队的函数，它满足两个要求，一是在队列没满的时候，也就是说头指针位置 &lt; 尾指针位置，这时候正常入队，若队满，就可以通过模运算来覆盖旧数据。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">enQueue</span><span class="params">(Node* P, <span class="type">int</span> data)</span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(isFull(P))&#123;</span><br><span class="line">        P-&gt;data[P-&gt;rear ] = data; </span><br><span class="line">        P-&gt;front = (P-&gt;front +<span class="number">1</span>) % MAXSIZE;</span><br><span class="line">        P-&gt;rear = (P-&gt;rear + <span class="number">1</span> ) % MAXSIZE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        P-&gt;data[P-&gt;rear] = data;</span><br><span class="line">        P-&gt;rear = (P-&gt;rear + <span class="number">1</span>) % MAXSIZE;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>若队没满，至少存在2种情况，即</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">1: |1|2|3|4|...|n|</span><br><span class="line"> *front       *rear</span><br><span class="line"></span><br><span class="line">2: |n-1|n|   1|2|...|n-2|</span><br><span class="line">     *rear   *front</span><br></pre></td></tr></table></figure>
+<p>也就是发生了间隔和正常入队的情况，很好解决，都只需要 % MAXSIZE即可得到当前指针的位置在哪。</p>
+<p>若队满，则将下一个指针的数据填充为新的。接着，将超过缓冲区长度front指针和rear指针通过模运算重新循环到开头。若不加 % MAXSIZE会导致溢出的事情发生。</p>
+<p>最后是出队</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">deQueue</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(isEmpty(P))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">int</span> data = P-&gt;data[P-&gt;front];</span><br><span class="line">        P-&gt;front = (P-&gt;front + <span class="number">1</span>) % MAXSIZE;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>出队处理比较简单，只需要删除元素即可。</p>
+<p>最后是打印函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">printQueue</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="type">int</span> length =  (P-&gt;rear + MAXSIZE - P-&gt;front) % MAXSIZE;</span><br><span class="line">    <span class="type">int</span> index = P-&gt;front;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i&lt; length; i++)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d -&gt;&quot;</span>,P-&gt;data[index]);</span><br><span class="line">            index = (index+<span class="number">1</span>) % MAXSIZE ;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Null\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>length是打印队列的长度，可以往上再加来实现打印循环的队列。</p>
+<p>测试样例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    Node* P = InitQueue();</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">        enQueue(P,i);</span><br><span class="line">    &#125;</span><br><span class="line">    printQueue(P);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>正常输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">6 -&gt;7 -&gt;8 -&gt;Null</span><br></pre></td></tr></table></figure>
+
+<p>多打印2个元素的输出和代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">printQueue</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="type">int</span> length =  (P-&gt;rear + MAXSIZE - P-&gt;front) % MAXSIZE;</span><br><span class="line">    <span class="type">int</span> index = P-&gt;front;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i&lt; length + <span class="number">2</span>; i++)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d -&gt;&quot;</span>,P-&gt;data[index]);</span><br><span class="line">            index = (index+<span class="number">1</span>) % MAXSIZE ;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Null\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">6 -&gt;7 -&gt;8 -&gt;9 -&gt;5 -&gt;Null</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>完整代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAXSIZE 5</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span> <span class="comment">//创建一个循环队列节点</span></span><br><span class="line">    <span class="type">int</span> data[MAXSIZE];                </span><br><span class="line">    <span class="type">int</span> front;</span><br><span class="line">    <span class="type">int</span> rear;</span><br><span class="line">&#125; Node;</span><br><span class="line"></span><br><span class="line">Node* <span class="title function_">InitQueue</span><span class="params">()</span>&#123;</span><br><span class="line">    Node* P = (Node*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node)); <span class="comment">//初始化头节点</span></span><br><span class="line">    P-&gt;front = P-&gt;rear = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> P;</span><br><span class="line">&#125;   </span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">isFull</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>((P-&gt;rear + <span class="number">1</span>) % MAXSIZE == P-&gt;front)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">enQueue</span><span class="params">(Node* P, <span class="type">int</span> dat)</span>&#123;</span><br><span class="line">   <span class="keyword">if</span>(isFull(P))&#123;</span><br><span class="line">        P-&gt;data[P-&gt;rear ] = dat;</span><br><span class="line">        P-&gt;front = (P-&gt;front +<span class="number">1</span>) % MAXSIZE;</span><br><span class="line">        P-&gt;rear = (P-&gt;rear + <span class="number">1</span> ) % MAXSIZE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        P-&gt;data[P-&gt;rear] = dat;</span><br><span class="line">        P-&gt;rear = (P-&gt;rear + <span class="number">1</span>) % MAXSIZE;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">isEmpty</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(P-&gt; front == P-&gt;rear)&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">deQueue</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(isEmpty(P))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="type">int</span> data = P-&gt;data[P-&gt;front];</span><br><span class="line">        P-&gt;front = (P-&gt;front + <span class="number">1</span>) % MAXSIZE;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">printQueue</span><span class="params">(Node* P)</span>&#123;</span><br><span class="line">    <span class="type">int</span> length =  (P-&gt;rear + MAXSIZE - P-&gt;front) % MAXSIZE;</span><br><span class="line">    <span class="type">int</span> index = P-&gt;front;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i&lt; length; i++)&#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d -&gt;&quot;</span>,P-&gt;data[index]);</span><br><span class="line">            index = (index+<span class="number">1</span>) % MAXSIZE ;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Null\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    Node* P = InitQueue();</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)&#123;</span><br><span class="line">        enQueue(P,i);</span><br><span class="line">    &#125;</span><br><span class="line">    printQueue(P);</span><br><span class="line"></span><br><span class="line"><span class="comment">//    printQueue(P);</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://monstergeo.github.io/btest/2025/02/12/Ring_buffer/" data-id="cmlgqwxsp00072ohx1u7oddw3" data-title="循环队列" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/05/Josephus%E9%97%AE%E9%A2%98/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          热土豆问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/12/%E9%93%BE%E8%A1%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">链表</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/MATLAB/">MATLAB</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/analyze/">analyze</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/computer/">computer</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Stm32/" rel="tag">Stm32</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithms/" rel="tag">algorithms</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/complex-analysis/" rel="tag">complex_analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/computer/" rel="tag">computer</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/math/" rel="tag">math</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/matlab/" rel="tag">matlab</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tech/" rel="tag">tech</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" rel="tag">图形学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag">密码学</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" rel="tag">计算机原理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/Stm32/" style="font-size: 12.5px;">Stm32</a> <a href="/tags/algorithms/" style="font-size: 15px;">algorithms</a> <a href="/tags/complex-analysis/" style="font-size: 20px;">complex_analysis</a> <a href="/tags/computer/" style="font-size: 10px;">computer</a> <a href="/tags/math/" style="font-size: 12.5px;">math</a> <a href="/tags/matlab/" style="font-size: 10px;">matlab</a> <a href="/tags/tech/" style="font-size: 10px;">tech</a> <a href="/tags/%E5%9B%BE%E5%BD%A2%E5%AD%A6/" style="font-size: 10px;">图形学</a> <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" style="font-size: 17.5px;">密码学</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%8E%9F%E7%90%86/" style="font-size: 12.5px;">计算机原理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/09/">September 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/08/">August 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/07/">July 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/08/">August 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/07/">July 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/06/">June 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/04/">April 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/01/">January 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/11/">November 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/07/">July 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/10/liner_algebra/">利用MATLAB计算矩阵</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/bqj/">海涅-博雷尔定理</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/10/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2025/09/10/%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/">合作式调度器</a>
+          </li>
+        
+          <li>
+            <a href="/2025/08/31/ocrs/">边缘识别</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Marcus<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
